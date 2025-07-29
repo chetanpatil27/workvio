@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import {
   Box,
   Typography,
-  Button,
   Card,
   CardContent,
   Avatar,
@@ -18,19 +17,24 @@ import {
   MenuItem,
   TextField,
   InputAdornment,
+  Tabs,
+  Tab,
 } from '@mui/material';
+import Button from '@/components/form-controls/button';
 import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,
   FolderOpen as FolderIcon,
   CalendarToday as CalendarIcon,
-  Group as GroupIcon,
   Search as SearchIcon,
-  TrendingUp as TrendingUpIcon,
-  Assignment as AssignmentIcon,
   Visibility as VisibilityIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
+  FilterList as FilterIcon,
+  Sort as SortIcon,
+  AccessTime as TimeIcon,
+  CheckCircle as CompleteIcon,
+  Schedule as ScheduleIcon,
 } from '@mui/icons-material';
 import { RootState } from '@/store';
 import { addProject } from '@/store/slices/project';
@@ -41,16 +45,29 @@ export default function ProjectsPage() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const dispatch = useDispatch();
   const router = useRouter();
   const projects = useSelector((state: RootState) => state.project.projects);
 
-  // Filter projects based on search
-  const filteredProjects = projects.filter(project =>
-    project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter projects based on search and selected tab
+  const filteredProjects = projects.filter(project => {
+    // Search filter
+    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // Tab filter
+    let matchesTab = true;
+    if (selectedTab === 1) { // Active tab
+      matchesTab = project.status === 'active';
+    } else if (selectedTab === 2) { // Completed tab
+      matchesTab = project.status === 'completed';
+    }
+    // selectedTab === 0 shows all projects
+
+    return matchesSearch && matchesTab;
+  });
 
   const handleCreateProject = (data: {
     name: string;
@@ -106,82 +123,203 @@ export default function ProjectsPage() {
     });
   };
 
+  // Calculate project statistics
+  const activeProjects = projects.filter(p => p.status === 'active').length;
+  const pendingProjects = projects.filter(p => p.status === 'on-hold').length;
+  const completedProjects = projects.filter(p => p.status === 'completed').length;
+
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Header */}
+    <Box sx={{ p: { xs: 2, md: 3 } }}>
+      {/* Enhanced Header with Taskora-style layout */}
       <Box sx={{
         display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        mb: 3
+        alignItems: { xs: 'flex-start', md: 'center' },
+        mb: 3,
+        gap: 2
       }}>
-        <Box>
-          <Typography variant="h4" fontWeight="700" gutterBottom sx={{ color: 'text.primary' }}>
+        <Box sx={{ flex: 1 }}>
+          <Typography
+            variant="h4"
+            fontWeight="700"
+            gutterBottom
+            sx={{
+              color: 'text.primary',
+              fontSize: { xs: '1.75rem', md: '2.125rem' },
+              mb: 0.5
+            }}
+          >
             Projects
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ fontSize: '0.95rem' }}>
-            Manage your projects and track progress
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{
+              fontSize: '0.95rem',
+              fontWeight: 400,
+              mb: { xs: 2, md: 0 }
+            }}
+          >
+            Manage and track your project progress effectively
           </Typography>
         </Box>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon sx={{ fontSize: '1.1rem' }} />}
-          onClick={() => setCreateModalOpen(true)}
-          sx={{
-            bgcolor: 'primary.main',
-            borderRadius: 2,
-            px: 2.5,
-            py: 1.2,
-            fontSize: '0.9rem',
-            fontWeight: 600,
-            boxShadow: '0 3px 10px rgba(25, 118, 210, 0.3)',
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              bgcolor: 'primary.dark',
-              boxShadow: '0 4px 15px rgba(25, 118, 210, 0.4)',
-              transform: 'translateY(-1px)',
-            },
-          }}
-        >
-          Create Project
-        </Button>
+        <Box sx={{
+          display: 'flex',
+          gap: 1.5,
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
+          {/* Filter Button */}
+          <Button
+            variant="outlined"
+            startIcon={<FilterIcon />}
+          >
+            Filter
+          </Button>
+
+          {/* Sort Button */}
+          <Button
+            variant="outlined"
+            startIcon={<SortIcon />}
+          >
+            Sort
+          </Button>
+
+          {/* Create Project Button */}
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setCreateModalOpen(true)}
+          >
+            New Project
+          </Button>
+        </Box>
       </Box>
 
-      {/* Search Bar */}
-      <Box sx={{ mb: 3 }}>
-        <TextField
-          placeholder="Search projects by name or description..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          size="small"
-          sx={{
-            maxWidth: 400,
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-              bgcolor: 'background.paper',
-              height: 42,
-              fontSize: '0.9rem',
-              '& fieldset': {
-                borderColor: 'divider',
+      {/* Search and Tabs Section */}
+      <Box sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        justifyContent: 'space-between',
+        alignItems: { xs: 'stretch', md: 'center' },
+        mb: 3,
+        gap: 2
+      }}>
+        {/* Search Bar */}
+        <Box sx={{ flex: 1, maxWidth: { xs: '100%', md: 400 } }}>
+          <TextField
+            placeholder="Search projects by name or description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            size="small"
+            fullWidth
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                bgcolor: 'background.paper',
+                height: 44,
+                fontSize: '0.875rem',
+                '& fieldset': {
+                  borderColor: 'divider',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'primary.main',
+                  borderWidth: '2px',
+                },
               },
-              '&:hover fieldset': {
-                borderColor: 'primary.main',
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
+        {/* Project Status Tabs */}
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
+          <Tabs
+            value={selectedTab}
+            onChange={(_, newValue) => setSelectedTab(newValue)}
+            sx={{
+              '& .MuiTab-root': {
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                textTransform: 'none',
+                minHeight: 44,
+                px: 2,
+                '&.Mui-selected': {
+                  color: 'primary.main',
+                  fontWeight: 600,
+                }
               },
-              '&.Mui-focused fieldset': {
-                borderColor: 'primary.main',
-                borderWidth: '2px',
-              },
-            },
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
+              '& .MuiTabs-indicator': {
+                backgroundColor: 'primary.main',
+                height: 3,
+                borderRadius: '3px 3px 0 0',
+              }
+            }}
+          >
+            <Tab
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  All Projects
+                  <Chip
+                    label={projects.length}
+                    size="small"
+                    sx={{
+                      height: 20,
+                      fontSize: '0.75rem',
+                      bgcolor: selectedTab === 0 ? 'primary.main' : 'action.hover',
+                      color: selectedTab === 0 ? 'white' : 'text.secondary',
+                    }}
+                  />
+                </Box>
+              }
+            />
+            <Tab
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  Active
+                  <Chip
+                    label={projects.filter(p => p.status === 'active').length}
+                    size="small"
+                    sx={{
+                      height: 20,
+                      fontSize: '0.75rem',
+                      bgcolor: selectedTab === 1 ? 'primary.main' : 'action.hover',
+                      color: selectedTab === 1 ? 'white' : 'text.secondary',
+                    }}
+                  />
+                </Box>
+              }
+            />
+            <Tab
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  Completed
+                  <Chip
+                    label={projects.filter(p => p.status === 'completed').length}
+                    size="small"
+                    sx={{
+                      height: 20,
+                      fontSize: '0.75rem',
+                      bgcolor: selectedTab === 2 ? 'primary.main' : 'action.hover',
+                      color: selectedTab === 2 ? 'white' : 'text.secondary',
+                    }}
+                  />
+                </Box>
+              }
+            />
+          </Tabs>
+        </Box>
       </Box>
 
       {/* Stats Cards */}
@@ -191,174 +329,133 @@ export default function ProjectsPage() {
         gap: 2.5,
         mb: 3
       }}>
-        <Card sx={{ 
-          p: 2.5, 
-          borderRadius: 2, 
-          border: '1px solid', 
+        <Card sx={{
+          p: 3,
+          borderRadius: 2,
+          border: '1px solid',
           borderColor: 'divider',
-          background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden',
-          height: 'auto',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '80px',
-            height: '80px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '50%',
-            transform: 'translate(25px, -25px)',
+          bgcolor: 'background.paper',
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{
-              bgcolor: 'rgba(255,255,255,0.2)',
-              p: 1.2,
-              borderRadius: 1.5,
+              bgcolor: 'rgba(25, 118, 210, 0.1)',
+              p: 1.5,
+              borderRadius: 2,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <AssignmentIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+              <FolderIcon sx={{ color: 'primary.main', fontSize: '1.5rem' }} />
             </Box>
             <Box>
-              <Typography variant="h5" fontWeight="700">
+              <Typography variant="h4" fontWeight="600" color="text.primary">
                 {projects.length}
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
                 Total Projects
               </Typography>
             </Box>
           </Box>
         </Card>
 
-        <Card sx={{ 
-          p: 2.5, 
-          borderRadius: 2, 
-          border: '1px solid', 
+        <Card sx={{
+          p: 3,
+          borderRadius: 2,
+          border: '1px solid',
           borderColor: 'divider',
-          background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)',
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '80px',
-            height: '80px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '50%',
-            transform: 'translate(25px, -25px)',
+          bgcolor: 'background.paper',
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{
-              bgcolor: 'rgba(255,255,255,0.2)',
-              p: 1.2,
-              borderRadius: 1.5,
+              bgcolor: 'rgba(76, 175, 80, 0.1)',
+              p: 1.5,
+              borderRadius: 2,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <TrendingUpIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+              <TimeIcon sx={{ color: 'success.main', fontSize: '1.5rem' }} />
             </Box>
             <Box>
-              <Typography variant="h5" fontWeight="700">
-                {projects.filter(p => p.status === 'active').length}
+              <Typography variant="h4" fontWeight="600" color="text.primary">
+                {activeProjects}
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
                 Active Projects
               </Typography>
             </Box>
           </Box>
         </Card>
 
-        <Card sx={{ 
-          p: 2.5, 
-          borderRadius: 2, 
-          border: '1px solid', 
+        <Card sx={{
+          p: 3,
+          borderRadius: 2,
+          border: '1px solid',
           borderColor: 'divider',
-          background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '80px',
-            height: '80px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '50%',
-            transform: 'translate(25px, -25px)',
+          bgcolor: 'background.paper',
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{
-              bgcolor: 'rgba(255,255,255,0.2)',
-              p: 1.2,
-              borderRadius: 1.5,
+              bgcolor: 'rgba(255, 152, 0, 0.1)',
+              p: 1.5,
+              borderRadius: 2,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <GroupIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+              <ScheduleIcon sx={{ color: 'warning.main', fontSize: '1.5rem' }} />
             </Box>
             <Box>
-              <Typography variant="h5" fontWeight="700">
-                {projects.filter(p => p.status === 'completed').length}
+              <Typography variant="h4" fontWeight="600" color="text.primary">
+                {pendingProjects}
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
-                Completed
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                Pending
               </Typography>
             </Box>
           </Box>
         </Card>
 
-        <Card sx={{ 
-          p: 2.5, 
-          borderRadius: 2, 
-          border: '1px solid', 
+        <Card sx={{
+          p: 3,
+          borderRadius: 2,
+          border: '1px solid',
           borderColor: 'divider',
-          background: 'linear-gradient(135deg, #f57c00 0%, #ff9800 100%)',
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '80px',
-            height: '80px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '50%',
-            transform: 'translate(25px, -25px)',
+          bgcolor: 'background.paper',
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{
-              bgcolor: 'rgba(255,255,255,0.2)',
-              p: 1.2,
-              borderRadius: 1.5,
+              bgcolor: 'rgba(103, 58, 183, 0.1)',
+              p: 1.5,
+              borderRadius: 2,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <FolderIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+              <CompleteIcon sx={{ color: 'secondary.main', fontSize: '1.5rem' }} />
             </Box>
             <Box>
-              <Typography variant="h5" fontWeight="700">
-                {projects.filter(p => p.status === 'on-hold').length}
+              <Typography variant="h4" fontWeight="600" color="text.primary">
+                {completedProjects}
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
-                On Hold
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                Completed
               </Typography>
             </Box>
           </Box>
@@ -380,7 +477,7 @@ export default function ProjectsPage() {
             {searchTerm ? 'No projects found' : 'No projects yet'}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3, fontSize: '0.9rem' }}>
-            {searchTerm 
+            {searchTerm
               ? `No projects match "${searchTerm}". Try adjusting your search terms.`
               : 'Create your first project to get started with project management.'
             }
@@ -390,16 +487,6 @@ export default function ProjectsPage() {
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() => setCreateModalOpen(true)}
-              sx={{
-                bgcolor: 'primary.main',
-                px: 2.5,
-                py: 1.2,
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                '&:hover': {
-                  bgcolor: 'primary.dark',
-                }
-              }}
             >
               Create Project
             </Button>
@@ -457,7 +544,7 @@ export default function ProjectsPage() {
                   pointerEvents: 'none',
                 }}
               />
-              
+
               <CardContent sx={{ p: 2.5, position: 'relative', zIndex: 1 }}>
                 {/* Project Header */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
@@ -510,7 +597,7 @@ export default function ProjectsPage() {
                       width: 32,
                       height: 32,
                       transition: 'all 0.2s ease',
-                      '&:hover': { 
+                      '&:hover': {
                         bgcolor: 'primary.main',
                         color: 'white',
                         transform: 'scale(1.05)',
@@ -525,8 +612,8 @@ export default function ProjectsPage() {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ 
-                    mb: 2.5, 
+                  sx={{
+                    mb: 2.5,
                     minHeight: 32,
                     display: '-webkit-box',
                     WebkitLineClamp: 2,
@@ -559,8 +646,8 @@ export default function ProjectsPage() {
                       boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
                       '& .MuiLinearProgress-bar': {
                         borderRadius: 3,
-                        background: (project.progress || 0) === 100 
-                          ? 'linear-gradient(90deg, #4caf50, #66bb6a)' 
+                        background: (project.progress || 0) === 100
+                          ? 'linear-gradient(90deg, #4caf50, #66bb6a)'
                           : 'linear-gradient(90deg, #1976d2, #42a5f5)',
                         transition: 'transform 0.4s ease',
                       }
@@ -577,16 +664,16 @@ export default function ProjectsPage() {
                     </Typography>
                   </Box>
 
-                  <AvatarGroup 
-                    max={3} 
-                    sx={{ 
-                      '& .MuiAvatar-root': { 
-                        width: 24, 
-                        height: 24, 
+                  <AvatarGroup
+                    max={3}
+                    sx={{
+                      '& .MuiAvatar-root': {
+                        width: 24,
+                        height: 24,
                         fontSize: '0.7rem',
                         border: '2px solid white',
                         boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
-                      } 
+                      }
                     }}
                   >
                     {project.teamMembers?.slice(0, 3).map((member: { name: string; email?: string; role?: string }, index: number) => (
@@ -632,16 +719,16 @@ export default function ProjectsPage() {
           }
         }}
       >
-        <MenuItem 
+        <MenuItem
           onClick={() => {
             if (selectedProject) {
               router.push(`/projects/${selectedProject}`);
             }
             handleMenuClose();
           }}
-          sx={{ 
-            py: 1.2, 
-            px: 2, 
+          sx={{
+            py: 1.2,
+            px: 2,
             fontSize: '0.9rem',
             '&:hover': { bgcolor: 'primary.light', color: 'primary.main' }
           }}
@@ -649,11 +736,11 @@ export default function ProjectsPage() {
           <VisibilityIcon sx={{ mr: 1.5, fontSize: '1.1rem' }} />
           View Details
         </MenuItem>
-        <MenuItem 
+        <MenuItem
           onClick={handleMenuClose}
-          sx={{ 
-            py: 1.2, 
-            px: 2, 
+          sx={{
+            py: 1.2,
+            px: 2,
             fontSize: '0.9rem',
             '&:hover': { bgcolor: 'primary.light', color: 'primary.main' }
           }}
@@ -668,9 +755,9 @@ export default function ProjectsPage() {
             }
             handleMenuClose();
           }}
-          sx={{ 
-            py: 1.2, 
-            px: 2, 
+          sx={{
+            py: 1.2,
+            px: 2,
             fontSize: '0.9rem',
             color: 'error.main',
             '&:hover': { bgcolor: 'error.light', color: 'error.dark' }

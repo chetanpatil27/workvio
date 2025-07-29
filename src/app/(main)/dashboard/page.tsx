@@ -65,164 +65,194 @@ export default function Dashboard() {
   };
 
   return (
-    <Box>
-      {/* Welcome Section */}
+    <Box sx={{ p: { xs: 2, md: 3 } }}>
+      {/* Enhanced Welcome Section */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 600, mb: 1 }}>
-          Welcome back, {user?.name || 'User'}!
+        <Typography
+          variant="h4"
+          fontWeight="700"
+          sx={{
+            color: 'text.primary',
+            fontSize: { xs: '1.75rem', md: '2.125rem' },
+            mb: 1
+          }}
+        >
+          Welcome back, {user?.name || 'User'}! 👋
         </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Here&apos;s what&apos;s happening with your projects today.
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{
+            fontSize: '1rem',
+            fontWeight: 400
+          }}
+        >
+          Here&apos;s what&apos;s happening with your projects today
         </Typography>
       </Box>
 
-      {/* Statistics Cards */}
-      <Box sx={{ 
-        display: 'grid', 
-        gridTemplateColumns: { 
-          xs: '1fr', 
-          sm: 'repeat(2, 1fr)', 
-          lg: 'repeat(4, 1fr)' 
+      {/* Enhanced Statistics Cards */}
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: '1fr',
+          sm: 'repeat(2, 1fr)',
+          lg: 'repeat(4, 1fr)'
         },
-        gap: { xs: 2, sm: 3 },
-        mb: { xs: 3, sm: 4 }
+        gap: 2.5,
+        mb: 4
       }}>
-        <Card sx={{ 
-          height: '100%',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': {
-            boxShadow: (theme) => theme.shadows[4],
-          },
-        }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Avatar
-                sx={{
-                  backgroundColor: 'primary.main',
-                  width: 48,
-                  height: 48,
-                  mr: 2,
-                }}
-              >
-                <ProjectIcon />
-              </Avatar>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
-                  {activeProjects}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Active Projects
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ 
-          height: '100%',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': {
-            boxShadow: (theme) => theme.shadows[4],
-          },
-        }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Avatar
-                sx={{
-                  backgroundColor: 'success.main',
-                  width: 48,
-                  height: 48,
-                  mr: 2,
-                }}
-              >
-                <TaskIcon />
-              </Avatar>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
-                  {totalTickets}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Total Tickets
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ 
-          height: '100%',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': {
-            boxShadow: (theme) => theme.shadows[4],
-          },
-        }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Avatar
-                sx={{
-                  backgroundColor: 'warning.main',
-                  width: 48,
-                  height: 48,
-                  mr: 2,
-                }}
-              >
-                <TrendingIcon />
-              </Avatar>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
-                  {inProgressTickets}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  In Progress
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ 
-          height: '100%',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': {
-            boxShadow: (theme) => theme.shadows[4],
-          },
-        }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Avatar
-                sx={{
-                  backgroundColor: 'info.main',
-                  width: 48,
-                  height: 48,
-                  mr: 2,
-                }}
-              >
-                <BugIcon />
-              </Avatar>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 600, mb: 0.5 }}>
-                  {Math.round(completionRate)}%
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Completion Rate
-                </Typography>
-              </Box>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={completionRate}
-              sx={{ 
-                height: 6, 
-                borderRadius: 3,
-                mt: 2,
+        {/* Active Projects Card */}
+        <Card
+          elevation={0}
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            transition: 'box-shadow 0.2s',
+            '&:hover': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                bgcolor: 'rgba(25, 118, 210, 0.1)',
+                mr: 2,
               }}
-            />
-          </CardContent>
+            >
+              <ProjectIcon sx={{ fontSize: '1.5rem', color: '#1976d2' }} />
+            </Box>
+            <Box>
+              <Typography variant="h4" fontWeight="700" sx={{ lineHeight: 1, color: 'text.primary' }}>
+                {activeProjects}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                Active Projects
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+
+        {/* Total Tickets Card */}
+        <Card
+          elevation={0}
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            transition: 'box-shadow 0.2s',
+            '&:hover': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                bgcolor: 'rgba(46, 125, 50, 0.1)',
+                mr: 2,
+              }}
+            >
+              <TaskIcon sx={{ fontSize: '1.5rem', color: '#2e7d32' }} />
+            </Box>
+            <Box>
+              <Typography variant="h4" fontWeight="700" sx={{ lineHeight: 1, color: 'text.primary' }}>
+                {totalTickets}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                Total Tickets
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+
+        {/* In Progress Tickets Card */}
+        <Card
+          elevation={0}
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            transition: 'box-shadow 0.2s',
+            '&:hover': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                bgcolor: 'rgba(237, 108, 2, 0.1)',
+                mr: 2,
+              }}
+            >
+              <TrendingIcon sx={{ fontSize: '1.5rem', color: '#ed6c02' }} />
+            </Box>
+            <Box>
+              <Typography variant="h4" fontWeight="700" sx={{ lineHeight: 1, color: 'text.primary' }}>
+                {inProgressTickets}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                In Progress
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+
+        {/* Completion Rate Card */}
+        <Card
+          elevation={0}
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            transition: 'box-shadow 0.2s',
+            '&:hover': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                bgcolor: 'rgba(123, 31, 162, 0.1)',
+                mr: 2,
+              }}
+            >
+              <StoryIcon sx={{ fontSize: '1.5rem', color: '#7b1fa2' }} />
+            </Box>
+            <Box>
+              <Typography variant="h4" fontWeight="700" sx={{ lineHeight: 1, color: 'text.primary' }}>
+                {Math.round(completionRate)}%
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                Completion Rate
+              </Typography>
+            </Box>
+          </Box>
         </Card>
       </Box>
 
-      <Box sx={{ 
-        display: 'grid', 
+      <Box sx={{
+        display: 'grid',
         gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, 1fr)' },
         gap: { xs: 2, sm: 3 }
       }}>

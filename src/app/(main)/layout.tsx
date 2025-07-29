@@ -55,7 +55,7 @@ export default function MainLayout({
   }
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', margin: 0, padding: 0 }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', margin: 0, padding: 0, overflow: 'hidden' }}>
       {/* Sidebar */}
       <Sidebar mobileOpen={mobileOpen} onMobileToggle={handleMobileToggle} />
 
@@ -71,6 +71,8 @@ export default function MainLayout({
           marginRight: 0,
           marginBottom: 0,
           minHeight: '100vh',
+          maxHeight: '100vh',
+          overflow: 'auto',
           backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#121212' : '#f8fafc',
           padding: 0,
           position: 'relative',
@@ -86,7 +88,7 @@ export default function MainLayout({
         }}
       >
         {/* Header */}
-        <Box sx={{ margin: 0, padding: 0 }}>
+        <Box sx={{ margin: 0, padding: 0, position: 'sticky', top: 0, zIndex: 1000 }}>
           <Header onMobileToggle={handleMobileToggle} />
         </Box>
 
@@ -99,8 +101,9 @@ export default function MainLayout({
             px: { xs: 2, sm: 3, md: 4 },
             pb: { xs: 2, sm: 3, md: 4 },
             maxWidth: '100%',
-            overflow: 'hidden',
+            overflow: 'auto',
             margin: 0,
+            height: 'calc(100vh - 72px)', // Subtract header height
           }}
         >
           {children}

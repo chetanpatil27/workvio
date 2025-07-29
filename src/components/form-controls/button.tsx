@@ -20,7 +20,7 @@ export default function Button({
   loadingText,
   disabled,
   variant = 'contained',
-  size = 'medium',
+  size = 'small',
   ...props
 }: ButtonProps) {
   return (
@@ -31,11 +31,11 @@ export default function Button({
       size={size === 'large' ? 'medium' : size === 'small' ? 'small' : 'medium'}
       sx={{
         ...formControlTheme.commonStyles.button,
-        minHeight: size === 'small' ? 36 : size === 'large' ? 46 : 42,
-        fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '0.95rem' : '0.9rem',
+        minHeight: size === 'small' ? 42 : size === 'large' ? 48 : 44,
+        fontSize: size === 'small' ? '0.875rem' : size === 'large' ? '0.95rem' : '0.9rem',
         fontWeight: 600,
-        px: size === 'small' ? 1.5 : size === 'large' ? 3 : 2.5,
-        py: size === 'small' ? 0.8 : size === 'large' ? 1.5 : 1.2,
+        px: size === 'small' ? 2 : size === 'large' ? 3 : 2.5,
+        py: size === 'small' ? 1 : size === 'large' ? 1.5 : 1.2,
         position: 'relative',
         borderRadius: formControlTheme.borderRadius,
         textTransform: 'none',

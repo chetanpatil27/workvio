@@ -38,6 +38,10 @@ export default function Header({ onMobileToggle, title = 'Dashboard' }: HeaderPr
         zIndex: (theme) => theme.zIndex.drawer + 1,
         margin: 0,
         top: 0,
+        position: 'sticky',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
       }}
     >
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64, md: 72 }, px: { xs: 2, sm: 3 } }}>
