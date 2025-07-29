@@ -204,7 +204,7 @@ export default function StaffPage() {
                         fullWidth
                         sx={{
                             '& .MuiOutlinedInput-root': {
-                                borderRadius: 2,
+                                borderRadius: '6px',
                                 bgcolor: 'background.paper',
                                 height: 44,
                                 fontSize: '0.875rem',
@@ -250,7 +250,7 @@ export default function StaffPage() {
                             '& .MuiTabs-indicator': {
                                 backgroundColor: 'primary.main',
                                 height: 3,
-                                borderRadius: '3px 3px 0 0',
+                                borderRadius: '6px 6px 0 0',
                             }
                         }}
                     >
@@ -338,7 +338,7 @@ export default function StaffPage() {
                 <Card sx={{
                     p: 8,
                     textAlign: 'center',
-                    borderRadius: 3,
+                    borderRadius: '6px',
                     border: '2px dashed',
                     borderColor: 'divider',
                     bgcolor: 'background.default'
@@ -393,7 +393,7 @@ export default function StaffPage() {
                                             sx={{
                                                 width: 4,
                                                 height: 40,
-                                                borderRadius: 2,
+                                                borderRadius: '6px',
                                                 bgcolor: getAvatarColor(member.name),
                                                 flexShrink: 0,
                                             }}
@@ -534,7 +534,7 @@ export default function StaffPage() {
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
                 PaperProps={{
-                    sx: { borderRadius: 3 }
+                    sx: { borderRadius: '6px' }
                 }}
             >
                 <DialogTitle sx={{ fontWeight: 600 }}>

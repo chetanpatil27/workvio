@@ -1,7 +1,7 @@
 // Shared styling theme for all form controls
 export const formControlTheme = {
     // Common border radius for all form controls
-    borderRadius: 2,
+    borderRadius: '6px',
 
     // Common height for form controls (reduced for better UI)
     height: 42,
@@ -52,7 +52,7 @@ export const formControlTheme = {
         // Unified input and select styles for consistency
         field: {
             '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: '6px',
                 backgroundColor: 'background.paper',
                 transition: 'all 0.2s ease-in-out',
                 '& fieldset': {
@@ -99,7 +99,7 @@ export const formControlTheme = {
         // Legacy input styles (kept for backward compatibility)
         input: {
             '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: '6px',
                 backgroundColor: 'background.paper',
                 transition: 'all 0.2s ease-in-out',
                 '& fieldset': {
@@ -145,7 +145,7 @@ export const formControlTheme = {
 
         // Button styles
         button: {
-            borderRadius: 2,
+            borderRadius: '6px',
             textTransform: 'none' as const,
             fontWeight: 500,
             minHeight: 48,
@@ -183,7 +183,7 @@ export const formControlTheme = {
         // Unified select styles (same as field)
         select: {
             '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: '6px',
                 backgroundColor: 'background.paper',
                 transition: 'all 0.2s ease-in-out',
                 '& fieldset': {
@@ -259,7 +259,7 @@ export const formControlTheme = {
         const sizeStyles = formControlTheme.sizes[size];
         return {
             '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: '6px',
                 backgroundColor: 'background.paper',
                 transition: 'all 0.2s ease-in-out',
                 minHeight: sizeStyles.height,

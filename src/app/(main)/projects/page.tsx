@@ -226,7 +226,7 @@ export default function ProjectsPage() {
             onClick={() => setCreateModalOpen(true)}
             sx={{
               bgcolor: '#1976d2',
-              borderRadius: 2,
+              borderRadius: '6px',
               px: 3,
               py: 1,
               fontSize: '0.875rem',
@@ -257,7 +257,7 @@ export default function ProjectsPage() {
           sx={{
             width: 300,
             '& .MuiOutlinedInput-root': {
-              borderRadius: 3,
+              borderRadius: '6px',
               bgcolor: 'background.default',
             },
           }}
@@ -305,7 +305,7 @@ export default function ProjectsPage() {
               sx={{
                 minWidth: 'auto',
                 px: 2,
-                borderRadius: 2,
+                borderRadius: '6px',
                 color: 'text.secondary',
                 borderColor: 'divider',
                 '&:hover': {
@@ -322,7 +322,7 @@ export default function ProjectsPage() {
               sx={{
                 minWidth: 'auto',
                 px: 2,
-                borderRadius: 2,
+                borderRadius: '6px',
                 color: 'text.secondary',
                 '&:hover': {
                   color: 'primary.main',

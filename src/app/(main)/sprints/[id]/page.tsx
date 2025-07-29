@@ -9,7 +9,6 @@ import {
     CardContent,
     Chip,
     LinearProgress,
-    Paper,
     Avatar,
     IconButton,
     Divider,
@@ -206,7 +205,16 @@ export default function SprintDetailPage() {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
                         onClick={() => router.push('/sprints')}
-                        sx={{ mr: 1 }}
+                        sx={{
+                            mr: 2,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            borderRadius: '6px',
+                            padding: '8px',
+                            '&:hover': {
+                                backgroundColor: 'action.hover',
+                            },
+                        }}
                     >
                         <ArrowBackIcon />
                     </IconButton>
@@ -251,91 +259,167 @@ export default function SprintDetailPage() {
                         mb: 3,
                     }}
                 >
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 2,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            },
                         }}
                     >
-                        <ScheduleIcon sx={{ color: 'primary.main', mb: 1 }} />
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 40,
+                                height: 40,
+                                borderRadius: '8px',
+                                backgroundColor: 'primary.main',
+                                mx: 'auto',
+                                mb: 2,
+                            }}
+                        >
+                            <ScheduleIcon sx={{ color: 'white', fontSize: 20 }} />
+                        </Box>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
                             Duration
                         </Typography>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
                             {format(new Date(sprint.startDate), 'MMM dd')} - {format(new Date(sprint.endDate), 'MMM dd')}
                         </Typography>
-                    </Paper>
+                    </Card>
 
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 2,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            },
                         }}
                     >
-                        <ProgressIcon sx={{ color: 'success.main', mb: 1 }} />
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 40,
+                                height: 40,
+                                borderRadius: '8px',
+                                backgroundColor: 'success.main',
+                                mx: 'auto',
+                                mb: 2,
+                            }}
+                        >
+                            <ProgressIcon sx={{ color: 'white', fontSize: 20 }} />
+                        </Box>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
                             Progress
                         </Typography>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
                             {Math.round(calculateProgress())}%
                         </Typography>
-                    </Paper>
+                    </Card>
 
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 2,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            },
                         }}
                     >
-                        <TaskIcon sx={{ color: 'info.main', mb: 1 }} />
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 40,
+                                height: 40,
+                                borderRadius: '8px',
+                                backgroundColor: 'info.main',
+                                mx: 'auto',
+                                mb: 2,
+                            }}
+                        >
+                            <TaskIcon sx={{ color: 'white', fontSize: 20 }} />
+                        </Box>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
                             Total Points
                         </Typography>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
                             {sprint.totalPoints || 0}
                         </Typography>
-                    </Paper>
+                    </Card>
 
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 2,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                            },
                         }}
                     >
-                        <PersonIcon sx={{ color: 'warning.main', mb: 1 }} />
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 40,
+                                height: 40,
+                                borderRadius: '8px',
+                                backgroundColor: 'warning.main',
+                                mx: 'auto',
+                                mb: 2,
+                            }}
+                        >
+                            <PersonIcon sx={{ color: 'white', fontSize: 20 }} />
+                        </Box>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
                             Team Size
                         </Typography>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
                             {sampleTickets.length} tickets
                         </Typography>
-                    </Paper>
+                    </Card>
                 </Box>
 
                 {/* Sprint Goal */}
-                <Paper
+                <Card
                     elevation={0}
                     sx={{
                         p: 3,
                         border: '1px solid',
                         borderColor: 'divider',
-                        borderRadius: 2,
+                        borderRadius: '6px',
                         mb: 3,
                     }}
                 >
@@ -369,7 +453,7 @@ export default function SprintDetailPage() {
                             }}
                         />
                     </Box>
-                </Paper>
+                </Card>
             </Box>
 
             {/* Kanban Board */}
@@ -390,13 +474,13 @@ export default function SprintDetailPage() {
                 }}
             >
                 {/* To Do Column */}
-                <Paper
+                <Card
                     elevation={0}
                     sx={{
                         p: 2,
                         border: '1px solid',
                         borderColor: 'divider',
-                        borderRadius: 2,
+                        borderRadius: '6px',
                         backgroundColor: 'background.paper',
                     }}
                 >
@@ -420,16 +504,16 @@ export default function SprintDetailPage() {
                     >
                         Add Ticket
                     </Button>
-                </Paper>
+                </Card>
 
                 {/* In Progress Column */}
-                <Paper
+                <Card
                     elevation={0}
                     sx={{
                         p: 2,
                         border: '1px solid',
                         borderColor: 'divider',
-                        borderRadius: 2,
+                        borderRadius: '6px',
                         backgroundColor: 'background.paper',
                     }}
                 >
@@ -446,16 +530,16 @@ export default function SprintDetailPage() {
                     </Box>
                     <Divider sx={{ mb: 2 }} />
                     {getTicketsByStatus('inprogress').map(renderTicketCard)}
-                </Paper>
+                </Card>
 
                 {/* QA Column */}
-                <Paper
+                <Card
                     elevation={0}
                     sx={{
                         p: 2,
                         border: '1px solid',
                         borderColor: 'divider',
-                        borderRadius: 2,
+                        borderRadius: '6px',
                         backgroundColor: 'background.paper',
                     }}
                 >
@@ -472,16 +556,16 @@ export default function SprintDetailPage() {
                     </Box>
                     <Divider sx={{ mb: 2 }} />
                     {getTicketsByStatus('qa').map(renderTicketCard)}
-                </Paper>
+                </Card>
 
                 {/* Completed Column */}
-                <Paper
+                <Card
                     elevation={0}
                     sx={{
                         p: 2,
                         border: '1px solid',
                         borderColor: 'divider',
-                        borderRadius: 2,
+                        borderRadius: '6px',
                         backgroundColor: 'background.paper',
                     }}
                 >
@@ -498,7 +582,7 @@ export default function SprintDetailPage() {
                     </Box>
                     <Divider sx={{ mb: 2 }} />
                     {getTicketsByStatus('completed').map(renderTicketCard)}
-                </Paper>
+                </Card>
             </Box>
         </Box>
     );

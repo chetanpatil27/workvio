@@ -111,7 +111,7 @@ export default function DatePicker({
             color: 'text.primary',
             '&::-webkit-calendar-picker-indicator': {
               cursor: 'pointer',
-              borderRadius: '4px',
+              borderRadius: '6px',
               padding: '6px',
               marginLeft: '8px',
               opacity: 0.6,

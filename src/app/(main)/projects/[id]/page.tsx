@@ -12,16 +12,12 @@ import {
     IconButton,
     Button,
     LinearProgress,
-    Paper,
     Tab,
     Tabs,
     List,
     ListItem,
     ListItemText,
     ListItemAvatar,
-    Breadcrumbs,
-    Link,
-    Divider,
 } from '@mui/material';
 import {
     ArrowBack as ArrowBackIcon,
@@ -34,8 +30,6 @@ import {
     BugReport as BugReportIcon,
     Task as TaskIcon,
     MenuBook as StoryIcon,
-    CalendarToday as CalendarIcon,
-    DateRange as DateRangeIcon,
 } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
@@ -110,10 +104,13 @@ export default function ProjectDetailsPage() {
 
     const statusColors = {
         active: 'success',
+        inprogress: 'primary',
         inactive: 'warning',
         archived: 'default',
         completed: 'info',
         'on-hold': 'warning',
+        onhold: 'warning',
+        planning: 'default',
     } as const;
 
     const sprintStatusColors = {
@@ -130,7 +127,16 @@ export default function ProjectDetailsPage() {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
                         onClick={() => router.push('/projects')}
-                        sx={{ mr: 1 }}
+                        sx={{
+                            mr: 1,
+                            borderRadius: '6px',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            '&:hover': {
+                                borderColor: 'primary.main',
+                                bgcolor: 'rgba(25, 118, 210, 0.04)',
+                            }
+                        }}
                     >
                         <ArrowBackIcon />
                     </IconButton>
@@ -187,89 +193,141 @@ export default function ProjectDetailsPage() {
                         mb: 4,
                     }}
                 >
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 3,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            bgcolor: 'background.paper',
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                transform: 'translateY(-2px)',
+                            }
                         }}
                     >
-                        <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', mb: 2 }}>
-                            <AssignmentIcon />
+                        <Avatar sx={{
+                            bgcolor: 'rgba(25, 118, 210, 0.1)',
+                            color: 'primary.main',
+                            mx: 'auto',
+                            mb: 2,
+                            width: 56,
+                            height: 56,
+                        }}>
+                            <AssignmentIcon sx={{ fontSize: '1.5rem' }} />
                         </Avatar>
-                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
                             {projectSprints.length}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
                             Total Sprints
                         </Typography>
-                    </Paper>
+                    </Card>
 
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 3,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            bgcolor: 'background.paper',
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                transform: 'translateY(-2px)',
+                            }
                         }}
                     >
-                        <Avatar sx={{ bgcolor: 'success.main', mx: 'auto', mb: 2 }}>
-                            <TrendingUpIcon />
+                        <Avatar sx={{
+                            bgcolor: 'rgba(76, 175, 80, 0.1)',
+                            color: 'success.main',
+                            mx: 'auto',
+                            mb: 2,
+                            width: 56,
+                            height: 56,
+                        }}>
+                            <TrendingUpIcon sx={{ fontSize: '1.5rem' }} />
                         </Avatar>
-                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
                             {projectSprints.filter(s => s.status === 'active').length}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
                             Active Sprints
                         </Typography>
-                    </Paper>
+                    </Card>
 
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 3,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            bgcolor: 'background.paper',
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                transform: 'translateY(-2px)',
+                            }
                         }}
                     >
-                        <Avatar sx={{ bgcolor: 'info.main', mx: 'auto', mb: 2 }}>
-                            <TaskIcon />
+                        <Avatar sx={{
+                            bgcolor: 'rgba(2, 136, 209, 0.1)',
+                            color: 'info.main',
+                            mx: 'auto',
+                            mb: 2,
+                            width: 56,
+                            height: 56,
+                        }}>
+                            <TaskIcon sx={{ fontSize: '1.5rem' }} />
                         </Avatar>
-                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
                             {projectTickets.length}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
                             Total Tickets
                         </Typography>
-                    </Paper>
+                    </Card>
 
-                    <Paper
+                    <Card
                         elevation={0}
                         sx={{
                             p: 3,
                             textAlign: 'center',
                             border: '1px solid',
                             borderColor: 'divider',
-                            borderRadius: 2,
+                            borderRadius: '6px',
+                            bgcolor: 'background.paper',
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                transform: 'translateY(-2px)',
+                            }
                         }}
                     >
-                        <Avatar sx={{ bgcolor: 'warning.main', mx: 'auto', mb: 2 }}>
-                            <GroupIcon />
+                        <Avatar sx={{
+                            bgcolor: 'rgba(255, 152, 0, 0.1)',
+                            color: 'warning.main',
+                            mx: 'auto',
+                            mb: 2,
+                            width: 56,
+                            height: 56,
+                        }}>
+                            <GroupIcon sx={{ fontSize: '1.5rem' }} />
                         </Avatar>
-                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}>
                             {project?.members?.length || 0}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
                             Team Members
                         </Typography>
-                    </Paper>
+                    </Card>
                 </Box>
 
                 {/* Progress */}
@@ -299,11 +357,21 @@ export default function ProjectDetailsPage() {
             </Box>
 
             {/* Tabs */}
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '6px', bgcolor: 'background.paper' }}>
                 <Tabs
                     value={tabValue}
                     onChange={(_, newValue) => setTabValue(newValue)}
-                    sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}
+                    sx={{
+                        borderBottom: 1,
+                        borderColor: 'divider',
+                        px: 3,
+                        '& .MuiTab-root': {
+                            textTransform: 'none',
+                            fontWeight: 500,
+                            fontSize: '0.95rem',
+                            minHeight: 48,
+                        }
+                    }}
                 >
                     <Tab label="Sprints" />
                     <Tab label="Tickets" />
@@ -330,10 +398,14 @@ export default function ProjectDetailsPage() {
                                         key={sprint.id}
                                         sx={{
                                             cursor: 'pointer',
+                                            borderRadius: '6px',
+                                            border: '1px solid',
+                                            borderColor: 'divider',
                                             transition: 'all 0.2s',
                                             '&:hover': {
-                                                boxShadow: 2,
+                                                boxShadow: '0 8px 25px rgba(0,0,0,0.12)',
                                                 transform: 'translateY(-2px)',
+                                                borderColor: 'primary.main',
                                             }
                                         }}
                                         onClick={() => router.push(`/sprints/${sprint.id}`)}
@@ -386,81 +458,157 @@ export default function ProjectDetailsPage() {
                                 mb: 3,
                             }}
                         >
-                            <Paper
+                            <Card
                                 elevation={0}
                                 sx={{
                                     p: 2,
                                     textAlign: 'center',
                                     border: '1px solid',
                                     borderColor: 'divider',
-                                    borderRadius: 2,
+                                    borderRadius: '6px',
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                    },
                                 }}
                             >
-                                <TaskIcon sx={{ color: 'primary.main', mb: 1 }} />
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '8px',
+                                        backgroundColor: 'primary.main',
+                                        mx: 'auto',
+                                        mb: 2,
+                                    }}
+                                >
+                                    <TaskIcon sx={{ color: 'white', fontSize: 20 }} />
+                                </Box>
                                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                                     {getTicketsByType('task')}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     Tasks
                                 </Typography>
-                            </Paper>
+                            </Card>
 
-                            <Paper
+                            <Card
                                 elevation={0}
                                 sx={{
                                     p: 2,
                                     textAlign: 'center',
                                     border: '1px solid',
                                     borderColor: 'divider',
-                                    borderRadius: 2,
+                                    borderRadius: '6px',
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                    },
                                 }}
                             >
-                                <BugReportIcon sx={{ color: 'error.main', mb: 1 }} />
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '8px',
+                                        backgroundColor: 'error.main',
+                                        mx: 'auto',
+                                        mb: 2,
+                                    }}
+                                >
+                                    <BugReportIcon sx={{ color: 'white', fontSize: 20 }} />
+                                </Box>
                                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                                     {getTicketsByType('bug')}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     Bugs
                                 </Typography>
-                            </Paper>
+                            </Card>
 
-                            <Paper
+                            <Card
                                 elevation={0}
                                 sx={{
                                     p: 2,
                                     textAlign: 'center',
                                     border: '1px solid',
                                     borderColor: 'divider',
-                                    borderRadius: 2,
+                                    borderRadius: '6px',
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                    },
                                 }}
                             >
-                                <StoryIcon sx={{ color: 'success.main', mb: 1 }} />
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '8px',
+                                        backgroundColor: 'success.main',
+                                        mx: 'auto',
+                                        mb: 2,
+                                    }}
+                                >
+                                    <StoryIcon sx={{ color: 'white', fontSize: 20 }} />
+                                </Box>
                                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                                     {getTicketsByType('story')}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     Stories
                                 </Typography>
-                            </Paper>
+                            </Card>
 
-                            <Paper
+                            <Card
                                 elevation={0}
                                 sx={{
                                     p: 2,
                                     textAlign: 'center',
                                     border: '1px solid',
                                     borderColor: 'divider',
-                                    borderRadius: 2,
+                                    borderRadius: '6px',
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                    },
                                 }}
                             >
-                                <CheckCircleIcon sx={{ color: 'success.main', mb: 1 }} />
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '8px',
+                                        backgroundColor: 'success.main',
+                                        mx: 'auto',
+                                        mb: 2,
+                                    }}
+                                >
+                                    <CheckCircleIcon sx={{ color: 'white', fontSize: 20 }} />
+                                </Box>
                                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                                     {getTicketsByStatus('completed')}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     Completed
                                 </Typography>
-                            </Paper>
+                            </Card>
                         </Box>
 
                         {projectTickets.length === 0 && (
@@ -507,7 +655,7 @@ export default function ProjectDetailsPage() {
                         </Typography>
                     </Box>
                 </TabPanel>
-            </Paper>
+            </Card>
         </Box>
     );
 }

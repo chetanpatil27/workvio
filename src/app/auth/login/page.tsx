@@ -29,13 +29,13 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
     dispatch(loginStart());
 
     try {
       // Simulate API call - replace with actual authentication logic
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Mock successful login
       const mockUser = {
         id: '1',
@@ -59,11 +59,11 @@ export default function LoginPage() {
   };
 
   return (
-    <Container 
-      maxWidth="sm" 
-      sx={{ 
-        height: '100vh', 
-        display: 'flex', 
+    <Container
+      maxWidth="sm"
+      sx={{
+        height: '100vh',
+        display: 'flex',
         alignItems: 'center',
         px: { xs: 2, sm: 3 }
       }}
@@ -94,18 +94,18 @@ export default function LoginPage() {
             >
               Workvio
             </Typography>
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                fontWeight: 600, 
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 600,
                 mb: 1,
                 fontSize: { xs: '1.25rem', sm: '1.5rem' }
               }}
             >
               Sign In
             </Typography>
-            <Typography 
-              variant="body2" 
+            <Typography
+              variant="body2"
               color="text.secondary"
               sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
             >
@@ -119,12 +119,12 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <Box 
-            component="form" 
-            onSubmit={handleSubmit} 
-            sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
               gap: { xs: 2.5, sm: 3 }
             }}
           >
@@ -181,7 +181,7 @@ export default function LoginPage() {
               mt: 4,
               p: 3,
               backgroundColor: 'background.default',
-              borderRadius: 2,
+              borderRadius: '6px',
               border: 1,
               borderColor: 'divider',
             }}

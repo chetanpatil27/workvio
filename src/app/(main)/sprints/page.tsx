@@ -171,13 +171,11 @@ export default function SprintsPage() {
               sx={{
                 fontWeight: 700,
                 mb: 1,
-                background: 'linear-gradient(45deg, #2e7d32 30%, #66bb6a 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                color: 'text.primary',
+                fontSize: '1.75rem'
               }}
             >
-              Sprints
+              Sprint Management
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
               Manage sprint cycles and track development progress
@@ -225,23 +223,13 @@ export default function SprintsPage() {
           </Box>
 
           <Button
-            variant="contained"
+            variant="filled"
             startIcon={<AddIcon />}
             onClick={handleCreateSprint}
-            size="large"
-            sx={{
-              borderRadius: '6px',
-              px: 3,
-              py: 1.5,
-              boxShadow: '0 4px 12px rgba(46, 125, 50, 0.3)',
-              bgcolor: 'success.main',
-              '&:hover': {
-                bgcolor: 'success.dark',
-                boxShadow: '0 6px 16px rgba(46, 125, 50, 0.4)',
-              },
-            }}
+            size="lg"
+            color="success"
           >
-            Create Sprint
+            New Sprint
           </Button>
         </Box>
 
@@ -314,7 +302,7 @@ export default function SprintsPage() {
                       sx={{
                         width: 4,
                         height: 40,
-                        borderRadius: 2,
+                        borderRadius: '6px',
                         bgcolor: statusColors[sprint.status],
                         flexShrink: 0,
                       }}
@@ -498,12 +486,12 @@ export default function SprintsPage() {
             Create your first sprint to start organizing your work
           </Typography>
           <Button
-            variant="contained"
+            variant="filled"
             startIcon={<AddIcon />}
-            size="large"
+            size="lg"
             onClick={handleCreateSprint}
           >
-            Create Sprint
+            New Sprint
           </Button>
         </Box>
       )}
@@ -594,9 +582,9 @@ export default function SprintsPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => setDialogOpen(false)} variant="outlined">Cancel</Button>
           <Button
-            variant="contained"
+            variant="filled"
             onClick={handleSaveSprint}
             disabled={!formData.name.trim() || !formData.projectId}
           >

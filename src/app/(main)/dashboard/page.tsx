@@ -7,7 +7,6 @@ import {
   CardContent,
   Typography,
   Avatar,
-  LinearProgress,
   Chip,
   IconButton,
   Paper,
@@ -107,7 +106,7 @@ export default function Dashboard() {
           elevation={0}
           sx={{
             p: 3,
-            borderRadius: 3,
+            borderRadius: '6px',
             border: '1px solid',
             borderColor: 'divider',
             bgcolor: 'background.paper',
@@ -121,7 +120,7 @@ export default function Dashboard() {
             <Box
               sx={{
                 p: 1.5,
-                borderRadius: 2,
+                borderRadius: '6px',
                 bgcolor: 'rgba(25, 118, 210, 0.1)',
                 mr: 2,
               }}
@@ -144,7 +143,7 @@ export default function Dashboard() {
           elevation={0}
           sx={{
             p: 3,
-            borderRadius: 3,
+            borderRadius: '6px',
             border: '1px solid',
             borderColor: 'divider',
             bgcolor: 'background.paper',
@@ -158,7 +157,7 @@ export default function Dashboard() {
             <Box
               sx={{
                 p: 1.5,
-                borderRadius: 2,
+                borderRadius: '6px',
                 bgcolor: 'rgba(46, 125, 50, 0.1)',
                 mr: 2,
               }}
@@ -181,7 +180,7 @@ export default function Dashboard() {
           elevation={0}
           sx={{
             p: 3,
-            borderRadius: 3,
+            borderRadius: '6px',
             border: '1px solid',
             borderColor: 'divider',
             bgcolor: 'background.paper',
@@ -195,7 +194,7 @@ export default function Dashboard() {
             <Box
               sx={{
                 p: 1.5,
-                borderRadius: 2,
+                borderRadius: '6px',
                 bgcolor: 'rgba(237, 108, 2, 0.1)',
                 mr: 2,
               }}
@@ -218,7 +217,7 @@ export default function Dashboard() {
           elevation={0}
           sx={{
             p: 3,
-            borderRadius: 3,
+            borderRadius: '6px',
             border: '1px solid',
             borderColor: 'divider',
             bgcolor: 'background.paper',
@@ -232,7 +231,7 @@ export default function Dashboard() {
             <Box
               sx={{
                 p: 1.5,
-                borderRadius: 2,
+                borderRadius: '6px',
                 bgcolor: 'rgba(123, 31, 162, 0.1)',
                 mr: 2,
               }}
