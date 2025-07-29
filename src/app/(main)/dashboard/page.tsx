@@ -9,8 +9,8 @@ import {
   Avatar,
   Chip,
   IconButton,
-  Paper,
 } from '@mui/material';
+import Button from '@/components/form-controls/button';
 import {
   FolderOpen as ProjectIcon,
   BugReport as BugIcon,
@@ -66,28 +66,45 @@ export default function Dashboard() {
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
       {/* Enhanced Welcome Section */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h4"
-          fontWeight="700"
-          sx={{
-            color: 'text.primary',
-            fontSize: { xs: '1.75rem', md: '2.125rem' },
-            mb: 1
-          }}
+      <Box sx={{
+        mb: 4,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: { xs: 'flex-start', md: 'center' },
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: { xs: 2, md: 0 }
+      }}>
+        <Box>
+          <Typography
+            variant="h4"
+            fontWeight="700"
+            sx={{
+              color: 'text.primary',
+              fontSize: { xs: '1.75rem', md: '2.125rem' },
+              mb: 1
+            }}
+          >
+            Welcome back, {user?.name || 'User'}! 👋
+          </Typography>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 400
+            }}
+          >
+            Here&apos;s what&apos;s happening with your projects today
+          </Typography>
+        </Box>
+        <Button
+          color="success"
+          variant="filled"
+          size="md"
+          onClick={() => window.location.href = '/projects'}
         >
-          Welcome back, {user?.name || 'User'}! 👋
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{
-            fontSize: '1rem',
-            fontWeight: 400
-          }}
-        >
-          Here&apos;s what&apos;s happening with your projects today
-        </Typography>
+          Create Project
+        </Button>
       </Box>
 
       {/* Enhanced Statistics Cards */}
@@ -256,11 +273,33 @@ export default function Dashboard() {
         gap: { xs: 2, sm: 3 }
       }}>
         {/* Recent Projects */}
-        <Card>
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: '6px',
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            transition: 'box-shadow 0.2s',
+            '&:hover': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }
+          }}
+        >
           <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-              Recent Projects
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Recent Projects
+              </Typography>
+              <Button
+                color="primary"
+                variant="outlined"
+                size="sm"
+                onClick={() => window.location.href = '/projects'}
+              >
+                View All
+              </Button>
+            </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {recentProjects.length === 0 ? (
                 <Typography color="text.secondary">
@@ -268,17 +307,27 @@ export default function Dashboard() {
                 </Typography>
               ) : (
                 recentProjects.map((project) => (
-                  <Paper
+                  <Card
                     key={project.id}
+                    elevation={0}
                     sx={{
                       p: 2,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 2,
-                      backgroundColor: 'background.paper',
-                      border: 1,
+                      borderRadius: '6px',
+                      bgcolor: 'background.paper',
+                      border: '1px solid',
                       borderColor: 'divider',
+                      transition: 'all 0.2s',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        transform: 'translateY(-2px)',
+                        borderColor: 'primary.main'
+                      }
                     }}
+                    onClick={() => window.location.href = `/projects/${project.id}`}
                   >
                     <Avatar
                       sx={{
@@ -303,7 +352,7 @@ export default function Dashboard() {
                       size="small"
                       color={project.status === 'active' ? 'success' : 'default'}
                     />
-                  </Paper>
+                  </Card>
                 ))
               )}
             </Box>
@@ -311,11 +360,33 @@ export default function Dashboard() {
         </Card>
 
         {/* Recent Activity */}
-        <Card>
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: '6px',
+            border: '1px solid',
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+            transition: 'box-shadow 0.2s',
+            '&:hover': {
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }
+          }}
+        >
           <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-              Recent Activity
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Recent Activity
+              </Typography>
+              <Button
+                color="info"
+                variant="outlined"
+                size="sm"
+                onClick={() => window.location.href = '/sprints'}
+              >
+                View All
+              </Button>
+            </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {recentTickets.length === 0 ? (
                 <Typography color="text.secondary">
@@ -323,17 +394,27 @@ export default function Dashboard() {
                 </Typography>
               ) : (
                 recentTickets.map((ticket) => (
-                  <Paper
+                  <Card
                     key={ticket.id}
+                    elevation={0}
                     sx={{
                       p: 2,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 2,
-                      backgroundColor: 'background.paper',
-                      border: 1,
+                      borderRadius: '6px',
+                      bgcolor: 'background.paper',
+                      border: '1px solid',
                       borderColor: 'divider',
+                      transition: 'all 0.2s',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        transform: 'translateY(-2px)',
+                        borderColor: 'info.main'
+                      }
                     }}
+                    onClick={() => window.location.href = `/tickets/${ticket.id}`}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       {getTicketIcon(ticket.type)}
@@ -358,7 +439,7 @@ export default function Dashboard() {
                         <MoreIcon />
                       </IconButton>
                     </Box>
-                  </Paper>
+                  </Card>
                 ))
               )}
             </Box>
