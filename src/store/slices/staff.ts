@@ -6,6 +6,7 @@ export interface Staff {
     email: string;
     mobile: string;
     gender: 'male' | 'female' | 'other';
+    department?: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -24,6 +25,7 @@ const initialState: StaffState = {
             email: 'john.doe@workvio.com',
             mobile: '+1 (555) 123-4567',
             gender: 'male',
+            department: 'Engineering',
             createdAt: '2025-01-15T10:00:00Z',
             updatedAt: '2025-01-15T10:00:00Z',
         },
@@ -33,6 +35,7 @@ const initialState: StaffState = {
             email: 'jane.smith@workvio.com',
             mobile: '+1 (555) 987-6543',
             gender: 'female',
+            department: 'Design',
             createdAt: '2025-01-14T14:30:00Z',
             updatedAt: '2025-01-14T14:30:00Z',
         },
@@ -42,6 +45,7 @@ const initialState: StaffState = {
             email: 'alex.johnson@workvio.com',
             mobile: '+1 (555) 456-7890',
             gender: 'other',
+            department: 'Product Management',
             createdAt: '2025-01-13T09:15:00Z',
             updatedAt: '2025-01-13T09:15:00Z',
         },

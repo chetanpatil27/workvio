@@ -86,7 +86,7 @@ export default function StaffPage() {
     };
 
     const getAvatarColor = (name: string) => {
-        const colors = ['#1976d2', '#1565c0', '#0d47a1', '#42a5f5', '#1e88e5', '#2196f3'];
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3'];
         const index = name.charCodeAt(0) % colors.length;
         return colors[index];
     };
@@ -106,35 +106,29 @@ export default function StaffPage() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
-                mb: 3
+                mb: 4
             }}>
                 <Box>
-                    <Typography variant="h4" fontWeight="700" gutterBottom sx={{ color: 'text.primary' }}>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
                         Staff Management
                     </Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{ fontSize: '0.95rem' }}>
+                    <Typography variant="body1" color="text.secondary">
                         Manage your team members and their information
                     </Typography>
                 </Box>
 
                 <Button
                     variant="contained"
-                    startIcon={<AddIcon sx={{ fontSize: '1.1rem' }} />}
+                    startIcon={<AddIcon />}
                     onClick={() => router.push('/staff/create')}
                     sx={{
-                        bgcolor: 'primary.main',
-                        borderRadius: 2,
-                        px: 2.5,
-                        py: 1.2,
-                        fontSize: '0.9rem',
-                        fontWeight: 600,
-                        boxShadow: '0 3px 10px rgba(25, 118, 210, 0.3)',
-                        transition: 'all 0.2s ease',
+                        bgcolor: 'grey.900',
                         '&:hover': {
-                            bgcolor: 'primary.dark',
-                            boxShadow: '0 4px 15px rgba(25, 118, 210, 0.4)',
-                            transform: 'translateY(-1px)',
+                            bgcolor: 'grey.800',
                         },
+                        borderRadius: 2,
+                        px: 3,
+                        py: 1.5,
                     }}
                 >
                     Add Staff
@@ -145,175 +139,95 @@ export default function StaffPage() {
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(4, 1fr)' },
-                gap: 2.5,
-                mb: 3
+                gap: 3,
+                mb: 4
             }}>
-                <Card sx={{ 
-                    p: 2.5, 
-                    borderRadius: 2, 
-                    border: '1px solid', 
-                    borderColor: 'divider',
-                    background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
-                    color: 'white',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: '80px',
-                        height: '80px',
-                        background: 'rgba(255,255,255,0.1)',
-                        borderRadius: '50%',
-                        transform: 'translate(25px, -25px)',
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+                <Card sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Box sx={{
-                            bgcolor: 'rgba(255,255,255,0.2)',
-                            p: 1.2,
-                            borderRadius: 1.5,
+                            bgcolor: 'primary.light',
+                            p: 1.5,
+                            borderRadius: 2,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}>
-                            <GroupIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+                            <GroupIcon sx={{ color: 'primary.main' }} />
                         </Box>
                         <Box>
-                            <Typography variant="h5" fontWeight="700">
+                            <Typography variant="h5" fontWeight="bold">
                                 {staff.length}
                             </Typography>
-                            <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
+                            <Typography variant="body2" color="text.secondary">
                                 Total Staff
                             </Typography>
                         </Box>
                     </Box>
                 </Card>
 
-                <Card sx={{ 
-                    p: 2.5, 
-                    borderRadius: 2, 
-                    border: '1px solid', 
-                    borderColor: 'divider',
-                    background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)',
-                    color: 'white',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: '80px',
-                        height: '80px',
-                        background: 'rgba(255,255,255,0.1)',
-                        borderRadius: '50%',
-                        transform: 'translate(25px, -25px)',
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+                <Card sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Box sx={{
-                            bgcolor: 'rgba(255,255,255,0.2)',
-                            p: 1.2,
-                            borderRadius: 1.5,
+                            bgcolor: 'success.light',
+                            p: 1.5,
+                            borderRadius: 2,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}>
-                            <PersonIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+                            <PersonIcon sx={{ color: 'success.main' }} />
                         </Box>
                         <Box>
-                            <Typography variant="h5" fontWeight="700">
+                            <Typography variant="h5" fontWeight="bold">
                                 {staff.filter(s => s.gender.toLowerCase() === 'male').length}
                             </Typography>
-                            <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
+                            <Typography variant="body2" color="text.secondary">
                                 Male
                             </Typography>
                         </Box>
                     </Box>
                 </Card>
 
-                <Card sx={{ 
-                    p: 2.5, 
-                    borderRadius: 2, 
-                    border: '1px solid', 
-                    borderColor: 'divider',
-                    background: 'linear-gradient(135deg, #c2185b 0%, #e91e63 100%)',
-                    color: 'white',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: '80px',
-                        height: '80px',
-                        background: 'rgba(255,255,255,0.1)',
-                        borderRadius: '50%',
-                        transform: 'translate(25px, -25px)',
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+                <Card sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Box sx={{
-                            bgcolor: 'rgba(255,255,255,0.2)',
-                            p: 1.2,
-                            borderRadius: 1.5,
+                            bgcolor: 'info.light',
+                            p: 1.5,
+                            borderRadius: 2,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}>
-                            <PersonIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+                            <PersonIcon sx={{ color: 'info.main' }} />
                         </Box>
                         <Box>
-                            <Typography variant="h5" fontWeight="700">
+                            <Typography variant="h5" fontWeight="bold">
                                 {staff.filter(s => s.gender.toLowerCase() === 'female').length}
                             </Typography>
-                            <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
+                            <Typography variant="body2" color="text.secondary">
                                 Female
                             </Typography>
                         </Box>
                     </Box>
                 </Card>
 
-                <Card sx={{ 
-                    p: 2.5, 
-                    borderRadius: 2, 
-                    border: '1px solid', 
-                    borderColor: 'divider',
-                    background: 'linear-gradient(135deg, #f57c00 0%, #ff9800 100%)',
-                    color: 'white',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        width: '80px',
-                        height: '80px',
-                        background: 'rgba(255,255,255,0.1)',
-                        borderRadius: '50%',
-                        transform: 'translate(25px, -25px)',
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, position: 'relative', zIndex: 1 }}>
+                <Card sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Box sx={{
-                            bgcolor: 'rgba(255,255,255,0.2)',
-                            p: 1.2,
-                            borderRadius: 1.5,
+                            bgcolor: 'warning.light',
+                            p: 1.5,
+                            borderRadius: 2,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
                         }}>
-                            <BusinessIcon sx={{ color: 'white', fontSize: '1.3rem' }} />
+                            <BusinessIcon sx={{ color: 'warning.main' }} />
                         </Box>
                         <Box>
-                            <Typography variant="h5" fontWeight="700">
+                            <Typography variant="h5" fontWeight="bold">
                                 {new Set(staff.map(s => s.department || 'Unknown')).size}
                             </Typography>
-                            <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.8rem' }}>
+                            <Typography variant="body2" color="text.secondary">
                                 Departments
                             </Typography>
                         </Box>

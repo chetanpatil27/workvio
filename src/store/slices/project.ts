@@ -4,13 +4,16 @@ export interface Project {
   id: string;
   name: string;
   description: string;
-  key: string; // Project key like 'PROJ'
-  leadId: string;
-  status: 'active' | 'inactive' | 'archived';
+  key?: string; // Project key like 'PROJ'
+  leadId?: string;
+  status: 'active' | 'inactive' | 'archived' | 'completed' | 'on-hold';
+  progress?: number; // Progress percentage
+  dueDate?: string; // ISO date string
+  teamMembers?: Array<{ name: string; email?: string; role?: string }>; // Team members
   createdAt: string;
   updatedAt: string;
-  members: string[]; // Array of user IDs
-  color: string; // Hex color for project identification
+  members?: string[]; // Array of user IDs (legacy)
+  color?: string; // Hex color for project identification
 }
 
 interface ProjectState {

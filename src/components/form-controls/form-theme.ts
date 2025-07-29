@@ -3,21 +3,21 @@ export const formControlTheme = {
     // Common border radius for all form controls
     borderRadius: 2,
 
-    // Common height for form controls
-    height: 48,
+    // Common height for form controls (reduced for better UI)
+    height: 42,
 
-    // Spacing
+    // Spacing (reduced for more compact UI)
     spacing: {
         small: 1,
-        medium: 2,
-        large: 3,
+        medium: 1.5,
+        large: 2.5,
     },
 
     // Typography
     typography: {
         label: {
-            fontWeight: 500,
-            fontSize: '0.875rem',
+            fontWeight: 600,
+            fontSize: '0.85rem',
         },
         helperText: {
             fontSize: '0.75rem',
@@ -25,17 +25,17 @@ export const formControlTheme = {
         },
     },
 
-    // Color palette for form states
+    // Color palette for form states (updated to use primary colors)
     colors: {
         border: {
             default: 'divider',
-            hover: 'text.secondary',
+            hover: 'primary.light',
             focused: 'primary.main',
             error: 'error.main',
         },
         background: {
             default: 'background.paper',
-            hover: 'action.hover',
+            hover: 'rgba(25, 118, 210, 0.04)',
             focused: 'background.paper',
         },
         text: {

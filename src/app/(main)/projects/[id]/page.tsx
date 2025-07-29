@@ -19,6 +19,9 @@ import {
     ListItem,
     ListItemText,
     ListItemAvatar,
+    Breadcrumbs,
+    Link,
+    Divider,
 } from '@mui/material';
 import {
     ArrowBack as ArrowBackIcon,
@@ -31,6 +34,8 @@ import {
     BugReport as BugReportIcon,
     Task as TaskIcon,
     MenuBook as StoryIcon,
+    CalendarToday as CalendarIcon,
+    DateRange as DateRangeIcon,
 } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
@@ -107,6 +112,8 @@ export default function ProjectDetailsPage() {
         active: 'success',
         inactive: 'warning',
         archived: 'default',
+        completed: 'info',
+        'on-hold': 'warning',
     } as const;
 
     const sprintStatusColors = {
@@ -257,7 +264,7 @@ export default function ProjectDetailsPage() {
                             <GroupIcon />
                         </Avatar>
                         <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
-                            {project?.members.length || 0}
+                            {project?.members?.length || 0}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             Team Members
@@ -470,8 +477,8 @@ export default function ProjectDetailsPage() {
                     {/* Team Members */}
                     <Box sx={{ px: 3 }}>
                         <List>
-                            {project.members.map((memberId, index) => (
-                                <ListItem key={memberId} divider={index < project.members.length - 1}>
+                            {project.members?.map((memberId, index) => (
+                                <ListItem key={memberId} divider={index < (project.members?.length || 0) - 1}>
                                     <ListItemAvatar>
                                         <Avatar sx={{ bgcolor: `hsl(${index * 60}, 70%, 50%)` }}>
                                             {memberId.charAt(0).toUpperCase()}

@@ -23,9 +23,6 @@ export default function Button({
   size = 'medium',
   ...props
 }: ButtonProps) {
-  // Get size-specific styles
-  const sizeStyles = formControlTheme.sizes[size];
-
   return (
     <MuiButton
       {...props}
@@ -34,23 +31,46 @@ export default function Button({
       size={size === 'large' ? 'medium' : size === 'small' ? 'small' : 'medium'}
       sx={{
         ...formControlTheme.commonStyles.button,
-        minHeight: sizeStyles.height,
-        fontSize: sizeStyles.fontSize,
-        px: size === 'small' ? 2 : size === 'large' ? 4 : 3,
-        py: size === 'small' ? 1 : size === 'large' ? 2 : 1.5,
+        minHeight: size === 'small' ? 36 : size === 'large' ? 46 : 42,
+        fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '0.95rem' : '0.9rem',
+        fontWeight: 600,
+        px: size === 'small' ? 1.5 : size === 'large' ? 3 : 2.5,
+        py: size === 'small' ? 0.8 : size === 'large' ? 1.5 : 1.2,
         position: 'relative',
+        borderRadius: formControlTheme.borderRadius,
+        textTransform: 'none',
+        boxShadow: variant === 'contained' ? '0 3px 10px rgba(25, 118, 210, 0.3)' : 'none',
+        '&:hover': {
+          boxShadow: variant === 'contained' ? '0 4px 15px rgba(25, 118, 210, 0.4)' : 'none',
+          transform: 'translateY(-1px)',
+        },
         '&.MuiButton-contained': {
-          ...formControlTheme.commonStyles.button['&.MuiButton-contained'],
+          bgcolor: 'primary.main',
+          color: 'white',
+          '&:hover': {
+            bgcolor: 'primary.dark',
+          },
         },
         '&.MuiButton-outlined': {
-          ...formControlTheme.commonStyles.button['&.MuiButton-outlined'],
+          borderColor: 'primary.main',
+          color: 'primary.main',
+          '&:hover': {
+            bgcolor: 'primary.light',
+            borderColor: 'primary.dark',
+          },
         },
         '&.MuiButton-text': {
-          ...formControlTheme.commonStyles.button['&.MuiButton-text'],
+          color: 'primary.main',
+          '&:hover': {
+            bgcolor: 'rgba(25, 118, 210, 0.08)',
+          },
         },
         '&.Mui-disabled': {
-          ...formControlTheme.commonStyles.button['&.Mui-disabled'],
+          opacity: 0.6,
+          transform: 'none',
+          boxShadow: 'none',
         },
+        transition: 'all 0.2s ease',
         ...props.sx,
       }}
     >
