@@ -17,7 +17,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Paper,
   TextField,
   InputAdornment,
   Tooltip,
@@ -155,11 +154,6 @@ export default function SprintsPage() {
     return project ? project.name : 'Unknown Project';
   };
 
-  const getProjectKey = (projectId: string) => {
-    const project = projects.find(p => p.id === projectId);
-    return project ? project.key : 'N/A';
-  };
-
   const calculateProgress = (sprint: Sprint) => {
     if (!sprint.totalPoints || sprint.totalPoints === 0) return 0;
     return (sprint.completedPoints || 0) / sprint.totalPoints * 100;
@@ -189,58 +183,143 @@ export default function SprintsPage() {
             </Typography>
 
             {/* Stats Cards */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.5,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: 2,
-                  bgcolor: 'background.paper'
-                }}
-              >
-                <Avatar sx={{ bgcolor: 'success.main', width: 40, height: 40 }}>
-                  <DirectionsRunIcon />
-                </Avatar>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {sprints.length}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Sprints
-                  </Typography>
+            <Box sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(4, 1fr)' },
+              gap: 2.5,
+              mb: 3
+            }}>
+              <Card sx={{
+                p: 3,
+                borderRadius: '6px',
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                }
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{
+                    bgcolor: 'rgba(25, 118, 210, 0.1)',
+                    p: 1.5,
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <DirectionsRunIcon sx={{ color: 'primary.main', fontSize: '1.5rem' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="h4" fontWeight="600" color="text.primary">
+                      {sprints.length}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                      Total Sprints
+                    </Typography>
+                  </Box>
                 </Box>
-              </Paper>
+              </Card>
 
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.5,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: 2,
-                  bgcolor: 'background.paper'
-                }}
-              >
-                <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>
-                  <PlayArrowIcon />
-                </Avatar>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {sprints.filter(s => s.status === 'active').length}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Active Sprints
-                  </Typography>
+              <Card sx={{
+                p: 3,
+                borderRadius: '6px',
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                }
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{
+                    bgcolor: 'rgba(76, 175, 80, 0.1)',
+                    p: 1.5,
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <PlayArrowIcon sx={{ color: 'success.main', fontSize: '1.5rem' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="h4" fontWeight="600" color="text.primary">
+                      {sprints.filter(s => s.status === 'active').length}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                      Active Sprints
+                    </Typography>
+                  </Box>
                 </Box>
-              </Paper>
+              </Card>
+
+              <Card sx={{
+                p: 3,
+                borderRadius: '6px',
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                }
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{
+                    bgcolor: 'rgba(255, 152, 0, 0.1)',
+                    p: 1.5,
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <GroupIcon sx={{ color: 'warning.main', fontSize: '1.5rem' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="h4" fontWeight="600" color="text.primary">
+                      {sprints.filter(s => s.status === 'planning').length}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                      Planning
+                    </Typography>
+                  </Box>
+                </Box>
+              </Card>
+
+              <Card sx={{
+                p: 3,
+                borderRadius: '6px',
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                }
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{
+                    bgcolor: 'rgba(103, 58, 183, 0.1)',
+                    p: 1.5,
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <CalendarIcon sx={{ color: 'secondary.main', fontSize: '1.5rem' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="h4" fontWeight="600" color="text.primary">
+                      {sprints.filter(s => s.status === 'completed').length}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                      Completed
+                    </Typography>
+                  </Box>
+                </Box>
+              </Card>
             </Box>
           </Box>
 
@@ -250,7 +329,7 @@ export default function SprintsPage() {
             onClick={handleCreateSprint}
             size="large"
             sx={{
-              borderRadius: 2,
+              borderRadius: '6px',
               px: 3,
               py: 1.5,
               boxShadow: '0 4px 12px rgba(46, 125, 50, 0.3)',
@@ -280,12 +359,12 @@ export default function SprintsPage() {
             sx={{
               minWidth: 300,
               '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: '6px',
               },
             }}
           />
           <Tooltip title="Filter sprints">
-            <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+            <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: '6px' }}>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -316,7 +395,7 @@ export default function SprintsPage() {
                 transition: 'all 0.3s ease',
                 border: '1px solid',
                 borderColor: 'divider',
-                borderRadius: 3,
+                borderRadius: '6px',
                 overflow: 'hidden',
                 '&:hover': {
                   boxShadow: '0 8px 25px rgba(0,0,0,0.12)',
@@ -327,122 +406,152 @@ export default function SprintsPage() {
               onClick={() => router.push(`/sprints/${sprint.id}`)}
             >
               <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                {/* Sprint Header */}
+                {/* Sprint Header with Side Color Bar */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <Avatar
-                        sx={{
-                          bgcolor: statusColors[sprint.status],
-                          width: 32,
-                          height: 32,
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                        }}
-                      >
-                        {getProjectKey(sprint.projectId)}
-                      </Avatar>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                        {getProjectName(sprint.projectId)}
-                      </Typography>
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-                      {sprint.name}
-                    </Typography>
-                    <Chip
-                      label={statusLabels[sprint.status]}
-                      size="small"
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, flex: 1 }}>
+                    <Box
                       sx={{
-                        backgroundColor: statusColors[sprint.status],
-                        color: 'white',
-                        fontWeight: 500,
-                        fontSize: '0.75rem',
+                        width: 4,
+                        height: 40,
+                        borderRadius: 2,
+                        bgcolor: statusColors[sprint.status],
+                        flexShrink: 0,
                       }}
                     />
+                    <Box sx={{ flex: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <Typography variant="h6" fontWeight="600" sx={{ fontSize: '1.1rem' }}>
+                          {sprint.name}
+                        </Typography>
+                        {sprint.status === 'completed' && (
+                          <Box sx={{ color: '#ffa726', fontSize: '1.2rem' }}>⭐</Box>
+                        )}
+                      </Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 1 }}>
+                        {getProjectName(sprint.projectId)}
+                      </Typography>
+                      <Chip
+                        label={statusLabels[sprint.status]}
+                        size="small"
+                        sx={{
+                          bgcolor: `${statusColors[sprint.status]}20`,
+                          color: statusColors[sprint.status],
+                          fontWeight: 500,
+                          fontSize: '0.75rem',
+                          borderRadius: 8,
+                          height: 24,
+                        }}
+                      />
+                    </Box>
                   </Box>
+
                   <IconButton
-                    size="small"
-                    onClick={(e) => handleMenuClick(e, sprint.id)}
-                    sx={{
-                      opacity: 0.7,
-                      '&:hover': { opacity: 1 }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMenuClick(e, sprint.id);
                     }}
+                    size="small"
+                    sx={{ color: 'text.secondary', ml: 1 }}
                   >
                     <MoreIcon />
                   </IconButton>
                 </Box>
 
-                {/* Sprint Description */}
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    mb: 2,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {sprint.description}
-                </Typography>
+                {/* Sprint Dates */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
+                  <CalendarIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                    {format(new Date(sprint.startDate), 'MMM dd')} - {format(new Date(sprint.endDate), 'MMM dd, yyyy')}
+                  </Typography>
+                </Box>
 
-                {/* Sprint Goal */}
-                {sprint.goal && (
-                  <Box sx={{ mb: 2, p: 1.5, bgcolor: 'action.hover', borderRadius: 1 }}>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'primary.main', textTransform: 'uppercase' }}>
-                      Sprint Goal
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                      {sprint.goal}
-                    </Typography>
-                  </Box>
+                {/* Sprint Description */}
+                {sprint.description && (
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      mb: 2,
+                      fontSize: '0.85rem',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {sprint.description}
+                  </Typography>
                 )}
 
                 {/* Progress */}
                 <Box sx={{ mb: 2 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                    <Typography variant="body2" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
                       Progress
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {sprint.completedPoints || 0} / {sprint.totalPoints || 0} pts
+                    <Typography variant="body2" fontWeight="600" sx={{ fontSize: '0.85rem' }}>
+                      {Math.round(calculateProgress(sprint))}%
                     </Typography>
                   </Box>
                   <LinearProgress
                     variant="determinate"
                     value={calculateProgress(sprint)}
                     sx={{
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: 'rgba(0,0,0,0.05)',
+                      height: 6,
+                      borderRadius: 3,
+                      bgcolor: 'rgba(0,0,0,0.08)',
                       '& .MuiLinearProgress-bar': {
-                        borderRadius: 4,
-                        backgroundColor: statusColors[sprint.status],
-                        background: `linear-gradient(45deg, ${statusColors[sprint.status]}, ${statusColors[sprint.status]}CC)`,
-                      },
+                        borderRadius: 3,
+                        bgcolor: statusColors[sprint.status],
+                      }
                     }}
                   />
-                  <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                    {Math.round(calculateProgress(sprint))}% Complete
-                  </Typography>
                 </Box>
 
-                {/* Sprint Timeline */}
-                <Box sx={{ mb: 2, p: 1.5, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <CalendarIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                      Timeline
+                {/* Sprint Details Grid */}
+                <Box sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 2,
+                  pt: 2,
+                  borderTop: '1px solid',
+                  borderColor: 'divider'
+                }}>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                      Sprint Points
+                    </Typography>
+                    <Typography variant="body2" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
+                      {sprint.completedPoints || 0} / {sprint.totalPoints || 0}
                     </Typography>
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {format(new Date(sprint.startDate), 'MMM dd')} - {format(new Date(sprint.endDate), 'MMM dd, yyyy')}
-                  </Typography>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                      Duration
+                    </Typography>
+                    <Typography variant="body2" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
+                      {Math.ceil((new Date(sprint.endDate).getTime() - new Date(sprint.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                      Status
+                    </Typography>
+                    <Chip
+                      label={statusLabels[sprint.status]}
+                      size="small"
+                      sx={{
+                        bgcolor: `${statusColors[sprint.status]}20`,
+                        color: statusColors[sprint.status],
+                        fontWeight: 500,
+                        fontSize: '0.7rem',
+                        height: 20,
+                        borderRadius: 8,
+                      }}
+                    />
+                  </Box>
                 </Box>
-
-                {/* Team Members */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <GroupIcon sx={{ fontSize: 16, color: 'text.secondary' }} />

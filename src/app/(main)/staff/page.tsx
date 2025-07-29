@@ -6,7 +6,6 @@ import {
     Typography,
     Card,
     CardContent,
-    Avatar,
     Chip,
     IconButton,
     Menu,
@@ -27,7 +26,6 @@ import {
     Search as SearchIcon,
     Person as PersonIcon,
     Email as EmailIcon,
-    Phone as PhoneIcon,
     Edit as EditIcon,
     Delete as DeleteIcon,
     Visibility as ViewIcon,
@@ -302,7 +300,7 @@ export default function StaffPage() {
             }}>
                 <Card sx={{
                     p: 2.5,
-                    borderRadius: 2,
+                    borderRadius: '6px',
                     border: '1px solid',
                     borderColor: 'divider',
                     bgcolor: 'background.paper',
@@ -315,7 +313,7 @@ export default function StaffPage() {
                         <Box sx={{
                             bgcolor: 'rgba(25, 118, 210, 0.1)',
                             p: 1.2,
-                            borderRadius: 1.5,
+                            borderRadius: '6px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -335,7 +333,7 @@ export default function StaffPage() {
 
                 <Card sx={{
                     p: 2.5,
-                    borderRadius: 2,
+                    borderRadius: '6px',
                     border: '1px solid',
                     borderColor: 'divider',
                     bgcolor: 'background.paper',
@@ -348,7 +346,7 @@ export default function StaffPage() {
                         <Box sx={{
                             bgcolor: 'rgba(46, 125, 50, 0.1)',
                             p: 1.2,
-                            borderRadius: 1.5,
+                            borderRadius: '6px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -368,7 +366,7 @@ export default function StaffPage() {
 
                 <Card sx={{
                     p: 2.5,
-                    borderRadius: 2,
+                    borderRadius: '6px',
                     border: '1px solid',
                     borderColor: 'divider',
                     bgcolor: 'background.paper',
@@ -381,7 +379,7 @@ export default function StaffPage() {
                         <Box sx={{
                             bgcolor: 'rgba(194, 24, 91, 0.1)',
                             p: 1.2,
-                            borderRadius: 1.5,
+                            borderRadius: '6px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -401,7 +399,7 @@ export default function StaffPage() {
 
                 <Card sx={{
                     p: 2.5,
-                    borderRadius: 2,
+                    borderRadius: '6px',
                     border: '1px solid',
                     borderColor: 'divider',
                     bgcolor: 'background.paper',
@@ -414,7 +412,7 @@ export default function StaffPage() {
                         <Box sx={{
                             bgcolor: 'rgba(245, 124, 0, 0.1)',
                             p: 1.2,
-                            borderRadius: 1.5,
+                            borderRadius: '6px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -497,7 +495,7 @@ export default function StaffPage() {
                         <Card
                             key={member.id}
                             sx={{
-                                borderRadius: 3,
+                                borderRadius: '6px',
                                 border: '1px solid',
                                 borderColor: 'divider',
                                 transition: 'all 0.2s ease',
@@ -510,67 +508,114 @@ export default function StaffPage() {
                             onClick={() => router.push(`/staff/${member.id}`)}
                         >
                             <CardContent sx={{ p: 3 }}>
-                                {/* Staff Header */}
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                        <Avatar
+                                {/* Staff Header with Side Color Bar */}
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, flex: 1 }}>
+                                        <Box
                                             sx={{
+                                                width: 4,
+                                                height: 40,
+                                                borderRadius: 2,
                                                 bgcolor: getAvatarColor(member.name),
-                                                width: 56,
-                                                height: 56,
-                                                fontSize: '1.5rem',
-                                                fontWeight: 'bold',
+                                                flexShrink: 0,
                                             }}
-                                        >
-                                            {member.name.split(' ').map(n => n[0]).join('')}
-                                        </Avatar>
-                                        <Box>
-                                            <Typography variant="h6" fontWeight="bold" gutterBottom>
-                                                {member.name}
+                                        />
+                                        <Box sx={{ flex: 1 }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                                                <Typography variant="h6" fontWeight="600" sx={{ fontSize: '1.1rem' }}>
+                                                    {member.name}
+                                                </Typography>
+                                            </Box>
+                                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', mb: 1 }}>
+                                                {member.department || 'No Department'}
                                             </Typography>
                                             <Chip
                                                 label={member.gender}
-                                                color={getGenderColor(member.gender) as 'primary' | 'secondary' | 'default'}
                                                 size="small"
                                                 sx={{
-                                                    borderRadius: 1,
-                                                    textTransform: 'capitalize',
+                                                    bgcolor: getGenderColor(member.gender) === 'primary' ? 'rgba(25, 118, 210, 0.1)' : 'rgba(194, 24, 91, 0.1)',
+                                                    color: getGenderColor(member.gender) === 'primary' ? '#1976d2' : '#c2185b',
+                                                    fontWeight: 500,
                                                     fontSize: '0.75rem',
+                                                    borderRadius: 8,
+                                                    height: 24,
+                                                    textTransform: 'capitalize',
                                                 }}
                                             />
                                         </Box>
                                     </Box>
 
                                     <IconButton
-                                        onClick={(e) => handleMenuClick(e, member)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMenuClick(e, member);
+                                        }}
                                         size="small"
+                                        sx={{ color: 'text.secondary', ml: 1 }}
                                     >
                                         <MoreIcon />
                                     </IconButton>
                                 </Box>
 
                                 {/* Contact Information */}
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                        <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                        <Typography variant="body2" color="text.secondary">
-                                            {member.email}
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
+                                    <EmailIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                                        {member.email}
+                                    </Typography>
+                                </Box>
+
+                                {/* Staff Details Grid */}
+                                <Box sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(2, 1fr)',
+                                    gap: 2,
+                                    pt: 2,
+                                    borderTop: '1px solid',
+                                    borderColor: 'divider'
+                                }}>
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                                            Phone
                                         </Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                        <PhoneIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
                                             {member.mobile}
                                         </Typography>
                                     </Box>
-                                    {member.department && (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                            <BusinessIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                                            <Typography variant="body2" color="text.secondary">
-                                                {member.department}
-                                            </Typography>
-                                        </Box>
-                                    )}
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                                            Department
+                                        </Typography>
+                                        <Typography variant="body2" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
+                                            {member.department || 'Not specified'}
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                                            ID
+                                        </Typography>
+                                        <Typography variant="body2" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
+                                            #{member.id.slice(-6)}
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                                            Gender
+                                        </Typography>
+                                        <Chip
+                                            label={member.gender}
+                                            size="small"
+                                            sx={{
+                                                bgcolor: getGenderColor(member.gender) === 'primary' ? 'rgba(25, 118, 210, 0.1)' : 'rgba(194, 24, 91, 0.1)',
+                                                color: getGenderColor(member.gender) === 'primary' ? '#1976d2' : '#c2185b',
+                                                fontWeight: 500,
+                                                fontSize: '0.7rem',
+                                                height: 20,
+                                                borderRadius: 8,
+                                                textTransform: 'capitalize',
+                                            }}
+                                        />
+                                    </Box>
                                 </Box>
                             </CardContent>
                         </Card>
@@ -633,7 +678,7 @@ export default function StaffPage() {
                     <Button
                         variant="contained"
                         onClick={handleDeleteConfirm}
-                        sx={{ 
+                        sx={{
                             bgcolor: 'error.main',
                             '&:hover': {
                                 bgcolor: 'error.dark',

@@ -29,7 +29,7 @@ export default function ProfilePage() {
         Profile
       </Typography>
 
-      <Card sx={{ maxWidth: 600 }}>
+      <Card sx={{ maxWidth: 600, borderRadius: '6px' }}>
         <CardContent sx={{ p: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
             <Avatar
@@ -62,7 +62,7 @@ export default function ProfilePage() {
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
             Account Information
           </Typography>
-          
+
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Box>
               <Typography variant="subtitle2" color="text.secondary">
@@ -72,7 +72,7 @@ export default function ProfilePage() {
                 {new Date(user.createdAt).toLocaleDateString()}
               </Typography>
             </Box>
-            
+
             <Box>
               <Typography variant="subtitle2" color="text.secondary">
                 Role
