@@ -21,6 +21,7 @@ import {
   Dashboard as DashboardIcon,
   FolderOpen as ProjectsIcon,
   DirectionsRun as SprintIcon,
+  People as StaffIcon,
   Person as ProfileIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
@@ -46,6 +47,11 @@ const navigationItems = [
     text: 'Sprints',
     icon: <SprintIcon />,
     href: '/sprints',
+  },
+  {
+    text: 'Staff',
+    icon: <StaffIcon />,
+    href: '/staff',
   },
   {
     text: 'Profile',
