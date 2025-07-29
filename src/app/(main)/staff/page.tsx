@@ -176,7 +176,7 @@ export default function StaffPage() {
 
                     {/* Add Staff Button */}
                     <Button
-                        variant="contained"
+                        variant="filled"
                         startIcon={<AddIcon />}
                         onClick={() => router.push('/staff/create')}
                     >
@@ -355,7 +355,7 @@ export default function StaffPage() {
                     </Typography>
                     {!searchTerm && (
                         <Button
-                            variant="contained"
+                            variant="filled"
                             startIcon={<AddIcon />}
                             onClick={() => router.push('/staff/create')}
                         >
@@ -554,7 +554,7 @@ export default function StaffPage() {
                         Cancel
                     </Button>
                     <Button
-                        variant="contained"
+                        variant="filled"
                         onClick={handleDeleteConfirm}
                         sx={{
                             bgcolor: 'error.main',

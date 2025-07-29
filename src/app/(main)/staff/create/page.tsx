@@ -217,11 +217,11 @@ export default function CreateStaffPage() {
                 </Button>
 
                 <FormButton
-                    variant="contained"
+                    variant="filled"
                     onClick={handleSubmit}
                     loading={isSubmitting}
                     disabled={isSubmitting}
-                    size="large"
+                    size="lg"
                     sx={{
                         minWidth: 140,
                         '&:hover': {

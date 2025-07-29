@@ -221,7 +221,7 @@ export default function ProjectsPage() {
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
-            variant="contained"
+            variant="filled"
             startIcon={<AddIcon />}
             onClick={() => setCreateModalOpen(true)}
             sx={{
@@ -301,7 +301,7 @@ export default function ProjectsPage() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Button
               variant="outlined"
-              size="small"
+              size="sm"
               sx={{
                 minWidth: 'auto',
                 px: 2,
@@ -317,8 +317,8 @@ export default function ProjectsPage() {
               Grid
             </Button>
             <Button
-              variant="text"
-              size="small"
+              variant="outlined"
+              size="sm"
               sx={{
                 minWidth: 'auto',
                 px: 2,
@@ -395,7 +395,7 @@ export default function ProjectsPage() {
           </Typography>
           {!searchTerm && (
             <Button
-              variant="contained"
+              variant="filled"
               startIcon={<AddIcon />}
               onClick={() => setCreateModalOpen(true)}
             >
