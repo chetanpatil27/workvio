@@ -97,9 +97,9 @@ export default function MainLayout({
           component="main"
           sx={{
             flexGrow: 1,
-            pt: { xs: 2, sm: 3, md: 4 },
-            px: { xs: 2, sm: 3, md: 4 },
-            pb: { xs: 2, sm: 3, md: 4 },
+            pt: { xs: 2, sm: 2.5, md: 3 },
+            px: { xs: 2, sm: 2.5, md: 3 },
+            pb: { xs: 2, sm: 2.5, md: 3 },
             maxWidth: '100%',
             overflow: 'auto',
             margin: 0,
