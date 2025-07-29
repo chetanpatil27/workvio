@@ -7,6 +7,7 @@ import projectSlice from './slices/project';
 import sprintSlice from './slices/sprint';
 import ticketSlice from './slices/ticket';
 import staffSlice from './slices/staff';
+import designationSlice from './slices/designation';
 
 // Create a fallback storage for SSR
 const createNoopStorage = () => {
@@ -39,6 +40,7 @@ const rootReducer = {
   sprint: sprintSlice,
   ticket: ticketSlice,
   staff: staffSlice,
+  designation: designationSlice,
 };
 
 export const store = configureStore({

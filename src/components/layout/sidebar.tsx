@@ -22,6 +22,7 @@ import {
   FolderOpen as ProjectsIcon,
   DirectionsRun as SprintIcon,
   People as StaffIcon,
+  Work as DesignationIcon,
   Person as ProfileIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
@@ -56,6 +57,12 @@ const navigationItems = [
     icon: <StaffIcon />,
     href: '/staff',
     color: '#7b1fa2',
+  },
+  {
+    text: 'Designations',
+    icon: <DesignationIcon />,
+    href: '/designation',
+    color: '#f57c00',
   },
   {
     text: 'Profile',
