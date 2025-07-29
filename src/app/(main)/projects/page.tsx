@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import CountCard from '@/components/common/count-card';
 import {
   Box,
   Typography,
@@ -30,8 +31,6 @@ import {
   Visibility as VisibilityIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  FilterList as FilterIcon,
-  Sort as SortIcon,
   AccessTime as TimeIcon,
   CheckCircle as CompleteIcon,
   Schedule as ScheduleIcon,
@@ -341,137 +340,37 @@ export default function ProjectsPage() {
         gap: 2.5,
         mb: 3
       }}>
-        <Card sx={{
-          p: 3,
-          borderRadius: '6px',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          }
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, borderRadius: 1 }}>
-            <Box sx={{
-              bgcolor: 'rgba(25, 118, 210, 0.1)',
-              p: 1.5,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <FolderIcon sx={{ color: 'primary.main', fontSize: '1.5rem' }} />
-            </Box>
-            <Box>
-              <Typography variant="h4" fontWeight="600" color="text.primary">
-                {projects.length}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                Total Projects
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
+        <CountCard
+          value={projects.length}
+          label="Total Projects"
+          icon={<FolderIcon />}
+          iconBgColor="rgba(25, 118, 210, 0.1)"
+          iconColor="primary.main"
+        />
 
-        <Card sx={{
-          p: 3,
-          borderRadius: '6px',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          }
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{
-              bgcolor: 'rgba(76, 175, 80, 0.1)',
-              p: 1.5,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <TimeIcon sx={{ color: 'success.main', fontSize: '1.5rem' }} />
-            </Box>
-            <Box>
-              <Typography variant="h4" fontWeight="600" color="text.primary">
-                {activeProjects}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                Active Projects
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
+        <CountCard
+          value={activeProjects}
+          label="Active Projects"
+          icon={<TimeIcon />}
+          iconBgColor="rgba(76, 175, 80, 0.1)"
+          iconColor="success.main"
+        />
 
-        <Card sx={{
-          p: 3,
-          borderRadius: '6px',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          }
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{
-              bgcolor: 'rgba(255, 152, 0, 0.1)',
-              p: 1.5,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <ScheduleIcon sx={{ color: 'warning.main', fontSize: '1.5rem' }} />
-            </Box>
-            <Box>
-              <Typography variant="h4" fontWeight="600" color="text.primary">
-                {pendingProjects}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                Pending
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
+        <CountCard
+          value={pendingProjects}
+          label="Pending"
+          icon={<ScheduleIcon />}
+          iconBgColor="rgba(255, 152, 0, 0.1)"
+          iconColor="warning.main"
+        />
 
-        <Card sx={{
-          p: 3,
-          borderRadius: '6px',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          }
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{
-              bgcolor: 'rgba(103, 58, 183, 0.1)',
-              p: 1.5,
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <CompleteIcon sx={{ color: 'secondary.main', fontSize: '1.5rem' }} />
-            </Box>
-            <Box>
-              <Typography variant="h4" fontWeight="600" color="text.primary">
-                {completedProjects}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                Completed
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
+        <CountCard
+          value={completedProjects}
+          label="Completed"
+          icon={<CompleteIcon />}
+          iconBgColor="rgba(103, 58, 183, 0.1)"
+          iconColor="secondary.main"
+        />
       </Box>
 
       {/* Projects Grid */}

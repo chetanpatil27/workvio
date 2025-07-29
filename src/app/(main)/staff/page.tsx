@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import CountCard from '@/components/common/count-card';
 import {
     Box,
     Typography,
@@ -298,162 +299,39 @@ export default function StaffPage() {
                 gap: 2.5,
                 mb: 3
             }}>
-                <Card sx={{
-                    p: 2.5,
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    transition: 'box-shadow 0.2s',
-                    '&:hover': {
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{
-                            bgcolor: 'rgba(25, 118, 210, 0.1)',
-                            p: 1.2,
-                            borderRadius: '6px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <GroupIcon sx={{ color: '#1976d2', fontSize: '1.3rem' }} />
-                        </Box>
-                        <Box>
-                            <Typography variant="h5" fontWeight="700" color="text.primary">
-                                {staff.length}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-                                Total Staff
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Card>
+                <CountCard
+                    value={staff.length}
+                    label="Total Staff"
+                    icon={<GroupIcon />}
+                    iconBgColor="rgba(25, 118, 210, 0.1)"
+                    iconColor="#1976d2"
+                />
 
-                <Card sx={{
-                    p: 2.5,
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    transition: 'box-shadow 0.2s',
-                    '&:hover': {
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{
-                            bgcolor: 'rgba(46, 125, 50, 0.1)',
-                            p: 1.2,
-                            borderRadius: '6px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <PersonIcon sx={{ color: '#2e7d32', fontSize: '1.3rem' }} />
-                        </Box>
-                        <Box>
-                            <Typography variant="h5" fontWeight="700" color="text.primary">
-                                {staff.filter(s => s.gender.toLowerCase() === 'male').length}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-                                Male
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Card>
+                <CountCard
+                    value={staff.filter(s => s.gender.toLowerCase() === 'male').length}
+                    label="Male"
+                    icon={<PersonIcon />}
+                    iconBgColor="rgba(46, 125, 50, 0.1)"
+                    iconColor="#2e7d32"
+                />
 
-                <Card sx={{
-                    p: 2.5,
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    transition: 'box-shadow 0.2s',
-                    '&:hover': {
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{
-                            bgcolor: 'rgba(194, 24, 91, 0.1)',
-                            p: 1.2,
-                            borderRadius: '6px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <PersonIcon sx={{ color: '#c2185b', fontSize: '1.3rem' }} />
-                        </Box>
-                        <Box>
-                            <Typography variant="h5" fontWeight="700" color="text.primary">
-                                {staff.filter(s => s.gender.toLowerCase() === 'female').length}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-                                Female
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Card>
+                <CountCard
+                    value={staff.filter(s => s.gender.toLowerCase() === 'female').length}
+                    label="Female"
+                    icon={<PersonIcon />}
+                    iconBgColor="rgba(194, 24, 91, 0.1)"
+                    iconColor="#c2185b"
+                />
 
-                <Card sx={{
-                    p: 2.5,
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    transition: 'box-shadow 0.2s',
-                    '&:hover': {
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                    }
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{
-                            bgcolor: 'rgba(245, 124, 0, 0.1)',
-                            p: 1.2,
-                            borderRadius: '6px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <BusinessIcon sx={{ color: '#f57c00', fontSize: '1.3rem' }} />
-                        </Box>
-                        <Box>
-                            <Typography variant="h5" fontWeight="700" color="text.primary">
-                                {new Set(staff.map(s => s.department || 'Unknown')).size}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
-                                Departments
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Card>
-            </Box>
-
-            {/* Search and Filter */}
-            <Box sx={{ mb: 4 }}>
-                <TextField
-                    placeholder="Search staff by name, email, or phone..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    size="medium"
-                    fullWidth
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon color="action" />
-                            </InputAdornment>
-                        ),
-                    }}
-                    sx={{
-                        maxWidth: 500,
-                        '& .MuiOutlinedInput-root': {
-                            borderRadius: 2,
-                        },
-                    }}
+                <CountCard
+                    value={new Set(staff.map(s => s.department || 'Unknown')).size}
+                    label="Departments"
+                    icon={<BusinessIcon />}
+                    iconBgColor="rgba(245, 124, 0, 0.1)"
+                    iconColor="#f57c00"
                 />
             </Box>
+
 
             {/* Staff Grid */}
             {filteredStaff.length === 0 ? (

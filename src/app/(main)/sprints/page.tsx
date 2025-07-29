@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import CountCard from '@/components/common/count-card';
 import {
   Box,
   Typography,
@@ -189,137 +190,37 @@ export default function SprintsPage() {
               gap: 2.5,
               mb: 3
             }}>
-              <Card sx={{
-                p: 3,
-                borderRadius: '6px',
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box sx={{
-                    bgcolor: 'rgba(25, 118, 210, 0.1)',
-                    p: 1.5,
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <DirectionsRunIcon sx={{ color: 'primary.main', fontSize: '1.5rem' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="h4" fontWeight="600" color="text.primary">
-                      {sprints.length}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                      Total Sprints
-                    </Typography>
-                  </Box>
-                </Box>
-              </Card>
+              <CountCard
+                value={sprints.length}
+                label="Total Sprints"
+                icon={<DirectionsRunIcon />}
+                iconBgColor="rgba(25, 118, 210, 0.1)"
+                iconColor="primary.main"
+              />
 
-              <Card sx={{
-                p: 3,
-                borderRadius: '6px',
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box sx={{
-                    bgcolor: 'rgba(76, 175, 80, 0.1)',
-                    p: 1.5,
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <PlayArrowIcon sx={{ color: 'success.main', fontSize: '1.5rem' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="h4" fontWeight="600" color="text.primary">
-                      {sprints.filter(s => s.status === 'active').length}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                      Active Sprints
-                    </Typography>
-                  </Box>
-                </Box>
-              </Card>
+              <CountCard
+                value={sprints.filter(s => s.status === 'active').length}
+                label="Active Sprints"
+                icon={<PlayArrowIcon />}
+                iconBgColor="rgba(76, 175, 80, 0.1)"
+                iconColor="success.main"
+              />
 
-              <Card sx={{
-                p: 3,
-                borderRadius: '6px',
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box sx={{
-                    bgcolor: 'rgba(255, 152, 0, 0.1)',
-                    p: 1.5,
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <GroupIcon sx={{ color: 'warning.main', fontSize: '1.5rem' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="h4" fontWeight="600" color="text.primary">
-                      {sprints.filter(s => s.status === 'planning').length}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                      Planning
-                    </Typography>
-                  </Box>
-                </Box>
-              </Card>
+              <CountCard
+                value={sprints.filter(s => s.status === 'planning').length}
+                label="Planning"
+                icon={<GroupIcon />}
+                iconBgColor="rgba(255, 152, 0, 0.1)"
+                iconColor="warning.main"
+              />
 
-              <Card sx={{
-                p: 3,
-                borderRadius: '6px',
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box sx={{
-                    bgcolor: 'rgba(103, 58, 183, 0.1)',
-                    p: 1.5,
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <CalendarIcon sx={{ color: 'secondary.main', fontSize: '1.5rem' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="h4" fontWeight="600" color="text.primary">
-                      {sprints.filter(s => s.status === 'completed').length}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                      Completed
-                    </Typography>
-                  </Box>
-                </Box>
-              </Card>
+              <CountCard
+                value={sprints.filter(s => s.status === 'completed').length}
+                label="Completed"
+                icon={<CalendarIcon />}
+                iconBgColor="rgba(103, 58, 183, 0.1)"
+                iconColor="secondary.main"
+              />
             </Box>
           </Box>
 
