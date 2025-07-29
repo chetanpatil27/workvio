@@ -20,8 +20,48 @@ interface ProjectState {
   error: string | null;
 }
 
+// Sample projects data
+const sampleProjects: Project[] = [
+  {
+    id: '1',
+    name: 'E-commerce Platform',
+    description: 'Modern e-commerce platform with advanced features for online shopping',
+    key: 'ECOM',
+    leadId: 'user1',
+    status: 'active',
+    createdAt: '2024-01-15T08:00:00Z',
+    updatedAt: '2024-03-20T14:30:00Z',
+    members: ['user1', 'user2', 'user3', 'user4'],
+    color: '#1976d2',
+  },
+  {
+    id: '2',
+    name: 'Mobile Banking App',
+    description: 'Secure mobile banking application with real-time transactions and analytics',
+    key: 'BANK',
+    leadId: 'user2',
+    status: 'active',
+    createdAt: '2024-02-01T09:15:00Z',
+    updatedAt: '2024-03-22T16:45:00Z',
+    members: ['user2', 'user5', 'user6'],
+    color: '#2e7d32',
+  },
+  {
+    id: '3',
+    name: 'Healthcare Management',
+    description: 'Comprehensive healthcare management system for hospitals and clinics',
+    key: 'HLTH',
+    leadId: 'user3',
+    status: 'active',
+    createdAt: '2024-01-20T10:30:00Z',
+    updatedAt: '2024-03-18T11:20:00Z',
+    members: ['user3', 'user7', 'user8', 'user9'],
+    color: '#ed6c02',
+  },
+];
+
 const initialState: ProjectState = {
-  projects: [],
+  projects: sampleProjects,
   currentProject: null,
   loading: false,
   error: null,

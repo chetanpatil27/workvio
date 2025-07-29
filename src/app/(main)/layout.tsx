@@ -16,6 +16,7 @@ export default function MainLayout({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
@@ -24,15 +25,21 @@ export default function MainLayout({
   };
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     // Check authentication status
     if (!isAuthenticated) {
       router.push('/auth/login');
       return;
     }
     setIsLoading(false);
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, isClient]);
 
-  if (isLoading) {
+  if (!isClient || isLoading) {
     return (
       <Box
         sx={{
@@ -48,32 +55,52 @@ export default function MainLayout({
   }
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', margin: 0, padding: 0 }}>
       {/* Sidebar */}
       <Sidebar mobileOpen={mobileOpen} onMobileToggle={handleMobileToggle} />
-      
+
       {/* Main content area */}
       <Box
+        className="main-content-area"
         sx={{
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
-          width: { xs: '100%', md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          marginLeft: { xs: 0, md: `${DRAWER_WIDTH}px` },
+          marginTop: 0,
+          marginRight: 0,
+          marginBottom: 0,
           minHeight: '100vh',
-          backgroundColor: 'background.default',
+          backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#121212' : '#f8fafc',
+          padding: 0,
+          position: 'relative',
+          '& > *': {
+            margin: 0,
+          },
+          '&.main-content-area': {
+            '& .MuiAppBar-root': {
+              margin: '0 !important',
+              top: '0 !important',
+            }
+          }
         }}
       >
         {/* Header */}
-        <Header onMobileToggle={handleMobileToggle} />
-        
+        <Box sx={{ margin: 0, padding: 0 }}>
+          <Header onMobileToggle={handleMobileToggle} />
+        </Box>
+
         {/* Page content */}
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            pt: { xs: 1, sm: 2, md: 3 },
+            pt: { xs: 2, sm: 3, md: 4 },
             px: { xs: 2, sm: 3, md: 4 },
             pb: { xs: 2, sm: 3, md: 4 },
+            maxWidth: '100%',
+            overflow: 'hidden',
+            margin: 0,
           }}
         >
           {children}

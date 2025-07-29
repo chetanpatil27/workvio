@@ -100,8 +100,8 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
         >
           Workvio
         </Typography>
-        <Typography 
-          variant="caption" 
+        <Typography
+          variant="caption"
           color="text.secondary"
           sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}
         >
@@ -292,10 +292,14 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
             boxSizing: 'border-box',
             width: DRAWER_WIDTH,
             border: 'none',
-            boxShadow: (theme) => theme.shadows[1],
-            position: 'relative',
+            boxShadow: '2px 0 4px rgba(0,0,0,0.08)',
+            position: 'fixed',
             height: '100vh',
             overflowY: 'auto',
+            zIndex: (theme) => theme.zIndex.drawer,
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1a1a1a' : '#fafafa',
+            top: 0,
+            left: 0,
           },
         }}
         open

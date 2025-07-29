@@ -36,6 +36,8 @@ export default function Header({ onMobileToggle, title = 'Dashboard' }: HeaderPr
         borderBottomColor: 'divider',
         color: 'text.primary',
         zIndex: (theme) => theme.zIndex.drawer + 1,
+        margin: 0,
+        top: 0,
       }}
     >
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64, md: 72 }, px: { xs: 2, sm: 3 } }}>
@@ -45,8 +47,8 @@ export default function Header({ onMobileToggle, title = 'Dashboard' }: HeaderPr
           aria-label="open drawer"
           edge="start"
           onClick={onMobileToggle}
-          sx={{ 
-            mr: { xs: 1, sm: 2 }, 
+          sx={{
+            mr: { xs: 1, sm: 2 },
             display: { md: 'none' },
             p: { xs: 1, sm: 1.5 },
           }}
@@ -80,8 +82,8 @@ export default function Header({ onMobileToggle, title = 'Dashboard' }: HeaderPr
               />
             }
             label={
-              <Typography 
-                variant="body2" 
+              <Typography
+                variant="body2"
                 color="text.secondary"
                 sx={{ display: { xs: 'none', md: 'block' } }}
               >
@@ -93,8 +95,8 @@ export default function Header({ onMobileToggle, title = 'Dashboard' }: HeaderPr
 
           {/* Search */}
           <Tooltip title="Search">
-            <IconButton 
-              color="inherit" 
+            <IconButton
+              color="inherit"
               size="large"
               sx={{ p: { xs: 1, sm: 1.5 } }}
             >
@@ -104,8 +106,8 @@ export default function Header({ onMobileToggle, title = 'Dashboard' }: HeaderPr
 
           {/* Notifications */}
           <Tooltip title="Notifications">
-            <IconButton 
-              color="inherit" 
+            <IconButton
+              color="inherit"
               size="large"
               sx={{ p: { xs: 1, sm: 1.5 } }}
             >

@@ -6,6 +6,7 @@ import {
   Box,
 } from '@mui/material';
 import { format, parseISO, isValid } from 'date-fns';
+import { formControlTheme } from './form-theme';
 
 interface DatePickerProps {
   label: string;
@@ -14,8 +15,9 @@ interface DatePickerProps {
   error?: string;
   isRequired?: boolean;
   minDate?: string; // ISO date string
-  maxDate?: string; // ISO date string;
+  maxDate?: string; // ISO date string
   disabled?: boolean;
+  size?: 'small' | 'medium' | 'large';
 }
 
 export default function DatePicker({
@@ -27,6 +29,7 @@ export default function DatePicker({
   minDate,
   maxDate,
   disabled = false,
+  size = 'medium',
 }: DatePickerProps) {
   // Convert ISO string to input format (YYYY-MM-DD)
   const formatValueForInput = (isoString: string): string => {
@@ -56,6 +59,9 @@ export default function DatePicker({
     onChange(isoValue);
   };
 
+  // Get size-specific styles
+  const sizeStyles = formControlTheme.sizes[size];
+
   return (
     <Box sx={{ width: '100%' }}>
       <TextField
@@ -69,32 +75,87 @@ export default function DatePicker({
         disabled={disabled}
         fullWidth
         variant="outlined"
+        size={size === 'large' ? 'medium' : size === 'small' ? 'small' : 'medium'}
         InputLabelProps={{
           shrink: true,
-          sx: {
-            fontWeight: 500,
-            '&.Mui-focused': {
-              color: 'primary.main',
-            },
-          },
         }}
         inputProps={{
           min: minDate ? formatValueForInput(minDate) : undefined,
           max: maxDate ? formatValueForInput(maxDate) : undefined,
+          style: {
+            colorScheme: 'light', // Ensures consistent calendar styling
+          },
         }}
         sx={{
+          ...formControlTheme.commonStyles.field,
           '& .MuiOutlinedInput-root': {
-            borderRadius: 2,
-            '& fieldset': {
-              borderColor: 'divider',
+            ...formControlTheme.commonStyles.field['& .MuiOutlinedInput-root'],
+            minHeight: sizeStyles.height,
+          },
+          '& .MuiInputLabel-root': {
+            ...formControlTheme.commonStyles.field['& .MuiInputLabel-root'],
+            fontSize: sizeStyles.fontSize,
+            backgroundColor: 'background.paper',
+            paddingX: '4px',
+            '&.MuiInputLabel-shrink': {
+              fontSize: `calc(${sizeStyles.fontSize} * 0.85)`,
+              transform: 'translate(14px, -9px) scale(0.75)',
             },
-            '&:hover fieldset': {
-              borderColor: 'primary.main',
+          },
+          '& .MuiInputBase-input': {
+            fontSize: sizeStyles.fontSize,
+            height: 'auto',
+            padding: sizeStyles.padding,
+            fontFamily: 'inherit',
+            fontWeight: 400,
+            color: 'text.primary',
+            '&::-webkit-calendar-picker-indicator': {
+              cursor: 'pointer',
+              borderRadius: '4px',
+              padding: '6px',
+              marginLeft: '8px',
+              opacity: 0.6,
+              transition: 'all 0.2s ease-in-out',
+              filter: 'invert(0.5)',
+              '&:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                opacity: 1,
+                filter: 'invert(0.3)',
+                transform: 'scale(1.1)',
+              },
             },
-            '&.Mui-focused fieldset': {
-              borderColor: 'primary.main',
-              borderWidth: 2,
+            '&::-webkit-datetime-edit': {
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
             },
+            '&::-webkit-datetime-edit-fields-wrapper': {
+              padding: 0,
+            },
+            '&::-webkit-datetime-edit-text': {
+              color: 'inherit',
+              padding: '0 2px',
+            },
+            '&::-webkit-datetime-edit-month-field': {
+              color: 'inherit',
+              fontWeight: 500,
+            },
+            '&::-webkit-datetime-edit-day-field': {
+              color: 'inherit',
+              fontWeight: 500,
+            },
+            '&::-webkit-datetime-edit-year-field': {
+              color: 'inherit',
+              fontWeight: 500,
+            },
+            '&:focus': {
+              outline: 'none',
+            },
+          },
+          '& .MuiFormHelperText-root': {
+            ...formControlTheme.commonStyles.field['& .MuiFormHelperText-root'],
+            marginLeft: '14px',
+            marginRight: '14px',
           },
         }}
       />

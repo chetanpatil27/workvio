@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Box,
   Typography,
@@ -11,12 +12,18 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Fab,
+  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
+  LinearProgress,
+  AvatarGroup,
+  Tooltip,
+  Paper,
+  InputAdornment,
+  TextField,
+  Badge,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -24,20 +31,30 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as ViewIcon,
+  Search as SearchIcon,
+  FilterList as FilterIcon,
+  Group as GroupIcon,
+  Schedule as ScheduleIcon,
+  TrendingUp as TrendingUpIcon,
+  Assignment as AssignmentIcon,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { Project, addProject, removeProject } from '@/store/slices/project';
+import { format } from 'date-fns';
 import Input from '@/components/form-controls/input';
 import CustomSelect from '@/components/form-controls/select';
 
 export default function ProjectsPage() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { projects } = useSelector((state: RootState) => state.project);
+  const { sprints } = useSelector((state: RootState) => state.sprint);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -49,6 +66,7 @@ export default function ProjectsPage() {
   });
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, projectId: string) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setSelectedProjectId(projectId);
   };
@@ -94,29 +112,50 @@ export default function ProjectsPage() {
   };
 
   const handleSubmit = () => {
-    const newProject = {
+    const newProject: Project = {
       id: isEditing ? selectedProjectId! : Date.now().toString(),
       name: formData.name,
       description: formData.description,
-      key: formData.key.toUpperCase(),
-      status: formData.status as 'active' | 'inactive' | 'archived',
-      color: formData.color,
-      leadId: '1', // Current user
-      members: ['1'],
+      key: formData.key,
+      leadId: 'user1',
+      status: formData.status as Project['status'],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      members: ['user1', 'user2', 'user3'],
+      color: formData.color,
     };
 
     dispatch(addProject(newProject));
     handleCloseDialog();
   };
 
-  const handleDeleteProject = () => {
+  const handleDelete = () => {
     if (selectedProjectId) {
       dispatch(removeProject(selectedProjectId));
     }
     handleMenuClose();
   };
+
+  const getProjectSprints = (projectId: string) => {
+    return sprints.filter(sprint => sprint.projectId === projectId);
+  };
+
+  const getActiveSprintsCount = (projectId: string) => {
+    return sprints.filter(sprint => sprint.projectId === projectId && sprint.status === 'active').length;
+  };
+
+  const getProjectProgress = (projectId: string) => {
+    const projectSprints = getProjectSprints(projectId);
+    if (projectSprints.length === 0) return 0;
+
+    const completedSprints = projectSprints.filter(sprint => sprint.status === 'completed').length;
+    return (completedSprints / projectSprints.length) * 100;
+  };
+
+  const filteredProjects = projects.filter(project =>
+    project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.key.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const statusColors = {
     active: 'success',
@@ -126,49 +165,133 @@ export default function ProjectsPage() {
 
   return (
     <Box>
-      {/* Header */}
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: { xs: 'column', sm: 'row' },
-        justifyContent: 'space-between', 
-        alignItems: { xs: 'flex-start', sm: 'center' }, 
-        gap: { xs: 2, sm: 0 },
-        mb: { xs: 3, sm: 4 }
-      }}>
-        <Box>
-          <Typography variant="h4" sx={{ fontWeight: 600, mb: 1 }}>
-            Projects
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Manage your projects and track their progress
-          </Typography>
-        </Box>
-      </Box>
+      {/* Header Section */}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+          <Box>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+                background: 'linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Projects
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+              Manage and track your project portfolio
+            </Typography>
 
-      {/* Projects Grid */}
-      {projects.length === 0 ? (
-        <Box
-          sx={{
-            textAlign: 'center',
-            py: 8,
-          }}
-        >
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-            No projects yet
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-            Create your first project to get started
-          </Typography>
+            {/* Stats Cards */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }}
+              >
+                <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>
+                  <AssignmentIcon />
+                </Avatar>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {projects.length}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Total Projects
+                  </Typography>
+                </Box>
+              </Paper>
+
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }}
+              >
+                <Avatar sx={{ bgcolor: 'success.main', width: 40, height: 40 }}>
+                  <TrendingUpIcon />
+                </Avatar>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {projects.filter(p => p.status === 'active').length}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Active Projects
+                  </Typography>
+                </Box>
+              </Paper>
+            </Box>
+          </Box>
+
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => handleOpenDialog()}
             size="large"
+            sx={{
+              borderRadius: 2,
+              px: 3,
+              py: 1.5,
+              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+              '&:hover': {
+                boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)',
+              },
+            }}
           >
             Create Project
           </Button>
         </Box>
-      ) : (
+
+        {/* Search and Filter */}
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <TextField
+            placeholder="Search projects..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              minWidth: 300,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+              },
+            }}
+          />
+          <Tooltip title="Filter projects">
+            <IconButton sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <FilterIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+
+      {/* Projects Grid */}
+      {filteredProjects.length > 0 ? (
         <Box
           sx={{
             display: 'grid',
@@ -178,10 +301,10 @@ export default function ProjectsPage() {
               lg: 'repeat(3, 1fr)',
               xl: 'repeat(4, 1fr)',
             },
-            gap: { xs: 2, sm: 3 },
+            gap: 3,
           }}
         >
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <Card
               key={project.id}
               sx={{
@@ -189,21 +312,29 @@ export default function ProjectsPage() {
                 display: 'flex',
                 flexDirection: 'column',
                 cursor: 'pointer',
-                transition: 'box-shadow 0.2s ease-in-out',
+                transition: 'all 0.3s ease',
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 3,
+                overflow: 'hidden',
                 '&:hover': {
-                  boxShadow: (theme) => theme.shadows[4],
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.12)',
+                  transform: 'translateY(-2px)',
+                  borderColor: 'primary.main',
                 },
               }}
             >
               <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                {/* Project Header */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                   <Avatar
                     sx={{
-                      backgroundColor: project.color,
-                      width: 56,
-                      height: 56,
-                      fontSize: '1.25rem',
+                      bgcolor: project.color,
+                      color: 'white',
                       fontWeight: 600,
+                      width: 48,
+                      height: 48,
+                      fontSize: '1.2rem',
                     }}
                   >
                     {project.key}
@@ -211,71 +342,147 @@ export default function ProjectsPage() {
                   <IconButton
                     size="small"
                     onClick={(e) => handleMenuClick(e, project.id)}
-                    sx={{ mt: -1, mr: -1 }}
+                    sx={{
+                      opacity: 0.7,
+                      '&:hover': { opacity: 1 }
+                    }}
                   >
                     <MoreIcon />
                   </IconButton>
                 </Box>
 
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 600,
-                    mb: 1,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {project.name}
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    mb: 2,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    minHeight: 40,
-                  }}
-                >
-                  {project.description}
-                </Typography>
-
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {/* Project Info */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                    {project.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+                    {project.description}
+                  </Typography>
                   <Chip
                     label={project.status}
-                    size="small"
                     color={statusColors[project.status]}
+                    size="small"
+                    sx={{ textTransform: 'capitalize' }}
                   />
+                </Box>
+
+                {/* Project Stats */}
+                <Box sx={{ mb: 2 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      Progress
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {Math.round(getProjectProgress(project.id))}%
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={getProjectProgress(project.id)}
+                    sx={{
+                      height: 6,
+                      borderRadius: 3,
+                      backgroundColor: 'rgba(0,0,0,0.1)',
+                      '& .MuiLinearProgress-bar': {
+                        borderRadius: 3,
+                        backgroundColor: project.color,
+                      },
+                    }}
+                  />
+                </Box>
+
+                {/* Bottom Stats */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <ScheduleIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                    <Typography variant="body2" color="text.secondary">
+                      {getProjectSprints(project.id).length} sprints
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Badge
+                      badgeContent={getActiveSprintsCount(project.id)}
+                      color="success"
+                      sx={{ '& .MuiBadge-badge': { fontSize: '0.6rem', minWidth: 16, height: 16 } }}
+                    >
+                      <GroupIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                    </Badge>
+                    <AvatarGroup
+                      max={3}
+                      sx={{
+                        '& .MuiAvatar-root': {
+                          width: 24,
+                          height: 24,
+                          fontSize: '0.7rem',
+                          border: '1px solid',
+                          borderColor: 'background.paper',
+                        }
+                      }}
+                    >
+                      <Avatar sx={{ bgcolor: '#1976d2' }}>J</Avatar>
+                      <Avatar sx={{ bgcolor: '#2e7d32' }}>S</Avatar>
+                      <Avatar sx={{ bgcolor: '#ed6c02' }}>M</Avatar>
+                      <Avatar sx={{ bgcolor: '#d32f2f' }}>A</Avatar>
+                    </AvatarGroup>
+                  </Box>
+                </Box>
+
+                {/* Updated Date */}
+                <Box sx={{ pt: 2, borderTop: '1px solid', borderColor: 'divider', mt: 2 }}>
                   <Typography variant="caption" color="text.secondary">
-                    {project.members.length} member{project.members.length !== 1 ? 's' : ''}
+                    Updated {format(new Date(project.updatedAt), 'MMM dd, yyyy')}
                   </Typography>
                 </Box>
               </CardContent>
             </Card>
           ))}
         </Box>
-      )}
-
-      {/* Floating Action Button */}
-      {projects.length > 0 && (
-        <Fab
-          color="primary"
-          aria-label="add project"
-          onClick={() => handleOpenDialog()}
+      ) : (
+        /* Empty State */
+        <Paper
           sx={{
-            position: 'fixed',
-            bottom: { xs: 16, sm: 24, md: 32 },
-            right: { xs: 16, sm: 24, md: 32 },
-            zIndex: 1000,
+            textAlign: 'center',
+            py: 8,
+            px: 4,
+            border: '2px dashed',
+            borderColor: 'divider',
+            borderRadius: 3,
+            bgcolor: 'background.paper',
           }}
         >
-          <AddIcon />
-        </Fab>
+          <Avatar
+            sx={{
+              width: 64,
+              height: 64,
+              bgcolor: 'primary.light',
+              mx: 'auto',
+              mb: 2,
+            }}
+          >
+            <AssignmentIcon sx={{ fontSize: 32 }} />
+          </Avatar>
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+            {searchTerm ? 'No projects found' : 'No projects yet'}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            {searchTerm
+              ? 'Try adjusting your search criteria'
+              : 'Create your first project to get started'
+            }
+          </Typography>
+          {!searchTerm && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => handleOpenDialog()}
+              size="large"
+            >
+              Create Project
+            </Button>
+          )}
+        </Paper>
       )}
 
       {/* Context Menu */}
@@ -283,25 +490,28 @@ export default function ProjectsPage() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+            border: '1px solid',
+            borderColor: 'divider',
+          },
         }}
       >
-        <MenuItem onClick={() => handleOpenDialog(projects.find(p => p.id === selectedProjectId))}>
-          <EditIcon sx={{ mr: 1 }} fontSize="small" />
+        <MenuItem onClick={() => router.push(`/projects/${selectedProjectId}`)}>
+          <ViewIcon sx={{ mr: 1 }} />
+          View Details
+        </MenuItem>
+        <MenuItem onClick={() => {
+          const project = projects.find(p => p.id === selectedProjectId);
+          if (project) handleOpenDialog(project);
+        }}>
+          <EditIcon sx={{ mr: 1 }} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
-          <ViewIcon sx={{ mr: 1 }} fontSize="small" />
-          View Sprints
-        </MenuItem>
-        <MenuItem onClick={handleDeleteProject}>
-          <DeleteIcon sx={{ mr: 1 }} fontSize="small" />
+        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+          <DeleteIcon sx={{ mr: 1 }} />
           Delete
         </MenuItem>
       </Menu>
@@ -312,36 +522,41 @@ export default function ProjectsPage() {
         onClose={handleCloseDialog}
         maxWidth="sm"
         fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+          },
+        }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ pb: 1, fontWeight: 600 }}>
           {isEditing ? 'Edit Project' : 'Create New Project'}
         </DialogTitle>
-        <DialogContent sx={{ pt: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
             <Input
               label="Project Name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              fullWidth
               isRequired
             />
-
             <Input
               label="Project Key"
               value={formData.key}
               onChange={(e) => setFormData({ ...formData, key: e.target.value.toUpperCase() })}
               placeholder="e.g., PROJ"
+              fullWidth
               isRequired
-              helperText="Short identifier for your project (2-10 characters)"
             />
-
             <Input
               label="Description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               multiline
               rows={3}
+              fullWidth
             />
-
             <CustomSelect
               label="Status"
               value={formData.status}
@@ -351,37 +566,24 @@ export default function ProjectsPage() {
                 { value: 'inactive', label: 'Inactive' },
                 { value: 'archived', label: 'Archived' },
               ]}
+              fullWidth
             />
-
-            <Box>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                Project Color
-              </Typography>
-              <input
-                type="color"
-                value={formData.color}
-                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                style={{
-                  width: '100%',
-                  height: 48,
-                  border: 'none',
-                  borderRadius: 8,
-                  cursor: 'pointer',
-                }}
-              />
-            </Box>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
-          <Button onClick={handleCloseDialog}>
+        <DialogActions sx={{ p: 3, pt: 1 }}>
+          <Button
+            onClick={handleCloseDialog}
+            sx={{ borderRadius: 2 }}
+          >
             Cancel
           </Button>
           <Button
-            onClick={handleSubmit}
             variant="contained"
-            disabled={!formData.name || !formData.key}
+            onClick={handleSubmit}
+            disabled={!formData.name.trim() || !formData.key.trim()}
+            sx={{ borderRadius: 2 }}
           >
-            {isEditing ? 'Update' : 'Create'}
+            {isEditing ? 'Update' : 'Create'} Project
           </Button>
         </DialogActions>
       </Dialog>

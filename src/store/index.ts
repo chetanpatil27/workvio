@@ -7,9 +7,27 @@ import projectSlice from './slices/project';
 import sprintSlice from './slices/sprint';
 import ticketSlice from './slices/ticket';
 
+// Create a fallback storage for SSR
+const createNoopStorage = () => {
+  return {
+    getItem(): Promise<string | null> {
+      return Promise.resolve(null);
+    },
+    setItem(_key: string, value: string): Promise<string> {
+      return Promise.resolve(value);
+    },
+    removeItem(): Promise<void> {
+      return Promise.resolve();
+    },
+  };
+};
+
+const isClient = typeof window !== 'undefined';
+const persistStorage = isClient ? storage : createNoopStorage();
+
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: persistStorage,
   whitelist: ['auth', 'user'], // Only persist auth and user data
 };
 
@@ -26,7 +44,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/REGISTER'],
       },
     }),
 });

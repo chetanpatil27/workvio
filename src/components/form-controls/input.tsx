@@ -9,12 +9,14 @@ import {
   Box,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { formControlTheme } from './form-theme';
 
-interface CustomInputProps extends Omit<TextFieldProps, 'variant' | 'error'> {
+interface CustomInputProps extends Omit<TextFieldProps, 'variant' | 'error' | 'size'> {
   label: string;
   error?: string;
   showPasswordToggle?: boolean;
   isRequired?: boolean;
+  size?: 'small' | 'medium' | 'large';
 }
 
 export default function Input({
@@ -23,6 +25,7 @@ export default function Input({
   showPasswordToggle = false,
   isRequired = false,
   type = 'text',
+  size = 'medium',
   ...props
 }: CustomInputProps) {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -44,6 +47,7 @@ export default function Input({
         variant="outlined"
         fullWidth
         required={isRequired}
+        size={size === 'large' ? 'medium' : size === 'small' ? 'small' : 'medium'}
         InputProps={{
           ...props.InputProps,
           endAdornment: showPasswordToggle ? (
@@ -53,38 +57,20 @@ export default function Input({
                 onClick={handleTogglePasswordVisibility}
                 onMouseDown={(e) => e.preventDefault()}
                 edge="end"
+                size={size === 'small' ? 'small' : 'medium'}
+                sx={{
+                  color: 'text.secondary',
+                  '&:hover': {
+                    color: 'primary.main',
+                  },
+                }}
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           ) : props.InputProps?.endAdornment,
         }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 1, // Square corners
-            backgroundColor: 'background.paper',
-            '& fieldset': {
-              borderColor: 'divider',
-            },
-            '&:hover fieldset': {
-              borderColor: 'text.secondary',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: 'primary.main',
-              borderWidth: 2,
-            },
-            '&.Mui-error fieldset': {
-              borderColor: 'error.main',
-            },
-          },
-          '& .MuiInputLabel-root': {
-            fontWeight: 400,
-            '&.Mui-focused': {
-              color: 'primary.main',
-            },
-          },
-          ...props.sx,
-        }}
+        sx={formControlTheme.getSxStyles(size, props.sx || {})}
       />
     </Box>
   );

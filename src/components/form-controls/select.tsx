@@ -10,6 +10,7 @@ import {
   FormHelperText,
   Box,
 } from '@mui/material';
+import { formControlTheme } from './form-theme';
 
 export interface SelectOption {
   value: string | number;
@@ -17,12 +18,13 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-interface CustomSelectProps extends Omit<SelectProps, 'error'> {
+interface CustomSelectProps extends Omit<SelectProps, 'error' | 'size'> {
   label: string;
   options: SelectOption[];
   error?: string;
   isRequired?: boolean;
   placeholder?: string;
+  size?: 'small' | 'medium' | 'large';
 }
 
 export default function CustomSelect({
@@ -31,6 +33,7 @@ export default function CustomSelect({
   error,
   isRequired = false,
   placeholder,
+  size = 'medium',
   ...props
 }: CustomSelectProps) {
   return (
@@ -39,8 +42,13 @@ export default function CustomSelect({
         <InputLabel
           sx={{
             fontWeight: 500,
+            fontSize: formControlTheme.sizes[size].fontSize,
+            color: 'text.primary',
             '&.Mui-focused': {
               color: 'primary.main',
+            },
+            '&.Mui-error': {
+              color: 'error.main',
             },
           }}
         >
@@ -50,24 +58,42 @@ export default function CustomSelect({
           {...props}
           label={label}
           displayEmpty={!!placeholder}
-          sx={{
-            borderRadius: 2,
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'divider',
+          size={size === 'large' ? 'medium' : size === 'small' ? 'small' : 'medium'}
+          sx={formControlTheme.getSxStyles(size, props.sx || {})}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                borderRadius: formControlTheme.borderRadius,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                border: '1px solid',
+                borderColor: 'divider',
+                mt: 1,
+                '& .MuiMenuItem-root': {
+                  fontSize: formControlTheme.sizes[size].fontSize,
+                  py: size === 'small' ? 1 : size === 'large' ? 1.5 : 1.25,
+                  transition: formControlTheme.transitions.fast,
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                  '&.Mui-selected': {
+                    backgroundColor: 'primary.light',
+                    '&:hover': {
+                      backgroundColor: 'primary.light',
+                    },
+                  },
+                },
+              },
             },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'primary.main',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'primary.main',
-              borderWidth: 2,
-            },
-            ...props.sx,
           }}
         >
           {placeholder && (
             <MenuItem value="" disabled>
-              <span style={{ color: '#999' }}>{placeholder}</span>
+              <span style={{
+                color: formControlTheme.colors.text.placeholder,
+                fontStyle: 'italic',
+              }}>
+                {placeholder}
+              </span>
             </MenuItem>
           )}
           {options.map((option) => (
@@ -80,7 +106,17 @@ export default function CustomSelect({
             </MenuItem>
           ))}
         </Select>
-        {error && <FormHelperText>{error}</FormHelperText>}
+        {error && (
+          <FormHelperText
+            sx={{
+              fontSize: formControlTheme.typography.helperText.fontSize,
+              marginTop: formControlTheme.typography.helperText.marginTop,
+              color: 'error.main',
+            }}
+          >
+            {error}
+          </FormHelperText>
+        )}
       </FormControl>
     </Box>
   );

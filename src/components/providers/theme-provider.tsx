@@ -25,8 +25,10 @@ interface CustomThemeProviderProps {
 
 export default function CustomThemeProvider({ children }: CustomThemeProviderProps) {
   const [darkMode, setDarkMode] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const savedMode = localStorage.getItem('darkMode');
     if (savedMode) {
       setDarkMode(JSON.parse(savedMode));
@@ -40,7 +42,9 @@ export default function CustomThemeProvider({ children }: CustomThemeProviderPro
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
-    localStorage.setItem('darkMode', JSON.stringify(newMode));
+    if (isClient) {
+      localStorage.setItem('darkMode', JSON.stringify(newMode));
+    }
   };
 
   const theme = createTheme({
