@@ -200,41 +200,19 @@ export default function ProjectsPage() {
   const completedProjects = projects.filter(p => p.status === 'completed').length;
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{}}>
       {/* Header */}
       <Box sx={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'end',
         alignItems: 'center',
-        mb: 3
+        mb: 1
       }}>
-        <Typography
-          variant="h4"
-          fontWeight="600"
-          sx={{
-            color: 'text.primary',
-            fontSize: '1.75rem'
-          }}
-        >
-          Project
-        </Typography>
-
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
             variant="filled"
             startIcon={<AddIcon />}
             onClick={() => setCreateModalOpen(true)}
-            sx={{
-              bgcolor: '#1976d2',
-              borderRadius: '6px',
-              px: 3,
-              py: 1,
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              '&:hover': {
-                bgcolor: '#1565c0',
-              },
-            }}
           >
             New Project
           </Button>
@@ -297,41 +275,6 @@ export default function ProjectsPage() {
             <Tab label="In Progress" />
             <Tab label="Completed" />
           </Tabs>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Button
-              variant="outlined"
-              size="sm"
-              sx={{
-                minWidth: 'auto',
-                px: 2,
-                borderRadius: '6px',
-                color: 'text.secondary',
-                borderColor: 'divider',
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
-                }
-              }}
-            >
-              Grid
-            </Button>
-            <Button
-              variant="outlined"
-              size="sm"
-              sx={{
-                minWidth: 'auto',
-                px: 2,
-                borderRadius: '6px',
-                color: 'text.secondary',
-                '&:hover': {
-                  color: 'primary.main',
-                }
-              }}
-            >
-              List
-            </Button>
-          </Box>
         </Box>
       </Box>      {/* Stats Cards */}
       <Box sx={{
