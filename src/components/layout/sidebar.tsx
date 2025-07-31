@@ -17,6 +17,7 @@ import {
   MenuItem,
   Divider,
 } from '@mui/material';
+import { useTheme } from '@/components/providers/theme-provider';
 import {
   Dashboard as DashboardIcon,
   FolderOpen as ProjectsIcon,
@@ -82,6 +83,7 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
+  const { darkMode } = useTheme();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -105,7 +107,9 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      background: 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)',
+      background: darkMode
+        ? 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)'
+        : 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)',
     }}>
       {/* Enhanced Logo Section */}
       <Box sx={{
@@ -113,7 +117,9 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
         textAlign: 'center',
         borderBottom: '1px solid',
         borderColor: 'divider',
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        background: darkMode
+          ? 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)'
+          : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
       }}>
         <Box sx={{
           p: 2,
@@ -174,7 +180,7 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
                   overflow: 'hidden',
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&.Mui-selected': {
-                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    backgroundColor: darkMode ? 'rgba(144, 202, 249, 0.15)' : 'rgba(25, 118, 210, 0.1)',
                     borderLeft: '4px solid',
                     borderLeftColor: 'primary.main',
                     '&::before': {
@@ -197,7 +203,7 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
                     }
                   },
                   '&:hover:not(.Mui-selected)': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
                     transform: 'translateX(4px)',
                     '& .MuiListItemIcon-root': {
                       color: item.color,
@@ -234,7 +240,9 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
         p: { xs: 2, sm: 2.5 },
         borderTop: '1px solid',
         borderColor: 'divider',
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        background: darkMode
+          ? 'linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)'
+          : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
       }}>
         <Box
           sx={{
@@ -375,7 +383,9 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
             border: 'none',
             boxShadow: '4px 0 20px rgba(0,0,0,0.12)',
             borderRadius: '0 6px 6px 0',
-            background: 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)',
+            background: darkMode
+              ? 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)'
+              : 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)',
             zIndex: (theme) => theme.zIndex.drawer + 2,
           },
         }}
@@ -400,7 +410,9 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
             overflowY: 'auto',
             overflowX: 'hidden',
             zIndex: (theme) => theme.zIndex.drawer,
-            background: 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)',
+            background: darkMode
+              ? 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)'
+              : 'linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%)',
             borderRadius: '0 6px 6px 0',
             top: 0,
             left: 0,
@@ -411,10 +423,10 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
               backgroundColor: 'transparent',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(0,0,0,0.2)',
+              backgroundColor: darkMode ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)',
               borderRadius: '3px',
               '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.3)',
+                backgroundColor: darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)',
               },
             },
           },

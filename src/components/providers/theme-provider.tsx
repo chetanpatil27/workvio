@@ -51,16 +51,20 @@ export default function CustomThemeProvider({ children }: CustomThemeProviderPro
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {
-        main: '#1976d2',
-        light: '#42a5f5',
-        dark: '#1565c0',
+        main: darkMode ? '#90caf9' : '#1976d2',
+        light: darkMode ? '#bbdefb' : '#42a5f5',
+        dark: darkMode ? '#64b5f6' : '#1565c0',
       },
       secondary: {
         main: '#dc004e',
       },
       background: {
-        default: darkMode ? '#121212' : '#f5f5f5',
-        paper: darkMode ? '#1e1e1e' : '#ffffff',
+        default: darkMode ? '#0a0a0a' : '#f5f5f5',
+        paper: darkMode ? '#1a1a1a' : '#ffffff',
+      },
+      text: {
+        primary: darkMode ? '#ffffff' : '#1a1a1a',
+        secondary: darkMode ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)',
       },
     },
     typography: {
@@ -84,7 +88,7 @@ export default function CustomThemeProvider({ children }: CustomThemeProviderPro
           root: {
             borderRadius: 2, // Minimal border radius
             boxShadow: 'none',
-            border: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+            border: `1px solid ${darkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'}`,
           },
         },
       },

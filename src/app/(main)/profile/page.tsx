@@ -25,11 +25,13 @@ import {
 } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { useTheme } from '@/components/providers/theme-provider';
 
 export default function ProfilePage() {
   const { user } = useSelector((state: RootState) => state.auth);
   const { projects } = useSelector((state: RootState) => state.project);
   const { tickets } = useSelector((state: RootState) => state.ticket);
+  const { darkMode } = useTheme();
 
   // Sample data - replace with actual data from state  
   const userProjects = projects.filter((project) => project.members?.includes(user?.id || ''));
@@ -48,7 +50,7 @@ export default function ProfilePage() {
   return (
     <Box sx={{
       minHeight: '100vh',
-      bgcolor: 'grey.50',
+      bgcolor: darkMode ? 'background.default' : 'grey.50',
       py: { xs: 2, sm: 3 },
       px: { xs: 1, sm: 2, md: 3 }
     }}>
@@ -164,7 +166,9 @@ export default function ProfilePage() {
             {/* Profile Header with Gradient Background */}
             <Box
               sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: darkMode
+                  ? 'linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%)'
+                  : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 p: { xs: 2.5, sm: 3 },
                 position: 'relative',
                 '&::before': {
@@ -185,8 +189,10 @@ export default function ProfilePage() {
                     width: { xs: 70, sm: 80 },
                     height: { xs: 70, sm: 80 },
                     fontSize: { xs: '1.75rem', sm: '2rem' },
-                    background: 'linear-gradient(45deg, #ffffff 30%, #f5f5f5 90%)',
-                    color: '#1976d2',
+                    background: darkMode
+                      ? 'linear-gradient(45deg, #3a3a3a 30%, #2a2a2a 90%)'
+                      : 'linear-gradient(45deg, #ffffff 30%, #f5f5f5 90%)',
+                    color: darkMode ? '#90caf9' : '#1976d2',
                     fontWeight: 700,
                     mx: 'auto',
                     mb: 2,
@@ -293,10 +299,12 @@ export default function ProfilePage() {
                     sx={{
                       height: { xs: 5, sm: 6 },
                       borderRadius: 3,
-                      backgroundColor: 'rgba(0,0,0,0.1)',
+                      backgroundColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
                       '& .MuiLinearProgress-bar': {
                         borderRadius: 3,
-                        background: 'linear-gradient(90deg, #4caf50 0%, #8bc34a 100%)',
+                        background: darkMode
+                          ? 'linear-gradient(90deg, #66bb6a 0%, #81c784 100%)'
+                          : 'linear-gradient(90deg, #4caf50 0%, #8bc34a 100%)',
                       },
                     }}
                   />
@@ -338,10 +346,10 @@ export default function ProfilePage() {
                 <Card
                   elevation={0}
                   sx={{
-                    bgcolor: 'grey.50',
+                    bgcolor: darkMode ? 'background.paper' : 'grey.50',
                     borderRadius: '6px',
                     border: '1px solid',
-                    borderColor: 'grey.200',
+                    borderColor: darkMode ? 'divider' : 'grey.200',
                   }}
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
@@ -392,10 +400,10 @@ export default function ProfilePage() {
                 <Card
                   elevation={0}
                   sx={{
-                    bgcolor: 'grey.50',
+                    bgcolor: darkMode ? 'background.paper' : 'grey.50',
                     borderRadius: '6px',
                     border: '1px solid',
-                    borderColor: 'grey.200',
+                    borderColor: darkMode ? 'divider' : 'grey.200',
                   }}
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
