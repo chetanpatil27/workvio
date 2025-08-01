@@ -27,6 +27,7 @@ import {
   Settings as SettingsIcon,
   Logout as LogoutIcon,
   Work as WorkIcon,
+  Group as GroupIcon,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
@@ -52,6 +53,12 @@ const navigationItems = [
     icon: <SprintIcon />,
     href: '/sprints',
     color: '#ed6c02',
+  },
+  {
+    text: 'Teams',
+    icon: <GroupIcon />,
+    href: '/teams',
+    color: '#1565c0',
   },
   {
     text: 'Staff',

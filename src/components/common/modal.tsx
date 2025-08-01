@@ -56,40 +56,19 @@ const Modal: React.FC<ModalProps> = ({
     transition = 'fade',
     transitionDuration = 300,
 }) => {
-    // Cleanup effect to ensure proper modal cleanup
+    // Simple cleanup effect
     useEffect(() => {
-        if (!open) {
-            // Small delay to ensure Material-UI has finished cleanup
-            setTimeout(() => {
-                // Force remove any lingering backdrop elements
-                const backdrops = document.querySelectorAll('.MuiBackdrop-root');
-                backdrops.forEach(backdrop => {
-                    if (!backdrop.getAttribute('aria-hidden') || backdrop.getAttribute('aria-hidden') === 'true') {
-                        backdrop.remove();
-                    }
-                });
-                
-                // Restore body scroll and padding
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-                
-                // Clear any focus traps
-                const focusTraps = document.querySelectorAll('[data-focus-trap]');
-                focusTraps.forEach(trap => trap.remove());
-                
-                // Ensure document can receive focus/clicks again
-                if (document.activeElement && (document.activeElement as HTMLElement).blur) {
-                    (document.activeElement as HTMLElement).blur();
-                }
-            }, 100);
-        }
+        // Only run on client side
+        if (typeof window === 'undefined') return;
         
         return () => {
             // Cleanup on unmount
             document.body.style.overflow = '';
             document.body.style.paddingRight = '';
+            document.body.style.pointerEvents = '';
+            document.documentElement.style.pointerEvents = '';
         };
-    }, [open]);
+    }, []);
 
     const handleClose = (event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
         if (disableBackdropClick && reason === 'backdropClick') {
@@ -99,10 +78,14 @@ const Modal: React.FC<ModalProps> = ({
             return;
         }
         
-        // Ensure proper cleanup and event handling
-        setTimeout(() => {
-            onClose();
-        }, 0);
+        // Force cleanup before closing (only on client)
+        if (typeof window !== 'undefined') {
+            document.body.style.pointerEvents = '';
+            document.documentElement.style.pointerEvents = '';
+        }
+        
+        // Call the onClose callback immediately
+        onClose();
     };
 
     // Get the appropriate transition component
@@ -136,10 +119,17 @@ const Modal: React.FC<ModalProps> = ({
             transitionDuration={transitionDuration}
             keepMounted={false}
             disablePortal={false}
-            disableEnforceFocus={false}
-            disableAutoFocus={false}
-            disableRestoreFocus={false}
+            disableEnforceFocus={true}
+            disableAutoFocus={true}
+            disableRestoreFocus={true}
             hideBackdrop={false}
+            onTransitionExited={() => {
+                // Additional cleanup when transition is complete (only on client)
+                if (typeof window !== 'undefined') {
+                    document.body.style.pointerEvents = '';
+                    document.documentElement.style.pointerEvents = '';
+                }
+            }}
             BackdropProps={{
                 sx: {
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
