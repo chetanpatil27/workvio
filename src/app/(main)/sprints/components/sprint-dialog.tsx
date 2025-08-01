@@ -1,18 +1,13 @@
 'use client';
 
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-} from '@mui/material';
+import { Box } from '@mui/material';
 import Button from '@/components/form-controls/button';
 import Input from '@/components/form-controls/input';
 import CustomSelect from '@/components/form-controls/select';
 import DatePicker from '@/components/form-controls/date-picker';
 import Textarea from '@/components/form-controls/textarea';
+import { Modal } from '@/components/common';
 import { Sprint } from '@/store/slices/sprint';
 import { Project } from '@/store/slices/project';
 import { SprintFormData } from '../hooks/use-sprint-dialog';
@@ -47,11 +42,27 @@ const SprintDialog: React.FC<SprintDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        {isEditing ? 'Edit Sprint' : 'Create New Sprint'}
-      </DialogTitle>
-      <DialogContent>
+    <Modal 
+      open={open} 
+      onClose={onClose}
+      title={isEditing ? 'Edit Sprint' : 'Create New Sprint'}
+      size="sm"
+      transition="slide"
+      actions={
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button onClick={onClose} variant="outlined">
+            Cancel
+          </Button>
+          <Button
+            variant="filled"
+            onClick={handleSave}
+            disabled={!isFormValid}
+          >
+            {isEditing ? 'Update' : 'Create'} Sprint
+          </Button>
+        </Box>
+      }
+    >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
           <Input
             label="Sprint Name"
@@ -112,20 +123,7 @@ const SprintDialog: React.FC<SprintDialogProps> = ({
             helperText="Define what the team aims to achieve by the end of this sprint"
           />
         </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} variant="outlined">
-          Cancel
-        </Button>
-        <Button
-          variant="filled"
-          onClick={handleSave}
-          disabled={!isFormValid}
-        >
-          {isEditing ? 'Update' : 'Create'} Sprint
-        </Button>
-      </DialogActions>
-    </Dialog>
+    </Modal>
   );
 };
 

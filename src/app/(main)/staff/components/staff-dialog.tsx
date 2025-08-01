@@ -24,6 +24,8 @@ interface StaffDialogProps {
     onClose: () => void;
     onSave: () => void;
     onFormDataChange: (updates: Partial<StaffFormData>) => void;
+    transition?: 'fade' | 'slide' | 'zoom' | 'grow';
+    transitionDuration?: number;
 }
 
 const genderOptions = [
@@ -41,6 +43,8 @@ const StaffDialog: React.FC<StaffDialogProps> = ({
     onClose,
     onSave,
     onFormDataChange,
+    transition = 'slide',
+    transitionDuration = 300,
 }) => {
     const handleSave = () => {
         onSave();
@@ -73,6 +77,8 @@ const StaffDialog: React.FC<StaffDialogProps> = ({
             subtitle={isEditing ? 'Update staff member information' : 'Enter details for the new staff member'}
             size="sm"
             actions={actions}
+            transition={transition}
+            transitionDuration={transitionDuration}
         >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Input

@@ -2,22 +2,19 @@
 
 import React, { useState } from 'react';
 import {
-    Dialog,
-    DialogContent,
     Box,
     Typography,
-    IconButton,
     Avatar,
     Chip,
     Divider,
     Button,
 } from '@mui/material';
 import {
-    Close as CloseIcon,
     CloudUpload as UploadIcon,
     Add as AddIcon,
 } from '@mui/icons-material';
 import { Input, Select } from '@/components/form-controls';
+import { Modal } from '@/components/common';
 
 interface TeamMember {
     id: string;
@@ -121,58 +118,61 @@ export default function CreateProjectModal({ open, onClose, onSubmit }: CreatePr
     };
 
     return (
-        <Dialog
+        <Modal
             open={open}
             onClose={onClose}
-            maxWidth="md"
-            fullWidth
-            PaperProps={{
-                sx: {
-                    borderRadius: 3,
-                    p: 0,
-                    maxHeight: '90vh',
-                }
-            }}
-        >
-            <DialogContent sx={{ p: 0 }}>
-                {/* Header */}
-                <Box sx={{
-                    p: 4,
-                    pb: 3,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start'
-                }}>
-                    <Box>
-                        <Typography variant="h5" fontWeight="bold" gutterBottom>
-                            Create New Project
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Fill in the details to create a new project.
-                        </Typography>
-                    </Box>
-                    <IconButton
+            title="Create New Project"
+            subtitle="Set up your project with team members and get started quickly"
+            size="lg"
+            actions={
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button
+                        variant="outlined"
                         onClick={onClose}
-                        sx={{ color: 'text.secondary' }}
+                        sx={{
+                            minWidth: 100,
+                            color: 'text.secondary',
+                            borderColor: 'grey.300',
+                            '&:hover': {
+                                borderColor: 'grey.400',
+                                bgcolor: 'grey.50',
+                            }
+                        }}
                     >
-                        <CloseIcon />
-                    </IconButton>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleSubmit}
+                        disabled={!formData.name.trim()}
+                        sx={{
+                            minWidth: 100,
+                            bgcolor: 'grey.900',
+                            '&:hover': {
+                                bgcolor: 'grey.800',
+                            }
+                        }}
+                    >
+                        Create
+                    </Button>
                 </Box>
-
-                <Box sx={{ px: 4 }}>
-                    {/* Project Name */}
-                    <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" fontWeight="600" gutterBottom>
-                            Project name <span style={{ color: '#f44336' }}>*</span>
-                        </Typography>
-                        <Input
-                            label=""
-                            placeholder="Project name"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            size="large"
-                        />
-                    </Box>
+            }
+        >
+            {/* Project Form Content */}
+            <Box sx={{ py: 2 }}>
+                {/* Project Name */}
+                <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle1" fontWeight="600" gutterBottom>
+                        Project name <span style={{ color: '#f44336' }}>*</span>
+                    </Typography>
+                    <Input
+                        label=""
+                        placeholder="Project name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        size="large"
+                    />
+                </Box>
 
                     {/* Team and Upload Section */}
                     <Box sx={{
@@ -318,38 +318,7 @@ export default function CreateProjectModal({ open, onClose, onSubmit }: CreatePr
                     </Box>
 
                     <Divider sx={{ my: 3 }} />
-
-                    {/* Action Buttons */}
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        gap: 2,
-                        pb: 4
-                    }}>
-                        <Button
-                            variant="outlined"
-                            onClick={onClose}
-                            sx={{ minWidth: 100 }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={handleSubmit}
-                            disabled={!formData.name.trim()}
-                            sx={{
-                                minWidth: 100,
-                                bgcolor: 'grey.900',
-                                '&:hover': {
-                                    bgcolor: 'grey.800',
-                                }
-                            }}
-                        >
-                            Create
-                        </Button>
-                    </Box>
-                </Box>
-            </DialogContent>
-        </Dialog>
+            </Box>
+        </Modal>
     );
 }

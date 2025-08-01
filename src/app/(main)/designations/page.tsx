@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, Switch } from '@mui/material';
+import { Box, FormControlLabel, Switch } from '@mui/material';
 import Button from '@/components/form-controls/button';
 import { Input, Textarea } from '@/components/form-controls';
+import { Modal } from '@/components/common';
 import { useDispatch } from 'react-redux';
 import { addDesignation, updateDesignation } from '@/store/slices/designation';
 import { useDesignation } from './hooks';
@@ -141,69 +142,60 @@ export default function DesignationsPage() {
         onDelete={handleDeleteDesignation}
       />
 
-      {/* Form Dialog */}
-      <Dialog 
+      {/* Form Modal */}
+      <Modal 
         open={formDialogOpen} 
         onClose={handleFormClose}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: '6px',
-            border: '1px solid',
-            borderColor: 'divider',
-          }
-        }}
+        title={isEditMode ? 'Edit Designation' : 'Create New Designation'}
+        size="sm"
+        transition="grow"
+        actions={
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button onClick={handleFormClose} variant="outlined">
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleFormSubmit} 
+              variant="filled"
+              disabled={!formData.name.trim()}
+            >
+              {isEditMode ? 'Update Designation' : 'Create Designation'}
+            </Button>
+          </Box>
+        }
       >
-        <DialogTitle sx={{ fontWeight: 600, fontSize: '1.25rem' }}>
-          {isEditMode ? 'Edit Designation' : 'Create New Designation'}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 1 }}>
-            <Input
-              label="Designation Name"
-              value={formData.name}
-              onChange={handleInputChange('name')}
-              isRequired
-              sx={{ mb: 2 }}
-            />
-            
-            <Box sx={{ mb: 2 }}>
-              <Textarea
-                label="Description"
-                value={formData.description}
-                onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
-                rows={4}
-                placeholder="Enter a detailed description of this designation..."
-              />
-            </Box>
-
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formData.active}
-                  onChange={handleSwitchChange}
-                  color="primary"
-                />
-              }
-              label="Active Status"
-              sx={{ mt: 1 }}
+        <Box sx={{ pt: 1 }}>
+          <Input
+            label="Designation Name"
+            value={formData.name}
+            onChange={handleInputChange('name')}
+            isRequired
+            sx={{ mb: 2 }}
+          />
+          
+          <Box sx={{ mb: 2 }}>
+            <Textarea
+              label="Description"
+              value={formData.description}
+              onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
+              rows={4}
+              placeholder="Enter a detailed description of this designation..."
             />
           </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 2 }}>
-          <Button onClick={handleFormClose} variant="outlined">
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleFormSubmit} 
-            variant="filled"
-            disabled={!formData.name.trim()}
-          >
-            {isEditMode ? 'Update Designation' : 'Create Designation'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.active}
+                onChange={handleSwitchChange}
+                color="primary"
+              />
+            }
+            label="Active Status"
+            sx={{ mt: 1 }}
+          />
+        </Box>
+      </Modal>
     </Box>
   );
 }

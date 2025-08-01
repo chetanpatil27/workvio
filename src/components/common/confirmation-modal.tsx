@@ -17,6 +17,8 @@ interface ConfirmationModalProps {
     confirmColor?: 'primary' | 'error' | 'warning' | 'success';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
     isLoading?: boolean;
+    transition?: 'fade' | 'slide' | 'zoom' | 'grow';
+    transitionDuration?: number;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -31,6 +33,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     confirmColor = 'primary',
     size = 'sm',
     isLoading = false,
+    transition = 'zoom',
+    transitionDuration = 250,
 }) => {
     const getSxStyles = () => {
         switch (confirmColor) {
@@ -84,6 +88,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             actions={actions}
             disableBackdropClick={isLoading}
             disableEscapeKeyDown={isLoading}
+            transition={transition}
+            transitionDuration={transitionDuration}
         >
             {typeof message === 'string' ? (
                 <Typography>{message}</Typography>

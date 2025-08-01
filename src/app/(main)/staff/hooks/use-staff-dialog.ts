@@ -82,17 +82,20 @@ export const useStaffDialog = () => {
     };
 
     const closeDialog = () => {
-        setIsOpen(false);
-        setIsEditing(false);
-        setEditingStaff(null);
-        setFormData({
-            name: '',
-            email: '',
-            mobile: '',
-            gender: '',
-        });
-        setErrors({});
-        setIsSubmitting(false);
+        // Use setTimeout to ensure proper cleanup order
+        setTimeout(() => {
+            setIsOpen(false);
+            setIsEditing(false);
+            setEditingStaff(null);
+            setFormData({
+                name: '',
+                email: '',
+                mobile: '',
+                gender: '',
+            });
+            setErrors({});
+            setIsSubmitting(false);
+        }, 0);
     };
 
     const handleFormDataChange = (updates: Partial<StaffFormData>) => {

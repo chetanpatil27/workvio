@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -10,6 +10,10 @@ import {
     Box,
     Typography,
     Breakpoint,
+    Fade,
+    Slide,
+    Zoom,
+    Grow,
 } from '@mui/material';
 import {
     Close as CloseIcon,
@@ -30,6 +34,8 @@ export interface ModalProps {
     actions?: React.ReactNode;
     contentPadding?: number | string;
     titleActions?: React.ReactNode;
+    transition?: 'fade' | 'slide' | 'zoom' | 'grow';
+    transitionDuration?: number;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -47,7 +53,44 @@ const Modal: React.FC<ModalProps> = ({
     actions,
     contentPadding = 3,
     titleActions,
+    transition = 'fade',
+    transitionDuration = 300,
 }) => {
+    // Cleanup effect to ensure proper modal cleanup
+    useEffect(() => {
+        if (!open) {
+            // Small delay to ensure Material-UI has finished cleanup
+            setTimeout(() => {
+                // Force remove any lingering backdrop elements
+                const backdrops = document.querySelectorAll('.MuiBackdrop-root');
+                backdrops.forEach(backdrop => {
+                    if (!backdrop.getAttribute('aria-hidden') || backdrop.getAttribute('aria-hidden') === 'true') {
+                        backdrop.remove();
+                    }
+                });
+                
+                // Restore body scroll and padding
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+                
+                // Clear any focus traps
+                const focusTraps = document.querySelectorAll('[data-focus-trap]');
+                focusTraps.forEach(trap => trap.remove());
+                
+                // Ensure document can receive focus/clicks again
+                if (document.activeElement && (document.activeElement as HTMLElement).blur) {
+                    (document.activeElement as HTMLElement).blur();
+                }
+            }, 100);
+        }
+        
+        return () => {
+            // Cleanup on unmount
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        };
+    }, [open]);
+
     const handleClose = (event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
         if (disableBackdropClick && reason === 'backdropClick') {
             return;
@@ -55,8 +98,33 @@ const Modal: React.FC<ModalProps> = ({
         if (disableEscapeKeyDown && reason === 'escapeKeyDown') {
             return;
         }
-        onClose();
+        
+        // Ensure proper cleanup and event handling
+        setTimeout(() => {
+            onClose();
+        }, 0);
     };
+
+    // Get the appropriate transition component
+    const getTransitionComponent = () => {
+        switch (transition) {
+            case 'slide':
+                const SlideTransition = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof Slide>>((props, ref) => (
+                    <Slide direction="down" ref={ref} {...props} />
+                ));
+                SlideTransition.displayName = 'SlideTransition';
+                return SlideTransition;
+            case 'zoom':
+                return Zoom;
+            case 'grow':
+                return Grow;
+            case 'fade':
+            default:
+                return Fade;
+        }
+    };
+
+    const TransitionComponent = getTransitionComponent();
 
     return (
         <Dialog
@@ -64,11 +132,56 @@ const Modal: React.FC<ModalProps> = ({
             onClose={handleClose}
             maxWidth={size}
             fullWidth={fullWidth}
+            TransitionComponent={TransitionComponent}
+            transitionDuration={transitionDuration}
+            keepMounted={false}
+            disablePortal={false}
+            disableEnforceFocus={false}
+            disableAutoFocus={false}
+            disableRestoreFocus={false}
+            hideBackdrop={false}
+            BackdropProps={{
+                sx: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                },
+                onClick: (event) => {
+                    if (!disableBackdropClick) {
+                        handleClose(event, 'backdropClick');
+                    }
+                }
+            }}
             PaperProps={{
                 sx: {
                     borderRadius: 2,
                     maxHeight,
                 },
+            }}
+            sx={{
+                '& .MuiDialog-paper': {
+                    transition: `transform ${transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity ${transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
+                    willChange: 'transform, opacity',
+                },
+                '& .MuiBackdrop-root': {
+                    transition: `opacity ${transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`,
+                    willChange: 'opacity',
+                },
+                // Enhanced transition styles based on transition type
+                ...(transition === 'slide' && {
+                    '& .MuiDialog-paper': {
+                        transition: `transform ${transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
+                    },
+                }),
+                ...(transition === 'zoom' && {
+                    '& .MuiDialog-paper': {
+                        transition: `transform ${transitionDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${transitionDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`,
+                    },
+                }),
+                ...(transition === 'grow' && {
+                    '& .MuiDialog-paper': {
+                        transition: `transform ${transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
+                        transformOrigin: 'center center',
+                    },
+                }),
             }}
         >
             {(title || subtitle || showCloseButton || titleActions) && (

@@ -680,6 +680,8 @@ export default function StaffPage() {
         confirmText="Delete"
         confirmColor="error"
         size="sm"
+        transition="zoom"
+        transitionDuration={250}
       />
 
       {/* Staff Dialog */}
@@ -692,6 +694,8 @@ export default function StaffPage() {
         onClose={staffDialog.closeDialog}
         onSave={staffDialog.handleSave}
         onFormDataChange={staffDialog.handleFormDataChange}
+        transition="slide"
+        transitionDuration={300}
       />
     </Box>
   );
