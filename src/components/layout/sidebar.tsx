@@ -28,6 +28,7 @@ import {
   Logout as LogoutIcon,
   Work as WorkIcon,
   Group as GroupIcon,
+  Label as StatusIcon,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
@@ -53,6 +54,12 @@ const navigationItems = [
     icon: <SprintIcon />,
     href: '/sprints',
     color: '#ed6c02',
+  },
+  {
+    text: 'Status',
+    icon: <StatusIcon />,
+    href: '/status',
+    color: '#9c27b0',
   },
   {
     text: 'Teams',
