@@ -83,6 +83,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onTeamClick, onMenuClick }) =
                     </Box>
                     <IconButton
                         size="small"
+                        data-menu-button="true"
                         onClick={(e) => {
                             e.stopPropagation();
                             onMenuClick(e, team);
@@ -119,11 +120,11 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onTeamClick, onMenuClick }) =
                             Team Members ({team.members.length})
                         </Typography>
                     </Box>
-                    
+
                     {team.members.length > 0 ? (
-                        <AvatarGroup 
-                            max={4} 
-                            sx={{ 
+                        <AvatarGroup
+                            max={4}
+                            sx={{
                                 justifyContent: 'flex-start',
                                 '& .MuiAvatar-root': {
                                     width: 32,
@@ -162,7 +163,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team, onTeamClick, onMenuClick }) =
                             {team.projectsCount} Projects
                         </Typography>
                     </Box>
-                    
+
                     <Typography variant="caption" color="text.secondary">
                         Updated {new Date(team.updatedAt).toLocaleDateString()}
                     </Typography>

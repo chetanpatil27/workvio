@@ -71,7 +71,7 @@ const DesignationCard: React.FC<DesignationCardProps> = ({
                   {designation.name}
                 </Typography>
               </Box>
-              
+
               <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                 <Chip
                   label={designation.active ? 'Active' : 'Inactive'}
@@ -90,6 +90,7 @@ const DesignationCard: React.FC<DesignationCardProps> = ({
           </Box>
 
           <IconButton
+            data-menu-button="true"
             onClick={(e) => {
               e.stopPropagation();
               onMenuClick(e);
@@ -140,12 +141,12 @@ const DesignationCard: React.FC<DesignationCardProps> = ({
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
               Status
             </Typography>
-            <Typography 
-              variant="body2" 
-              fontWeight="500" 
-              sx={{ 
+            <Typography
+              variant="body2"
+              fontWeight="500"
+              sx={{
                 fontSize: '0.85rem',
-                color: statusColor 
+                color: statusColor
               }}
             >
               {designation.active ? 'Active' : 'Inactive'}

@@ -101,6 +101,7 @@ const SprintCard: React.FC<SprintCardProps> = ({
           </Box>
 
           <IconButton
+            data-menu-button="true"
             onClick={(e) => {
               e.stopPropagation();
               onMenuClick(e);

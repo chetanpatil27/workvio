@@ -1,11 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Menu, MenuItem } from '@mui/material';
+import ContextMenu, { MenuAction } from '@/components/common/context-menu';
 import {
   Visibility as ViewIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
+  PlayArrow as StartIcon,
+  Stop as CompleteIcon,
 } from '@mui/icons-material';
 
 interface SprintMenuProps {
@@ -13,7 +15,10 @@ interface SprintMenuProps {
   onClose: () => void;
   onView: () => void;
   onEdit: () => void;
+  onStart?: () => void;
+  onComplete?: () => void;
   onDelete: () => void;
+  sprintStatus?: 'planning' | 'active' | 'completed';
 }
 
 const SprintMenu: React.FC<SprintMenuProps> = ({
@@ -21,42 +26,67 @@ const SprintMenu: React.FC<SprintMenuProps> = ({
   onClose,
   onView,
   onEdit,
+  onStart,
+  onComplete,
   onDelete,
+  sprintStatus = 'planning',
 }) => {
-  const handleView = () => {
-    onView();
-    onClose();
-  };
+  const menuActions: MenuAction[] = [
+    {
+      id: 'view',
+      label: 'View Details',
+      icon: <ViewIcon />,
+      onClick: onView,
+    },
+    {
+      id: 'edit',
+      label: 'Edit Sprint',
+      icon: <EditIcon />,
+      onClick: onEdit,
+      disabled: sprintStatus === 'completed',
+    },
+  ];
 
-  const handleEdit = () => {
-    onEdit();
-    onClose();
-  };
+  // Add status-specific actions
+  if (sprintStatus === 'planning' && onStart) {
+    menuActions.push({
+      id: 'start',
+      label: 'Start Sprint',
+      icon: <StartIcon />,
+      onClick: onStart,
+      color: 'success',
+      divider: true,
+    });
+  }
 
-  const handleDelete = () => {
-    onDelete();
-    onClose();
-  };
+  if (sprintStatus === 'active' && onComplete) {
+    menuActions.push({
+      id: 'complete',
+      label: 'Complete Sprint',
+      icon: <CompleteIcon />,
+      onClick: onComplete,
+      color: 'primary',
+      divider: true,
+    });
+  }
+
+  // Always add delete action at the end
+  menuActions.push({
+    id: 'delete',
+    label: 'Delete',
+    icon: <DeleteIcon />,
+    onClick: onDelete,
+    color: 'error',
+    disabled: sprintStatus === 'active',
+  });
 
   return (
-    <Menu
+    <ContextMenu
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
       onClose={onClose}
-    >
-      <MenuItem onClick={handleView}>
-        <ViewIcon sx={{ mr: 1 }} />
-        View Details
-      </MenuItem>
-      <MenuItem onClick={handleEdit}>
-        <EditIcon sx={{ mr: 1 }} />
-        Edit
-      </MenuItem>
-      <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-        <DeleteIcon sx={{ mr: 1 }} />
-        Delete
-      </MenuItem>
-    </Menu>
+      actions={menuActions}
+    />
   );
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Menu, MenuItem } from '@mui/material';
+import ContextMenu, { MenuAction } from '@/components/common/context-menu';
 import {
   Visibility as ViewIcon,
   Edit as EditIcon,
@@ -26,49 +26,42 @@ const ProjectMenu: React.FC<ProjectMenuProps> = ({
   onArchive,
   onDelete,
 }) => {
-  const handleView = () => {
-    onView();
-    onClose();
-  };
-
-  const handleEdit = () => {
-    onEdit();
-    onClose();
-  };
-
-  const handleArchive = () => {
-    onArchive();
-    onClose();
-  };
-
-  const handleDelete = () => {
-    onDelete();
-    onClose();
-  };
+  const menuActions: MenuAction[] = [
+    {
+      id: 'view',
+      label: 'View Details',
+      icon: <ViewIcon />,
+      onClick: onView,
+    },
+    {
+      id: 'edit',
+      label: 'Edit Project',
+      icon: <EditIcon />,
+      onClick: onEdit,
+    },
+    {
+      id: 'archive',
+      label: 'Archive',
+      icon: <ArchiveIcon />,
+      onClick: onArchive,
+      divider: true, // Add divider before delete action
+    },
+    {
+      id: 'delete',
+      label: 'Delete',
+      icon: <DeleteIcon />,
+      onClick: onDelete,
+      color: 'error',
+    },
+  ];
 
   return (
-    <Menu
+    <ContextMenu
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
       onClose={onClose}
-    >
-      <MenuItem onClick={handleView}>
-        <ViewIcon sx={{ mr: 1 }} />
-        View Details
-      </MenuItem>
-      <MenuItem onClick={handleEdit}>
-        <EditIcon sx={{ mr: 1 }} />
-        Edit Project
-      </MenuItem>
-      <MenuItem onClick={handleArchive}>
-        <ArchiveIcon sx={{ mr: 1 }} />
-        Archive
-      </MenuItem>
-      <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-        <DeleteIcon sx={{ mr: 1 }} />
-        Delete
-      </MenuItem>
-    </Menu>
+      actions={menuActions}
+    />
   );
 };
 

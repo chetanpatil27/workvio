@@ -7,6 +7,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { RootState } from '@/store';
 import Sidebar from '@/components/layout/sidebar';
 import Header from '@/components/layout/header';
+import { MenuProvider } from '@/components/providers/menu-provider';
 import { DRAWER_WIDTH } from '@/components/layout/sidebar';
 
 export default function MainLayout({
@@ -106,7 +107,9 @@ export default function MainLayout({
             height: 'calc(100vh - 72px)', // Subtract header height
           }}
         >
-          {children}
+          <MenuProvider>
+            {children}
+          </MenuProvider>
         </Box>
       </Box>
     </Box>

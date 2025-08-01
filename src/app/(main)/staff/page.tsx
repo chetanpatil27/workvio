@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import CountCard from "@/components/common/count-card";
+import ContextMenu, { MenuAction } from "@/components/common/context-menu";
+import { useMenuHandler } from "@/components/providers/menu-provider";
 import {
   Box,
   Typography,
@@ -9,8 +11,6 @@ import {
   CardContent,
   Chip,
   IconButton,
-  Menu,
-  MenuItem,
   TextField,
   InputAdornment,
   Tabs,
@@ -44,14 +44,18 @@ export default function StaffPage() {
   const router = useRouter();
   const { staff } = useSelector((state: RootState) => state.staff);
 
+  // Menu state using global menu provider
+  const staffMenu = useMenuHandler('staff-menu');
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
 
   // Staff dialog hook
   const staffDialog = useStaffDialog();
+
+  // Get selected staff from menu data
+  const selectedStaff = staffMenu.selectedData as Staff | null;
 
   // Filter staff based on search term and selected tab
   const filteredStaff = staff.filter((member) => {
@@ -74,46 +78,54 @@ export default function StaffPage() {
     return matchesSearch && matchesTab;
   });
 
-  const handleMenuClick = (
-    event: React.MouseEvent<HTMLElement>,
-    staffMember: Staff
-  ) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-    setSelectedStaff(staffMember);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedStaff(null);
-  };
-
-  const handleDeleteClick = () => {
-    setDeleteDialogOpen(true);
-    handleMenuClose();
-  };
-
   const handleDeleteConfirm = () => {
     if (selectedStaff) {
       dispatch(removeStaff(selectedStaff.id));
     }
     setDeleteDialogOpen(false);
-    setSelectedStaff(null);
+    staffMenu.handleMenuClose();
   };
 
   const handleViewDetails = () => {
     if (selectedStaff) {
       router.push(`/staff/${selectedStaff.id}`);
     }
-    handleMenuClose();
+    staffMenu.handleMenuClose();
   };
 
   const handleEdit = () => {
     if (selectedStaff) {
       staffDialog.openEditDialog(selectedStaff);
     }
-    handleMenuClose();
+    staffMenu.handleMenuClose();
   };
+
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+    staffMenu.handleMenuClose();
+  };
+
+  const staffMenuActions: MenuAction[] = [
+    {
+      id: 'view',
+      label: 'View Details',
+      icon: <ViewIcon />,
+      onClick: handleViewDetails,
+    },
+    {
+      id: 'edit',
+      label: 'Edit',
+      icon: <EditIcon />,
+      onClick: handleEdit,
+    },
+    {
+      id: 'delete',
+      label: 'Delete',
+      icon: <DeleteIcon />,
+      onClick: handleDeleteClick,
+      color: 'error',
+    },
+  ];
 
   const getAvatarColor = (name: string) => {
     const colors = [
@@ -511,9 +523,10 @@ export default function StaffPage() {
                   </Box>
 
                   <IconButton
+                    data-menu-button="true"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleMenuClick(e, member);
+                      staffMenu.handleMenuClick(e, member);
                     }}
                     size="small"
                     sx={{ color: "text.secondary", ml: 1 }}
@@ -636,32 +649,12 @@ export default function StaffPage() {
       )}
 
       {/* Context Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <MenuItem onClick={handleViewDetails}>
-          <ViewIcon sx={{ mr: 1 }} />
-          View Details
-        </MenuItem>
-        <MenuItem onClick={handleEdit}>
-          <EditIcon sx={{ mr: 1 }} />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleDeleteClick} sx={{ color: "error.main" }}>
-          <DeleteIcon sx={{ mr: 1 }} />
-          Delete
-        </MenuItem>
-      </Menu>
+      <ContextMenu
+        anchorEl={staffMenu.anchorEl}
+        open={staffMenu.isOpen}
+        onClose={staffMenu.handleMenuClose}
+        actions={staffMenuActions}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmationModal

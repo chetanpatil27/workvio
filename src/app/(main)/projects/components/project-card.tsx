@@ -88,7 +88,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                   />
                 )}
               </Box>
-              
+
               <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                 <Chip
                   label={projectStatusLabels[project.status]}
@@ -121,6 +121,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Box>
 
           <IconButton
+            data-menu-button="true"
             onClick={(e) => {
               e.stopPropagation();
               onMenuClick(e);
@@ -242,12 +243,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 {member.name.charAt(0).toUpperCase()}
               </Avatar>
             )) || (
-              <>
-                <Avatar sx={{ bgcolor: '#1976d2' }}>U1</Avatar>
-                <Avatar sx={{ bgcolor: '#2e7d32' }}>U2</Avatar>
-                <Avatar sx={{ bgcolor: '#ed6c02' }}>U3</Avatar>
-              </>
-            )}
+                <>
+                  <Avatar sx={{ bgcolor: '#1976d2' }}>U1</Avatar>
+                  <Avatar sx={{ bgcolor: '#2e7d32' }}>U2</Avatar>
+                  <Avatar sx={{ bgcolor: '#ed6c02' }}>U3</Avatar>
+                </>
+              )}
           </AvatarGroup>
         </Box>
       </CardContent>
