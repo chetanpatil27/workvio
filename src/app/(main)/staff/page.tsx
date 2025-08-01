@@ -39,6 +39,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
 import { Staff, removeStaff } from "@/store/slices/staff";
 import { useRouter } from "next/navigation";
+import { StaffDialog } from "./components";
+import { useStaffDialog } from "./hooks";
 
 export default function StaffPage() {
   const dispatch = useDispatch();
@@ -50,6 +52,9 @@ export default function StaffPage() {
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
+
+  // Staff dialog hook
+  const staffDialog = useStaffDialog();
 
   // Filter staff based on search term and selected tab
   const filteredStaff = staff.filter((member) => {
@@ -102,6 +107,13 @@ export default function StaffPage() {
   const handleViewDetails = () => {
     if (selectedStaff) {
       router.push(`/staff/${selectedStaff.id}`);
+    }
+    handleMenuClose();
+  };
+
+  const handleEdit = () => {
+    if (selectedStaff) {
+      staffDialog.openEditDialog(selectedStaff);
     }
     handleMenuClose();
   };
@@ -191,7 +203,7 @@ export default function StaffPage() {
           <Button
             variant="filled"
             startIcon={<AddIcon />}
-            onClick={() => router.push("/staff/create")}
+            onClick={staffDialog.openCreateDialog}
           >
             Add Staff
           </Button>
@@ -394,7 +406,7 @@ export default function StaffPage() {
             <Button
               variant="filled"
               startIcon={<AddIcon />}
-              onClick={() => router.push("/staff/create")}
+              onClick={staffDialog.openCreateDialog}
             >
               Add Staff
             </Button>
@@ -644,7 +656,7 @@ export default function StaffPage() {
           <ViewIcon sx={{ mr: 1 }} />
           View Details
         </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
+        <MenuItem onClick={handleEdit}>
           <EditIcon sx={{ mr: 1 }} />
           Edit
         </MenuItem>
@@ -688,6 +700,18 @@ export default function StaffPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Staff Dialog */}
+      <StaffDialog
+        open={staffDialog.isOpen}
+        isEditing={staffDialog.isEditing}
+        formData={staffDialog.formData}
+        errors={staffDialog.errors}
+        isSubmitting={staffDialog.isSubmitting}
+        onClose={staffDialog.closeDialog}
+        onSave={staffDialog.handleSave}
+        onFormDataChange={staffDialog.handleFormDataChange}
+      />
     </Box>
   );
 }

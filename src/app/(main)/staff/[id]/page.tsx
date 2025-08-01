@@ -35,6 +35,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { removeStaff } from '@/store/slices/staff';
 import { format } from 'date-fns';
+import { StaffDialog } from '../components';
+import { useStaffDialog } from '../hooks';
 
 export default function StaffDetailsPage() {
     const router = useRouter();
@@ -48,6 +50,9 @@ export default function StaffDetailsPage() {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    // Staff dialog hook
+    const staffDialog = useStaffDialog();
 
     if (!staffMember) {
         return (
@@ -78,7 +83,9 @@ export default function StaffDetailsPage() {
     };
 
     const handleEdit = () => {
-        router.push(`/staff/${staffId}/edit`);
+        if (staffMember) {
+            staffDialog.openEditDialog(staffMember);
+        }
         handleMenuClose();
     };
 
@@ -286,7 +293,7 @@ export default function StaffDetailsPage() {
                 <Button
                     variant="contained"
                     startIcon={<EditIcon />}
-                    onClick={() => router.push(`/staff/${staffId}/edit`)}
+                    onClick={() => staffMember && staffDialog.openEditDialog(staffMember)}
                     sx={{ minWidth: 140 }}
                 >
                     Edit Details
@@ -347,6 +354,18 @@ export default function StaffDetailsPage() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Staff Dialog */}
+            <StaffDialog
+                open={staffDialog.isOpen}
+                isEditing={staffDialog.isEditing}
+                formData={staffDialog.formData}
+                errors={staffDialog.errors}
+                isSubmitting={staffDialog.isSubmitting}
+                onClose={staffDialog.closeDialog}
+                onSave={staffDialog.handleSave}
+                onFormDataChange={staffDialog.handleFormDataChange}
+            />
         </Box>
     );
 }
