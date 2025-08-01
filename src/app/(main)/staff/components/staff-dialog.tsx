@@ -2,18 +2,11 @@
 
 import React from 'react';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Box,
-    IconButton,
 } from '@mui/material';
-import {
-    Close as CloseIcon,
-} from '@mui/icons-material';
 import Button from '@/components/form-controls/button';
 import { Input, Select } from '@/components/form-controls';
+import { Modal } from '@/components/common';
 
 export interface StaffFormData {
     name: string;
@@ -53,75 +46,77 @@ const StaffDialog: React.FC<StaffDialogProps> = ({
         onSave();
     };
 
+    const actions = (
+        <>
+            <Button
+                variant="outlined"
+                onClick={onClose}
+                disabled={isSubmitting}
+            >
+                Cancel
+            </Button>
+            <Button
+                variant="filled"
+                onClick={handleSave}
+                loading={isSubmitting}
+            >
+                {isEditing ? 'Update Staff' : 'Add Staff'}
+            </Button>
+        </>
+    );
+
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                {isEditing ? 'Edit Staff Member' : 'Add New Staff Member'}
-                <IconButton onClick={onClose} size="small">
-                    <CloseIcon />
-                </IconButton>
-            </DialogTitle>
-            <DialogContent dividers>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <Input
-                        label="Full Name"
-                        placeholder="Enter full name"
-                        value={formData.name}
-                        onChange={(e) => onFormDataChange({ name: e.target.value })}
-                        error={errors.name}
-                        helperText={errors.name}
-                        required
-                    />
-                    
-                    <Input
-                        label="Email Address"
-                        placeholder="Enter email address"
-                        value={formData.email}
-                        onChange={(e) => onFormDataChange({ email: e.target.value })}
-                        error={errors.email}
-                        helperText={errors.email}
-                        type="email"
-                        required
-                    />
-                    
-                    <Input
-                        label="Mobile Number"
-                        placeholder="Enter mobile number"
-                        value={formData.mobile}
-                        onChange={(e) => onFormDataChange({ mobile: e.target.value })}
-                        error={errors.mobile}
-                        helperText={errors.mobile}
-                        required
-                    />
-                    
-                    <Select
-                        label="Gender"
-                        placeholder="Select gender"
-                        value={formData.gender}
-                        onChange={(e) => onFormDataChange({ gender: e.target.value as string })}
-                        options={genderOptions}
-                        error={errors.gender}
-                        required
-                    />
-                </Box>
-            </DialogContent>
-            <DialogActions sx={{ p: 3 }}>
-                <Button
-                    variant="outlined"
-                    onClick={onClose}
-                    disabled={isSubmitting}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    variant="filled"
-                    onClick={handleSave}
-                    loading={isSubmitting}
-                >
-                    {isEditing ? 'Update Staff' : 'Add Staff'}
-                </Button>
-            </DialogActions>
-        </Dialog>
+        <Modal
+            open={open}
+            onClose={onClose}
+            title={isEditing ? 'Edit Staff Member' : 'Add New Staff Member'}
+            subtitle={isEditing ? 'Update staff member information' : 'Enter details for the new staff member'}
+            size="sm"
+            actions={actions}
+        >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Input
+                    label="Full Name"
+                    placeholder="Enter full name"
+                    value={formData.name}
+                    onChange={(e) => onFormDataChange({ name: e.target.value })}
+                    error={errors.name}
+                    helperText={errors.name}
+                    required
+                />
+                
+                <Input
+                    label="Email Address"
+                    placeholder="Enter email address"
+                    value={formData.email}
+                    onChange={(e) => onFormDataChange({ email: e.target.value })}
+                    error={errors.email}
+                    helperText={errors.email}
+                    type="email"
+                    required
+                />
+                
+                <Input
+                    label="Mobile Number"
+                    placeholder="Enter mobile number"
+                    value={formData.mobile}
+                    onChange={(e) => onFormDataChange({ mobile: e.target.value })}
+                    error={errors.mobile}
+                    helperText={errors.mobile}
+                    required
+                />
+                
+                <Select
+                    label="Gender"
+                    placeholder="Select gender"
+                    value={formData.gender}
+                    onChange={(e) => onFormDataChange({ gender: e.target.value as string })}
+                    options={genderOptions}
+                    error={errors.gender}
+                    required
+                />
+            </Box>
+        </Modal>
     );
 };
 

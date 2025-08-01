@@ -13,10 +13,6 @@ import {
   MenuItem,
   TextField,
   InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Tabs,
   Tab,
 } from "@mui/material";
@@ -41,6 +37,7 @@ import { Staff, removeStaff } from "@/store/slices/staff";
 import { useRouter } from "next/navigation";
 import { StaffDialog } from "./components";
 import { useStaffDialog } from "./hooks";
+import { ConfirmationModal } from "@/components/common";
 
 export default function StaffPage() {
   const dispatch = useDispatch();
@@ -666,40 +663,24 @@ export default function StaffPage() {
         </MenuItem>
       </Menu>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        PaperProps={{
-          sx: { borderRadius: "6px" },
-        }}
-      >
-        <DialogTitle sx={{ fontWeight: 600 }}>Delete Staff Member</DialogTitle>
-        <DialogContent>
-          <Typography>
+        onConfirm={handleDeleteConfirm}
+        title="Delete Staff Member"
+        subtitle="This action cannot be undone"
+        message={
+          <>
             Are you sure you want to delete{" "}
             <strong>{selectedStaff?.name}</strong>? This action cannot be
             undone.
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ p: 3, pt: 1 }}>
-          <Button variant="outlined" onClick={() => setDeleteDialogOpen(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="filled"
-            onClick={handleDeleteConfirm}
-            sx={{
-              bgcolor: "error.main",
-              "&:hover": {
-                bgcolor: "error.dark",
-              },
-            }}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </>
+        }
+        confirmText="Delete"
+        confirmColor="error"
+        size="sm"
+      />
 
       {/* Staff Dialog */}
       <StaffDialog

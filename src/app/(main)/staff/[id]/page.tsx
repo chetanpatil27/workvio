@@ -11,12 +11,7 @@ import {
     IconButton,
     Menu,
     MenuItem,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Button,
-    Divider,
     Paper,
 } from '@mui/material';
 import {
@@ -37,6 +32,8 @@ import { removeStaff } from '@/store/slices/staff';
 import { format } from 'date-fns';
 import { StaffDialog } from '../components';
 import { useStaffDialog } from '../hooks';
+import { ConfirmationModal } from '@/components/common';
+import { useTheme } from '@/components/providers/theme-provider';
 
 export default function StaffDetailsPage() {
     const router = useRouter();
@@ -53,23 +50,44 @@ export default function StaffDetailsPage() {
 
     // Staff dialog hook
     const staffDialog = useStaffDialog();
+    const { darkMode } = useTheme();
 
     if (!staffMember) {
         return (
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-                <PersonIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-                <Typography variant="h6" color="text.secondary" gutterBottom>
-                    Staff Member Not Found
-                </Typography>
-                <Typography variant="body2" color="text.secondary" mb={3}>
-                    The staff member you&apos;re looking for doesn&apos;t exist or has been removed.
-                </Typography>
-                <Button
-                    variant="contained"
-                    onClick={() => router.push('/staff')}
+            <Box sx={{ 
+                minHeight: '100vh',
+                bgcolor: darkMode ? 'background.default' : 'grey.50',
+                p: 3, 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Card
+                    elevation={0}
+                    sx={{
+                        borderRadius: '6px',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        bgcolor: 'background.paper',
+                        p: 4,
+                        textAlign: 'center',
+                        maxWidth: 400,
+                    }}
                 >
-                    Back to Staff List
-                </Button>
+                    <PersonIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                        Staff Member Not Found
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" mb={3}>
+                        The staff member you&apos;re looking for doesn&apos;t exist or has been removed.
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        onClick={() => router.push('/staff')}
+                    >
+                        Back to Staff List
+                    </Button>
+                </Card>
             </Box>
         );
     }
@@ -113,16 +131,20 @@ export default function StaffDetailsPage() {
         return gender.charAt(0).toUpperCase() + gender.slice(1);
     };
 
-    const getAvatarColor = (name: string) => {
-        const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
-        const index = name.charCodeAt(0) % colors.length;
-        return colors[index];
-    };
-
     return (
-        <Box sx={{ p: 3, maxWidth: 1000, mx: 'auto' }}>
+        <Box sx={{
+            minHeight: '100vh',
+            bgcolor: darkMode ? 'background.default' : 'grey.50',
+            py: { xs: 2, sm: 3 },
+            px: { xs: 1, sm: 2, md: 3 }
+        }}>
             {/* Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                mb: { xs: 2, md: 3 },
+                px: { xs: 1, sm: 0 }
+            }}>
                 <IconButton
                     onClick={() => router.back()}
                     sx={{ mr: 2 }}
@@ -130,10 +152,15 @@ export default function StaffDetailsPage() {
                     <ArrowBackIcon />
                 </IconButton>
                 <Box sx={{ flex: 1 }}>
-                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                    <Typography variant="h4" fontWeight="700" sx={{ 
+                        fontSize: { xs: '1.5rem', sm: '2rem' },
+                        mb: 0.5 
+                    }}>
                         Staff Details
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography variant="body1" color="text.secondary" sx={{
+                        fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }}>
                         View and manage staff member information
                     </Typography>
                 </Box>
@@ -145,168 +172,368 @@ export default function StaffDetailsPage() {
                 </IconButton>
             </Box>
 
-            {/* Main Profile Card */}
-            <Card sx={{ mb: 3 }}>
-                <CardContent sx={{ p: 4 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                        <Avatar
-                            sx={{
-                                bgcolor: getAvatarColor(staffMember.name),
-                                width: 80,
-                                height: 80,
-                                fontSize: '2rem',
-                                fontWeight: 'bold',
-                                mr: 3,
-                            }}
-                        >
-                            {staffMember.name.charAt(0).toUpperCase()}
-                        </Avatar>
-                        <Box sx={{ flex: 1 }}>
-                            <Typography variant="h5" fontWeight="bold" gutterBottom>
-                                {staffMember.name}
+            <Box sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: { xs: 2, sm: 2.5, md: 3 }
+            }}>
+                {/* Personal Information Card - Full Width */}
+                <Card
+                    elevation={0}
+                    sx={{
+                        borderRadius: '6px',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        bgcolor: 'background.paper',
+                    }}
+                >
+                    <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 3 } }}>
+                        <Box sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center', 
+                            mb: { xs: 2.5, md: 3 } 
+                        }}>
+                            <Typography variant="h6" sx={{ 
+                                fontWeight: 600, 
+                                fontSize: { xs: '1rem', sm: '1.25rem' } 
+                            }}>
+                                Personal Information
                             </Typography>
-                            <Chip
-                                label={getGenderIcon(staffMember.gender)}
-                                size="medium"
-                                sx={{
-                                    bgcolor: getGenderColor(staffMember.gender),
-                                    color: 'white',
-                                    fontWeight: 500,
-                                }}
-                            />
+                            <IconButton 
+                                size="small"
+                                onClick={() => staffMember && staffDialog.openEditDialog(staffMember)}
+                            >
+                                <EditIcon />
+                            </IconButton>
                         </Box>
-                    </Box>
 
-                    <Divider sx={{ my: 3 }} />
-
-                    {/* Contact Information */}
-                    <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ mb: 2 }}>
-                        Contact Information
-                    </Typography>
-
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-                        gap: 3,
-                        mb: 3,
-                    }}>
-                        <Paper
-                            sx={{
-                                p: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                bgcolor: 'background.default',
-                            }}
-                        >
-                            <EmailIcon sx={{ fontSize: 24, color: 'primary.main', mr: 2 }} />
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: {
+                                xs: '1fr',
+                                sm: 'repeat(2, 1fr)',
+                                md: 'repeat(4, 1fr)'
+                            },
+                            gap: { xs: 2, sm: 2.5, md: 3 }
+                        }}>
                             <Box>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <Typography variant="subtitle2" color="text.secondary" sx={{ 
+                                    mb: 0.5, 
+                                    fontSize: { xs: '0.8rem', sm: '0.875rem' } 
+                                }}>
+                                    Full Name
+                                </Typography>
+                                <Typography variant="body1" sx={{ 
+                                    fontWeight: 500, 
+                                    fontSize: { xs: '0.9rem', sm: '1rem' } 
+                                }}>
+                                    {staffMember.name}
+                                </Typography>
+                            </Box>
+
+                            <Box>
+                                <Typography variant="subtitle2" color="text.secondary" sx={{ 
+                                    mb: 0.5, 
+                                    fontSize: { xs: '0.8rem', sm: '0.875rem' } 
+                                }}>
                                     Email Address
                                 </Typography>
-                                <Typography variant="body1" fontWeight="500">
-                                    {staffMember.email}
-                                </Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <EmailIcon sx={{ 
+                                        fontSize: { xs: '0.9rem', sm: '1rem' }, 
+                                        color: 'text.secondary' 
+                                    }} />
+                                    <Typography variant="body1" sx={{ 
+                                        fontWeight: 500, 
+                                        fontSize: { xs: '0.9rem', sm: '1rem' }, 
+                                        wordBreak: 'break-word' 
+                                    }}>
+                                        {staffMember.email}
+                                    </Typography>
+                                </Box>
                             </Box>
-                        </Paper>
 
-                        <Paper
-                            sx={{
-                                p: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                bgcolor: 'background.default',
-                            }}
-                        >
-                            <PhoneIcon sx={{ fontSize: 24, color: 'success.main', mr: 2 }} />
                             <Box>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <Typography variant="subtitle2" color="text.secondary" sx={{ 
+                                    mb: 0.5, 
+                                    fontSize: { xs: '0.8rem', sm: '0.875rem' } 
+                                }}>
                                     Mobile Number
                                 </Typography>
-                                <Typography variant="body1" fontWeight="500">
-                                    {staffMember.mobile}
-                                </Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <PhoneIcon sx={{ 
+                                        fontSize: { xs: '0.9rem', sm: '1rem' }, 
+                                        color: 'text.secondary' 
+                                    }} />
+                                    <Typography variant="body1" sx={{ 
+                                        fontWeight: 500, 
+                                        fontSize: { xs: '0.9rem', sm: '1rem' } 
+                                    }}>
+                                        {staffMember.mobile}
+                                    </Typography>
+                                </Box>
                             </Box>
-                        </Paper>
-                    </Box>
 
-                    <Divider sx={{ my: 3 }} />
+                            <Box>
+                                <Typography variant="subtitle2" color="text.secondary" sx={{ 
+                                    mb: 0.5, 
+                                    fontSize: { xs: '0.8rem', sm: '0.875rem' } 
+                                }}>
+                                    Gender
+                                </Typography>
+                                <Chip
+                                    label={getGenderIcon(staffMember.gender)}
+                                    size="small"
+                                    sx={{
+                                        bgcolor: getGenderColor(staffMember.gender),
+                                        color: 'white',
+                                        fontWeight: 600,
+                                        textTransform: 'capitalize',
+                                        fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                                    }}
+                                />
+                            </Box>
+                        </Box>
+                    </CardContent>
+                </Card>
 
-                    {/* Timestamps */}
-                    <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ mb: 2 }}>
-                        Record Information
-                    </Typography>
-
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-                        gap: 3,
-                    }}>
-                        <Paper
+                {/* Profile Overview and Record Information Layout */}
+                <Box sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', lg: '1fr 2fr' },
+                    gap: { xs: 2, sm: 2.5, md: 3 }
+                }}>
+                    {/* Profile Overview Card */}
+                    <Card
+                        elevation={0}
+                        sx={{
+                            borderRadius: '6px',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            bgcolor: 'background.paper',
+                            overflow: 'hidden',
+                            height: 'fit-content',
+                        }}
+                    >
+                        {/* Profile Header with Gradient Background */}
+                        <Box
                             sx={{
-                                p: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                bgcolor: 'background.default',
+                                background: darkMode
+                                    ? 'linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%)'
+                                    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                p: { xs: 2.5, sm: 3 },
+                                position: 'relative',
+                                '&::before': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                                    opacity: 0.3,
+                                },
                             }}
                         >
-                            <CalendarIcon sx={{ fontSize: 24, color: 'info.main', mr: 2 }} />
-                            <Box>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    Created Date
+                            <Box sx={{ position: 'relative', textAlign: 'center' }}>
+                                <Avatar
+                                    sx={{
+                                        width: { xs: 70, sm: 80 },
+                                        height: { xs: 70, sm: 80 },
+                                        fontSize: { xs: '1.75rem', sm: '2rem' },
+                                        background: darkMode
+                                            ? 'linear-gradient(45deg, #3a3a3a 30%, #2a2a2a 90%)'
+                                            : 'linear-gradient(45deg, #ffffff 30%, #f5f5f5 90%)',
+                                        color: darkMode ? '#90caf9' : '#1976d2',
+                                        fontWeight: 700,
+                                        mx: 'auto',
+                                        mb: 2,
+                                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                                    }}
+                                >
+                                    {staffMember.name.charAt(0).toUpperCase()}
+                                </Avatar>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontWeight: 700,
+                                        color: 'white',
+                                        textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                                        mb: 0.5,
+                                        fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                                    }}
+                                >
+                                    {staffMember.name}
                                 </Typography>
-                                <Typography variant="body1" fontWeight="500">
-                                    {format(new Date(staffMember.createdAt), 'MMMM dd, yyyy')}
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: 'rgba(255,255,255,0.9)',
+                                        mb: 2,
+                                        fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                                        wordBreak: 'break-word',
+                                        px: 1,
+                                    }}
+                                >
+                                    {staffMember.email}
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {format(new Date(staffMember.createdAt), 'hh:mm a')}
-                                </Typography>
+                                <Chip
+                                    label={getGenderIcon(staffMember.gender)}
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        color: 'white',
+                                        textTransform: 'capitalize',
+                                        fontWeight: 600,
+                                        backdropFilter: 'blur(10px)',
+                                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                    }}
+                                />
                             </Box>
-                        </Paper>
+                        </Box>
 
-                        <Paper
-                            sx={{
-                                p: 3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                bgcolor: 'background.default',
-                            }}
-                        >
-                            <AccessTimeIcon sx={{ fontSize: 24, color: 'warning.main', mr: 2 }} />
-                            <Box>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    Last Updated
-                                </Typography>
-                                <Typography variant="body1" fontWeight="500">
-                                    {format(new Date(staffMember.updatedAt), 'MMMM dd, yyyy')}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {format(new Date(staffMember.updatedAt), 'hh:mm a')}
-                                </Typography>
+                        <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 3 } }}>
+                            <Typography variant="h6" sx={{ 
+                                fontWeight: 600, 
+                                mb: 2, 
+                                fontSize: { xs: '1rem', sm: '1.25rem' } 
+                            }}>
+                                Quick Actions
+                            </Typography>
+
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<EditIcon />}
+                                    onClick={() => staffMember && staffDialog.openEditDialog(staffMember)}
+                                    fullWidth
+                                    sx={{ 
+                                        py: 1.5,
+                                        fontSize: { xs: '0.875rem', sm: '1rem' }
+                                    }}
+                                >
+                                    Edit Details
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    startIcon={<DeleteIcon />}
+                                    onClick={handleDeleteClick}
+                                    fullWidth
+                                    sx={{ 
+                                        py: 1.5,
+                                        fontSize: { xs: '0.875rem', sm: '1rem' }
+                                    }}
+                                >
+                                    Delete Staff
+                                </Button>
                             </Box>
-                        </Paper>
-                    </Box>
-                </CardContent>
-            </Card>
+                        </CardContent>
+                    </Card>
 
-            {/* Action Buttons */}
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-                <Button
-                    variant="contained"
-                    startIcon={<EditIcon />}
-                    onClick={() => staffMember && staffDialog.openEditDialog(staffMember)}
-                    sx={{ minWidth: 140 }}
-                >
-                    Edit Details
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<DeleteIcon />}
-                    onClick={handleDeleteClick}
-                    sx={{ minWidth: 140 }}
-                >
-                    Delete Staff
-                </Button>
+                    {/* Record Information Card */}
+                    <Card
+                        elevation={0}
+                        sx={{
+                            borderRadius: '6px',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            bgcolor: 'background.paper',
+                        }}
+                    >
+                        <CardContent sx={{ p: { xs: 2, sm: 2.5, md: 3 } }}>
+                            <Typography variant="h6" sx={{ 
+                                fontWeight: 600, 
+                                mb: { xs: 2, sm: 3 }, 
+                                fontSize: { xs: '1rem', sm: '1.25rem' } 
+                            }}>
+                                Record Information
+                            </Typography>
+
+                            <Box sx={{
+                                display: 'grid',
+                                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                                gap: { xs: 2, sm: 3 }
+                            }}>
+                                <Paper
+                                    sx={{
+                                        p: { xs: 2, sm: 3 },
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        bgcolor: 'background.default',
+                                        borderRadius: '8px',
+                                        border: '1px solid',
+                                        borderColor: 'divider',
+                                    }}
+                                >
+                                    <CalendarIcon sx={{ 
+                                        fontSize: { xs: 20, sm: 24 }, 
+                                        color: 'info.main', 
+                                        mr: 2 
+                                    }} />
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{
+                                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                                            mb: 0.5
+                                        }}>
+                                            Created Date
+                                        </Typography>
+                                        <Typography variant="body1" sx={{
+                                            fontWeight: 500,
+                                            fontSize: { xs: '0.875rem', sm: '1rem' }
+                                        }}>
+                                            {format(new Date(staffMember.createdAt), 'MMMM dd, yyyy')}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary" sx={{
+                                            fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                                        }}>
+                                            {format(new Date(staffMember.createdAt), 'hh:mm a')}
+                                        </Typography>
+                                    </Box>
+                                </Paper>
+
+                                <Paper
+                                    sx={{
+                                        p: { xs: 2, sm: 3 },
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        bgcolor: 'background.default',
+                                        borderRadius: '8px',
+                                        border: '1px solid',
+                                        borderColor: 'divider',
+                                    }}
+                                >
+                                    <AccessTimeIcon sx={{ 
+                                        fontSize: { xs: 20, sm: 24 }, 
+                                        color: 'warning.main', 
+                                        mr: 2 
+                                    }} />
+                                    <Box>
+                                        <Typography variant="body2" color="text.secondary" sx={{
+                                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                                            mb: 0.5
+                                        }}>
+                                            Last Updated
+                                        </Typography>
+                                        <Typography variant="body1" sx={{
+                                            fontWeight: 500,
+                                            fontSize: { xs: '0.875rem', sm: '1rem' }
+                                        }}>
+                                            {format(new Date(staffMember.updatedAt), 'MMMM dd, yyyy')}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary" sx={{
+                                            fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                                        }}>
+                                            {format(new Date(staffMember.updatedAt), 'hh:mm a')}
+                                        </Typography>
+                                    </Box>
+                                </Paper>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Box>
             </Box>
 
             {/* Context Menu */}
@@ -327,33 +554,23 @@ export default function StaffDetailsPage() {
                 </MenuItem>
             </Menu>
 
-            {/* Delete Confirmation Dialog */}
-            <Dialog
+            {/* Delete Confirmation Modal */}
+            <ConfirmationModal
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
-                maxWidth="sm"
-                fullWidth
-            >
-                <DialogTitle>Delete Staff Member</DialogTitle>
-                <DialogContent>
-                    <Typography>
+                onConfirm={handleDeleteConfirm}
+                title="Delete Staff Member"
+                subtitle="This action cannot be undone"
+                message={
+                    <>
                         Are you sure you want to delete <strong>{staffMember.name}</strong>?
                         This action cannot be undone and will permanently remove all their information.
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDeleteDialogOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleDeleteConfirm}
-                        color="error"
-                        variant="contained"
-                    >
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                    </>
+                }
+                confirmText="Delete"
+                confirmColor="error"
+                size="sm"
+            />
 
             {/* Staff Dialog */}
             <StaffDialog
