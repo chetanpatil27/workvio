@@ -7,7 +7,6 @@ import { useMenuHandler } from "@/components/providers/menu-provider";
 import {
   Box,
   Typography,
-  Card,
   CardContent,
   Chip,
   IconButton,
@@ -16,6 +15,7 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
+import CommonCard from "@/components/common/common-card";
 import Button from "@/components/form-controls/button";
 import {
   Add as AddIcon,
@@ -392,11 +392,10 @@ export default function StaffPage() {
 
       {/* Staff Grid */}
       {filteredStaff.length === 0 ? (
-        <Card
+        <CommonCard
           sx={{
             p: 8,
             textAlign: "center",
-            borderRadius: "6px",
             border: "2px dashed",
             borderColor: "divider",
             bgcolor: "background.default",
@@ -420,7 +419,7 @@ export default function StaffPage() {
               Add Staff
             </Button>
           )}
-        </Card>
+        </CommonCard>
       ) : (
         <Box
           sx={{
@@ -434,20 +433,10 @@ export default function StaffPage() {
           }}
         >
           {filteredStaff.map((member) => (
-            <Card
+            <CommonCard
               key={member.id}
-              sx={{
-                borderRadius: "6px",
-                border: "1px solid",
-                borderColor: "divider",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: 4,
-                },
-              }}
               onClick={() => router.push(`/staff/${member.id}`)}
+              sx={{ cursor: "pointer" }}
             >
               <CardContent sx={{ p: 3 }}>
                 {/* Staff Header with Side Color Bar */}
@@ -643,7 +632,7 @@ export default function StaffPage() {
                   </Box>
                 </Box>
               </CardContent>
-            </Card>
+            </CommonCard>
           ))}
         </Box>
       )}

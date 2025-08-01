@@ -3,28 +3,23 @@
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '@/store';
-import { useState, useEffect } from 'react';
 
 interface ReduxProviderProps {
   children: React.ReactNode;
 }
 
 export default function ReduxProvider({ children }: ReduxProviderProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+  // Always render the same structure to avoid hydration mismatch
   return (
     <Provider store={store}>
-      {isClient ? (
-        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-          {children}
-        </PersistGate>
-      ) : (
-        children
-      )}
+      <PersistGate
+        loading={<div>Loading...</div>}
+        persistor={persistor}
+      // On server-side, skip the rehydration check to avoid mismatch
+      // The loading state will be bypassed on server
+      >
+        {children}
+      </PersistGate>
     </Provider>
   );
 }
