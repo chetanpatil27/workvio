@@ -36,7 +36,7 @@ const userSlice = createSlice({
     updateUser: (state, action: PayloadAction<User>) => {
       const index = state.users.findIndex(user => user.id === action.payload.id);
       if (index !== -1) {
-        state.users[index] = action.payload;
+        Object.assign(state.users[index], action.payload);
       }
     },
     removeUser: (state, action: PayloadAction<string>) => {

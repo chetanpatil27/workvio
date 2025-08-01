@@ -70,10 +70,10 @@ const staffSlice = createSlice({
         updateStaff: (state, action: PayloadAction<Staff>) => {
             const index = state.staff.findIndex(s => s.id === action.payload.id);
             if (index !== -1) {
-                state.staff[index] = {
+                Object.assign(state.staff[index], {
                     ...action.payload,
                     updatedAt: new Date().toISOString(),
-                };
+                });
             }
         },
         removeStaff: (state, action: PayloadAction<string>) => {

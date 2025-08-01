@@ -172,7 +172,7 @@ const projectSlice = createSlice({
     updateProject: (state, action: PayloadAction<Project>) => {
       const index = state.projects.findIndex(project => project.id === action.payload.id);
       if (index !== -1) {
-        state.projects[index] = action.payload;
+        Object.assign(state.projects[index], action.payload);
         if (state.currentProject?.id === action.payload.id) {
           state.currentProject = action.payload;
         }

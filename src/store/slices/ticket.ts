@@ -82,7 +82,7 @@ const ticketSlice = createSlice({
     updateTicket: (state, action: PayloadAction<Ticket>) => {
       const index = state.tickets.findIndex(ticket => ticket.id === action.payload.id);
       if (index !== -1) {
-        state.tickets[index] = action.payload;
+        Object.assign(state.tickets[index], action.payload);
         if (state.currentTicket?.id === action.payload.id) {
           state.currentTicket = action.payload;
         }
@@ -113,7 +113,7 @@ const ticketSlice = createSlice({
     updateComment: (state, action: PayloadAction<TicketComment>) => {
       const index = state.comments.findIndex(comment => comment.id === action.payload.id);
       if (index !== -1) {
-        state.comments[index] = action.payload;
+        Object.assign(state.comments[index], action.payload);
       }
     },
     removeComment: (state, action: PayloadAction<string>) => {

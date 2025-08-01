@@ -80,7 +80,7 @@ const designationSlice = createSlice({
         updateDesignation: (state, action: PayloadAction<Designation>) => {
             const index = state.designations.findIndex(d => d.id === action.payload.id);
             if (index !== -1) {
-                state.designations[index] = action.payload;
+                Object.assign(state.designations[index], action.payload);
             }
         },
         deleteDesignation: (state, action: PayloadAction<string>) => {

@@ -129,7 +129,7 @@ const sprintSlice = createSlice({
     updateSprint: (state, action: PayloadAction<Sprint>) => {
       const index = state.sprints.findIndex(sprint => sprint.id === action.payload.id);
       if (index !== -1) {
-        state.sprints[index] = action.payload;
+        Object.assign(state.sprints[index], action.payload);
         if (state.currentSprint?.id === action.payload.id) {
           state.currentSprint = action.payload;
         }

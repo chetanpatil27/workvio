@@ -23,23 +23,24 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    Button as MuiButton,
 } from '@mui/material';
 import {
     Add as AddIcon,
-    Edit as EditIcon,
     Delete as DeleteIcon,
     Work as DesignationIcon,
     Close as CloseIcon,
+    ToggleOn,
+    ToggleOff,
 } from '@mui/icons-material';
-import Button from '@/components/form-controls/button';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store';
+import { RootState } from '../../../store';
 import {
     addDesignation,
     deleteDesignation,
     toggleDesignationStatus,
     type Designation
-} from '@/store/slices/designation';
+} from '../../../store/slices/designation';
 
 const initialFormData = {
     name: '',
@@ -134,208 +135,208 @@ export default function DesignationPage() {
         }
     };
 
+    const activeDesignations = designations.filter(d => d.isActive).length;
+    const inactiveDesignations = designations.filter(d => !d.isActive).length;
+    const departments = [...new Set(designations.map(d => d.department))].length;
+
     return (
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
-            {/* Header Section */}
-            <Box sx={{
-                mb: 4,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: { xs: 'flex-start', md: 'center' },
-                flexDirection: { xs: 'column', md: 'row' },
-                gap: { xs: 2, md: 0 }
-            }}>
-                <Box>
-                    <Typography
-                        variant="h4"
-                        fontWeight="700"
-                        sx={{
-                            color: 'text.primary',
-                            fontSize: { xs: '1.75rem', md: '2.125rem' },
-                            mb: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1
-                        }}
-                    >
-                        <DesignationIcon sx={{ fontSize: '2rem', color: 'primary.main' }} />
-                        Designations
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        color="text.secondary"
-                        sx={{
-                            fontSize: '1rem',
-                            fontWeight: 400
-                        }}
-                    >
-                        Manage job designations and roles within your organization
-                    </Typography>
+        <Box sx={{ p: 3 }}>
+            {/* Header */}
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="h4" component="h1" sx={{ mb: 2, fontWeight: 'bold' }}>
+                    Designations
+                </Typography>
+                
+                {/* Stats Cards */}
+                <Box sx={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)' },
+                    gap: 2, 
+                    mb: 3 
+                }}>
+                    <Card>
+                        <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Box>
+                                    <Typography color="textSecondary" gutterBottom>
+                                        Total Designations
+                                    </Typography>
+                                    <Typography variant="h4" component="div">
+                                        {designations.length}
+                                    </Typography>
+                                </Box>
+                                <DesignationIcon color="primary" sx={{ fontSize: 40 }} />
+                            </Box>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Box>
+                                    <Typography color="textSecondary" gutterBottom>
+                                        Active
+                                    </Typography>
+                                    <Typography variant="h4" component="div" color="success.main">
+                                        {activeDesignations}
+                                    </Typography>
+                                </Box>
+                                <DesignationIcon color="success" sx={{ fontSize: 40 }} />
+                            </Box>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Box>
+                                    <Typography color="textSecondary" gutterBottom>
+                                        Inactive
+                                    </Typography>
+                                    <Typography variant="h4" component="div" color="warning.main">
+                                        {inactiveDesignations}
+                                    </Typography>
+                                </Box>
+                                <DesignationIcon color="warning" sx={{ fontSize: 40 }} />
+                            </Box>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Box>
+                                    <Typography color="textSecondary" gutterBottom>
+                                        Departments
+                                    </Typography>
+                                    <Typography variant="h4" component="div" color="info.main">
+                                        {departments}
+                                    </Typography>
+                                </Box>
+                                <DesignationIcon color="info" sx={{ fontSize: 40 }} />
+                            </Box>
+                        </CardContent>
+                    </Card>
                 </Box>
-                <Button
-                    color="success"
-                    variant="filled"
-                    size="md"
-                    startIcon={<AddIcon />}
-                    onClick={handleOpenCreateModal}
-                >
-                    Create Designation
-                </Button>
+
+                {/* Add Button */}
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                    <MuiButton
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleOpenCreateModal}
+                    >
+                        Add Designation
+                    </MuiButton>
+                </Box>
             </Box>
 
             {/* Designations Table */}
-            <Card
-                elevation={0}
-                sx={{
-                    borderRadius: '6px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                }}
-            >
-                <CardContent sx={{ p: 0 }}>
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow sx={{ bgcolor: 'grey.50' }}>
-                                    <TableCell sx={{ fontWeight: 600, py: 2, px: 3 }}>
-                                        Designation
+            <Card>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Department</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Level</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Created</TableCell>
+                                <TableCell align="center" sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {designations.map((designation) => (
+                                <TableRow key={designation.id}>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" fontWeight="medium">
+                                            {designation.name}
+                                        </Typography>
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, py: 2, px: 3 }}>
-                                        Department
-                                    </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, py: 2, px: 3 }}>
-                                        Level
-                                    </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, py: 2, px: 3 }}>
-                                        Status
-                                    </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, py: 2, px: 3 }}>
-                                        Created
-                                    </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, py: 2, px: 3, textAlign: 'center' }}>
-                                        Actions
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {designations.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                                            <Typography color="text.secondary">
-                                                No designations found. Create your first designation!
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    designations.map((designation) => (
-                                        <TableRow
-                                            key={designation.id}
-                                            sx={{
-                                                '&:hover': {
-                                                    bgcolor: 'grey.50'
-                                                }
+                                    <TableCell>
+                                        <Typography 
+                                            variant="body2" 
+                                            color="text.secondary"
+                                            sx={{ 
+                                                maxWidth: 200,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap'
                                             }}
                                         >
-                                            <TableCell sx={{ py: 2, px: 3 }}>
-                                                <Box>
-                                                    <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                                                        {designation.name}
-                                                    </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {designation.description}
-                                                    </Typography>
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell sx={{ py: 2, px: 3 }}>
-                                                <Typography variant="body2">
-                                                    {designation.department}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell sx={{ py: 2, px: 3 }}>
-                                                <Chip
-                                                    label={designation.level}
-                                                    size="small"
-                                                    color={getLevelColor(designation.level)}
-                                                    variant="outlined"
-                                                />
-                                            </TableCell>
-                                            <TableCell sx={{ py: 2, px: 3 }}>
-                                                <Chip
-                                                    label={designation.isActive ? 'Active' : 'Inactive'}
-                                                    size="small"
-                                                    color={designation.isActive ? 'success' : 'default'}
-                                                    variant={designation.isActive ? 'filled' : 'outlined'}
-                                                />
-                                            </TableCell>
-                                            <TableCell sx={{ py: 2, px: 3 }}>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {new Date(designation.createdAt).toLocaleDateString()}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell sx={{ py: 2, px: 3, textAlign: 'center' }}>
-                                                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                                                    <IconButton
-                                                        size="small"
-                                                        onClick={() => handleToggleStatus(designation.id)}
-                                                        sx={{
-                                                            color: designation.isActive ? 'warning.main' : 'success.main',
-                                                            '&:hover': { bgcolor: designation.isActive ? 'warning.lighter' : 'success.lighter' }
-                                                        }}
-                                                    >
-                                                        <EditIcon fontSize="small" />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        size="small"
-                                                        onClick={() => handleDeleteDesignation(designation.id)}
-                                                        sx={{
-                                                            color: 'error.main',
-                                                            '&:hover': { bgcolor: 'error.lighter' }
-                                                        }}
-                                                    >
-                                                        <DeleteIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Box>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </CardContent>
+                                            {designation.description}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>{designation.department}</TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={designation.level}
+                                            color={getLevelColor(designation.level)}
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={designation.isActive ? 'Active' : 'Inactive'}
+                                            color={designation.isActive ? 'success' : 'default'}
+                                            size="small"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {new Date(designation.createdAt).toLocaleDateString()}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => handleToggleStatus(designation.id)}
+                                                color={designation.isActive ? 'warning' : 'success'}
+                                                title={designation.isActive ? 'Deactivate' : 'Activate'}
+                                            >
+                                                {designation.isActive ? <ToggleOn /> : <ToggleOff />}
+                                            </IconButton>
+                                            <IconButton
+                                                size="small"
+                                                color="error"
+                                                onClick={() => handleDeleteDesignation(designation.id)}
+                                                title="Delete"
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            {designations.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                                        <Typography variant="body1" color="text.secondary">
+                                            No designations found. Create your first designation!
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Card>
 
             {/* Create Designation Modal */}
-            <Dialog
-                open={isCreateModalOpen}
-                onClose={handleCloseCreateModal}
-                maxWidth="sm"
-                fullWidth
-                PaperProps={{
-                    sx: {
-                        borderRadius: '6px',
-                        border: '1px solid',
-                        borderColor: 'divider',
-                    }
-                }}
-            >
-                <DialogTitle sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    pb: 2
-                }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Dialog open={isCreateModalOpen} onClose={handleCloseCreateModal} maxWidth="sm" fullWidth>
+                <DialogTitle>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         Create New Designation
-                    </Typography>
-                    <IconButton onClick={handleCloseCreateModal} size="small">
-                        <CloseIcon />
-                    </IconButton>
+                        <IconButton onClick={handleCloseCreateModal} size="small">
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
                 </DialogTitle>
-
-                <DialogContent sx={{ py: 0 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, py: 2 }}>
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
                         <TextField
                             label="Designation Name"
                             value={formData.name}
@@ -344,7 +345,6 @@ export default function DesignationPage() {
                             helperText={formErrors.name}
                             fullWidth
                             required
-                            size="medium"
                         />
 
                         <TextField
@@ -353,71 +353,65 @@ export default function DesignationPage() {
                             onChange={(e) => handleInputChange('description', e.target.value)}
                             error={!!formErrors.description}
                             helperText={formErrors.description}
-                            fullWidth
-                            required
                             multiline
                             rows={3}
-                            size="medium"
-                        />
-
-                        <TextField
-                            label="Department"
-                            value={formData.department}
-                            onChange={(e) => handleInputChange('department', e.target.value)}
-                            error={!!formErrors.department}
-                            helperText={formErrors.department}
                             fullWidth
                             required
-                            size="medium"
                         />
 
-                        <FormControl fullWidth required>
-                            <InputLabel>Level</InputLabel>
-                            <Select
-                                value={formData.level}
-                                onChange={(e) => handleInputChange('level', e.target.value)}
-                                label="Level"
-                                size="medium"
-                            >
-                                <MenuItem value="Junior">Junior</MenuItem>
-                                <MenuItem value="Mid">Mid</MenuItem>
-                                <MenuItem value="Senior">Senior</MenuItem>
-                                <MenuItem value="Lead">Lead</MenuItem>
-                                <MenuItem value="Manager">Manager</MenuItem>
-                                <MenuItem value="Director">Director</MenuItem>
-                            </Select>
-                        </FormControl>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <FormControl fullWidth required error={!!formErrors.department}>
+                                <InputLabel>Department</InputLabel>
+                                <Select
+                                    value={formData.department}
+                                    label="Department"
+                                    onChange={(e) => handleInputChange('department', e.target.value)}
+                                >
+                                    <MenuItem value="Engineering">Engineering</MenuItem>
+                                    <MenuItem value="Product">Product</MenuItem>
+                                    <MenuItem value="Design">Design</MenuItem>
+                                    <MenuItem value="Marketing">Marketing</MenuItem>
+                                    <MenuItem value="Sales">Sales</MenuItem>
+                                    <MenuItem value="Operations">Operations</MenuItem>
+                                    <MenuItem value="HR">HR</MenuItem>
+                                    <MenuItem value="Finance">Finance</MenuItem>
+                                </Select>
+                                {formErrors.department && (
+                                    <Typography variant="caption" color="error" sx={{ mt: 0.5, mx: 1.5 }}>
+                                        {formErrors.department}
+                                    </Typography>
+                                )}
+                            </FormControl>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Status:
-                            </Typography>
-                            <Chip
-                                label={formData.isActive ? 'Active' : 'Inactive'}
-                                size="small"
-                                color={formData.isActive ? 'success' : 'default'}
-                                onClick={() => handleInputChange('isActive', !formData.isActive)}
-                                sx={{ cursor: 'pointer' }}
-                            />
+                            <FormControl fullWidth>
+                                <InputLabel>Level</InputLabel>
+                                <Select
+                                    value={formData.level}
+                                    label="Level"
+                                    onChange={(e) => handleInputChange('level', e.target.value)}
+                                >
+                                    <MenuItem value="Junior">Junior</MenuItem>
+                                    <MenuItem value="Mid">Mid</MenuItem>
+                                    <MenuItem value="Senior">Senior</MenuItem>
+                                    <MenuItem value="Lead">Lead</MenuItem>
+                                    <MenuItem value="Manager">Manager</MenuItem>
+                                    <MenuItem value="Director">Director</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Box>
                     </Box>
                 </DialogContent>
-
-                <DialogActions sx={{ px: 3, py: 2 }}>
-                    <Button
-                        variant="outlined"
-                        color="link"
-                        onClick={handleCloseCreateModal}
-                    >
+                <DialogActions sx={{ p: 2.5, gap: 1 }}>
+                    <MuiButton onClick={handleCloseCreateModal} color="inherit">
                         Cancel
-                    </Button>
-                    <Button
-                        variant="filled"
-                        color="success"
-                        onClick={handleCreateDesignation}
+                    </MuiButton>
+                    <MuiButton 
+                        onClick={handleCreateDesignation} 
+                        variant="contained"
+                        sx={{ minWidth: 80 }}
                     >
-                        Create Designation
-                    </Button>
+                        Create
+                    </MuiButton>
                 </DialogActions>
             </Dialog>
         </Box>
