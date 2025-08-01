@@ -26,6 +26,7 @@ import {
   Person as ProfileIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
+  Work as WorkIcon,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
@@ -57,6 +58,12 @@ const navigationItems = [
     icon: <StaffIcon />,
     href: '/staff',
     color: '#7b1fa2',
+  },
+  {
+    text: 'Designations',
+    icon: <WorkIcon />,
+    href: '/designations',
+    color: '#ff5722',
   },
   {
     text: 'Profile',
