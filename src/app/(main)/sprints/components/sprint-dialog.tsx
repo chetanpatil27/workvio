@@ -14,14 +14,9 @@ import CustomSelect from '@/components/form-controls/select';
 import DatePicker from '@/components/form-controls/date-picker';
 import Textarea from '@/components/form-controls/textarea';
 import { Sprint } from '@/store/slices/sprint';
+import { Project } from '@/store/slices/project';
 import { SprintFormData } from '../hooks/use-sprint-dialog';
 import { statusOptions } from '../constants/sprint-status';
-
-interface Project {
-  id: string;
-  name: string;
-  key: string;
-}
 
 interface SprintDialogProps {
   open: boolean;
@@ -81,7 +76,7 @@ const SprintDialog: React.FC<SprintDialogProps> = ({
             onChange={(e) => onFormDataChange({ projectId: e.target.value as string })}
             options={projects.map(project => ({
               value: project.id,
-              label: `${project.key} - ${project.name}`,
+              label: project.key ? `${project.key} - ${project.name}` : project.name,
             }))}
             fullWidth
             required
