@@ -29,6 +29,7 @@ import {
   Work as WorkIcon,
   Group as GroupIcon,
   Label as StatusIcon,
+  ConfirmationNumber as ConfirmationNumberIcon,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
@@ -54,6 +55,12 @@ const navigationItems = [
     icon: <SprintIcon />,
     href: '/app/sprints',
     color: '#ed6c02',
+  },
+  {
+    text: 'Tickets',
+    icon: <ConfirmationNumberIcon />,
+    href: '/app/tickets',
+    color: '#7b1fa2',
   },
   {
     text: 'Status',

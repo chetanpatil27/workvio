@@ -31,6 +31,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/tickets',
+        destination: '/app/tickets',
+        permanent: true,
+      },
+      {
+        source: '/tickets/:path*',
+        destination: '/app/tickets/:path*',
+        permanent: true,
+      },
+      {
         source: '/staff',
         destination: '/app/staff',
         permanent: true,
