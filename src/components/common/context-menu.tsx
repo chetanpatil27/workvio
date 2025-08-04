@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
     Popper,
     Paper,
@@ -10,8 +10,10 @@ import {
     ListItemText,
     Divider,
     ClickAwayListener,
-    Grow
+    Grow,
+    IconButton
 } from '@mui/material';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 
 export interface MenuAction {
     id: string;
@@ -23,7 +25,8 @@ export interface MenuAction {
     divider?: boolean; // Add divider after this item
 }
 
-interface ContextMenuProps {
+// External state props (original mode)
+interface ExternalStateProps {
     anchorEl: null | HTMLElement;
     open: boolean;
     onClose: () => void;
@@ -32,21 +35,72 @@ interface ContextMenuProps {
         vertical: 'top' | 'center' | 'bottom';
         horizontal: 'left' | 'center' | 'right';
     };
+    trigger?: never;
 }
+
+// Self-contained props (new mode)
+interface SelfContainedProps {
+    trigger?: React.ReactElement;
+    actions: MenuAction[];
+    anchorOrigin?: {
+        vertical: 'top' | 'center' | 'bottom';
+        horizontal: 'left' | 'center' | 'right';
+    };
+    anchorEl?: never;
+    open?: never;
+    onClose?: never;
+}
+
+type ContextMenuProps = ExternalStateProps | SelfContainedProps;
 
 // Use a Map to track open menus (better for SSR)
 const openMenus = new Map<string, () => void>();
 
-const ContextMenu: React.FC<ContextMenuProps> = ({
-    anchorEl,
-    open,
-    onClose,
-    actions,
-    anchorOrigin = {
-        vertical: 'top',
-        horizontal: 'right',
-    },
-}) => {
+const ContextMenu: React.FC<ContextMenuProps> = (props) => {
+    // Check if it's self-contained mode
+    const isSelfContained = 'trigger' in props;
+    
+    // Self-contained state
+    const [internalAnchorEl, setInternalAnchorEl] = useState<null | HTMLElement>(null);
+    
+    // Extract props based on mode
+    const {
+        actions,
+        anchorOrigin = {
+            vertical: 'top',
+            horizontal: 'right',
+        },
+    } = props;
+    
+    // Determine actual values based on mode
+    const anchorEl = isSelfContained ? internalAnchorEl : props.anchorEl;
+    const open = isSelfContained ? Boolean(internalAnchorEl) : (props.open ?? false);
+    const onClose = useMemo(() => {
+        return isSelfContained 
+            ? () => setInternalAnchorEl(null)
+            : (props.onClose ?? (() => {}));
+    }, [isSelfContained, props.onClose]);
+    
+    // Handle trigger click for self-contained mode
+    const handleTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
+        setInternalAnchorEl(event.currentTarget);
+    };
+    
+    // Default trigger component
+    const defaultTrigger = (
+        <IconButton
+            data-menu-button="true"
+            size="small"
+            sx={{ color: 'text.secondary' }}
+        >
+            <MoreVertIcon />
+        </IconButton>
+    );
+    
+    // Get the trigger to use
+    const triggerToUse = isSelfContained ? (props.trigger || defaultTrigger) : null;
+    
     // Generate a unique ID for this menu instance
     const menuId = React.useRef(`menu-${Math.random().toString(36).substr(2, 9)}`).current;
 
@@ -138,28 +192,32 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     }
 
     return (
-        <Popper
-            open={open}
-            anchorEl={anchorEl}
-            placement={getPlacement()}
-            transition
-            disablePortal={false}
-            modifiers={[
-                {
-                    name: 'preventOverflow',
-                    enabled: true,
-                    options: {
-                        altAxis: true,
-                        altBoundary: true,
-                        tether: true,
-                        rootBoundary: 'document',
-                        padding: 8,
+        <>
+            {isSelfContained && triggerToUse && React.cloneElement(triggerToUse, {
+                onClick: handleTriggerClick,
+            } as React.HTMLAttributes<HTMLElement>)}
+            <Popper
+                open={open}
+                anchorEl={anchorEl}
+                placement={getPlacement()}
+                transition
+                disablePortal={false}
+                modifiers={[
+                    {
+                        name: 'preventOverflow',
+                        enabled: true,
+                        options: {
+                            altAxis: true,
+                            altBoundary: true,
+                            tether: true,
+                            rootBoundary: 'document',
+                            padding: 8,
+                        },
                     },
-                },
-                {
-                    name: 'flip',
-                    enabled: true,
-                    options: {
+                    {
+                        name: 'flip',
+                        enabled: true,
+                        options: {
                         altBoundary: true,
                         rootBoundary: 'document',
                         padding: 8,
@@ -259,6 +317,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                 </Grow>
             )}
         </Popper>
+        </>
     );
 };
 

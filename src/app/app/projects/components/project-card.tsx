@@ -8,10 +8,8 @@ import {
   LinearProgress,
   Avatar,
   AvatarGroup,
-  IconButton,
 } from '@mui/material';
 import {
-  MoreVert as MoreIcon,
   CalendarToday as CalendarIcon,
   Group as GroupIcon,
 } from '@mui/icons-material';
@@ -19,13 +17,17 @@ import { Project } from '@/store/slices/project';
 import { format } from 'date-fns';
 import { projectStatusColors, projectStatusLabels, projectPriorityColors } from '../constants/project-status';
 import { CommonCard } from '@/components/common';
+import ProjectMenu from './project-menu';
 
 interface ProjectCardProps {
   project: Project;
   progress: number;
   sprintCount: number;
   onCardClick: () => void;
-  onMenuClick: (event: React.MouseEvent<HTMLElement>) => void;
+  onView: () => void;
+  onEdit: () => void;
+  onArchive: () => void;
+  onDelete: () => void;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -33,7 +35,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   progress,
   sprintCount,
   onCardClick,
-  onMenuClick,
+  onView,
+  onEdit,
+  onArchive,
+  onDelete,
 }) => {
   return (
     <CommonCard
@@ -111,17 +116,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Box>
         </Box>
 
-        <IconButton
-          data-menu-button="true"
-          onClick={(e) => {
-            e.stopPropagation();
-            onMenuClick(e);
-          }}
-          size="small"
-          sx={{ color: 'text.secondary', ml: 1 }}
-        >
-          <MoreIcon />
-        </IconButton>
+        <Box onClick={(e) => e.stopPropagation()}>
+          <ProjectMenu
+            onView={onView}
+            onEdit={onEdit}
+            onArchive={onArchive}
+            onDelete={onDelete}
+          />
+        </Box>
       </Box>
 
       {/* Project Description */}

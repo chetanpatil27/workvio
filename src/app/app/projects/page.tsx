@@ -2,15 +2,17 @@
 
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { removeProject } from '@/store/slices/project';
 import ProjectHeader from './components/project-header';
 import ProjectSearchFilters from './components/project-search-filters';
 import ProjectList from './components/project-list';
-import ProjectMenu from './components/project-menu';
 import CreateProjectModal from '@/components/project/create-project-modal';
 import { useProject } from './hooks/use-project';
 
 export default function ProjectsPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const dispatch = useDispatch();
 
   // Main project logic
   const {
@@ -23,11 +25,7 @@ export default function ProjectsPage() {
     setSelectedTab,
     filterStatus,
     setFilterStatus,
-    anchorEl,
-    handleMenuClick,
-    handleMenuClose,
     handleViewProject,
-    handleDeleteProject,
     getProjectProgress,
     getProjectSprints,
   } = useProject();
@@ -38,15 +36,20 @@ export default function ProjectsPage() {
   };
 
   // Handle edit project (placeholder for now)
-  const handleEditProject = () => {
+  const handleEditProject = (projectId: string) => {
     // TODO: Implement edit functionality
-    console.log('Edit project:', selectedProject);
+    console.log('Edit project:', projectId);
   };
 
   // Handle archive project (placeholder for now)
-  const handleArchiveProject = () => {
+  const handleArchiveProject = (projectId: string) => {
     // TODO: Implement archive functionality
-    console.log('Archive project:', selectedProject);
+    console.log('Archive project:', projectId);
+  };
+
+  // Handle delete project
+  const handleDeleteProject = (projectId: string) => {
+    dispatch(removeProject(projectId));
   };
 
   return (
@@ -73,18 +76,11 @@ export default function ProjectsPage() {
         getProjectProgress={getProjectProgress}
         getProjectSprints={getProjectSprints}
         onProjectClick={handleViewProject}
-        onMenuClick={handleMenuClick}
-        onCreateProject={handleCreateProject}
-      />
-
-      {/* Context Menu */}
-      <ProjectMenu
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        onView={() => selectedProject && handleViewProject(selectedProject.id)}
+        onView={handleViewProject}
         onEdit={handleEditProject}
         onArchive={handleArchiveProject}
         onDelete={handleDeleteProject}
+        onCreateProject={handleCreateProject}
       />
 
       {/* Create Project Modal */}

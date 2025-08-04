@@ -6,11 +6,9 @@ import {
   Box,
   Chip,
   Avatar,
-  IconButton,
   Tooltip,
 } from '@mui/material';
 import {
-  MoreVert as MoreIcon,
   BugReport as BugReportIcon,
   Task as TaskIcon,
   Book as BookIcon,
@@ -20,11 +18,13 @@ import { Ticket } from '@/store/slices/ticket';
 import { getTypeConfig, getStatusConfig, getPriorityConfig } from '../constants/ticket-constants';
 import { formatDistanceToNow, format } from 'date-fns';
 import { CommonCard } from '@/components/common';
+import TicketMenu from './ticket-menu';
 
 interface TicketCardProps {
   ticket: Ticket;
-  onMenuClick: (event: React.MouseEvent<HTMLElement>, ticket: Ticket) => void;
   onViewTicket: (ticketId: string) => void;
+  onEditTicket: (ticket: Ticket) => void;
+  onDeleteTicket: (ticketId: string) => void;
   getProjectName: (projectId: string) => string;
   getSprintName: (sprintId?: string) => string;
   getAssigneeName: (assigneeId?: string) => string;
@@ -43,8 +43,9 @@ const getTypeIcon = (type: string) => {
 
 export default function TicketCard({
   ticket,
-  onMenuClick,
   onViewTicket,
+  onEditTicket,
+  onDeleteTicket,
   getProjectName,
   getSprintName,
   getAssigneeName,
@@ -56,6 +57,18 @@ export default function TicketCard({
   const assigneeName = getAssigneeName(ticket.assigneeId);
   const projectName = getProjectName(ticket.projectId);
   const sprintName = getSprintName(ticket.sprintId);
+
+  const handleView = () => {
+    onViewTicket(ticket.id);
+  };
+
+  const handleEdit = () => {
+    onEditTicket(ticket);
+  };
+
+  const handleDelete = () => {
+    onDeleteTicket(ticket.id);
+  };
 
   return (
     <CommonCard
@@ -146,17 +159,13 @@ export default function TicketCard({
           </Box>
         </Box>
 
-        <IconButton
-          data-menu-button="true"
-          onClick={(e) => {
-            e.stopPropagation();
-            onMenuClick(e, ticket);
-          }}
-          size="small"
-          sx={{ color: 'text.secondary', ml: 1 }}
-        >
-          <MoreIcon />
-        </IconButton>
+        <Box onClick={(e) => e.stopPropagation()}>
+          <TicketMenu
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </Box>
       </Box>
 
       {/* Ticket Description */}

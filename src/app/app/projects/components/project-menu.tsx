@@ -10,8 +10,6 @@ import {
 } from '@mui/icons-material';
 
 interface ProjectMenuProps {
-  anchorEl: null | HTMLElement;
-  onClose: () => void;
   onView: () => void;
   onEdit: () => void;
   onArchive: () => void;
@@ -19,8 +17,6 @@ interface ProjectMenuProps {
 }
 
 const ProjectMenu: React.FC<ProjectMenuProps> = ({
-  anchorEl,
-  onClose,
   onView,
   onEdit,
   onArchive,
@@ -57,9 +53,6 @@ const ProjectMenu: React.FC<ProjectMenuProps> = ({
 
   return (
     <ContextMenu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={onClose}
       actions={menuActions}
     />
   );

@@ -13,7 +13,10 @@ interface ProjectListProps {
   getProjectProgress: (projectId: string) => number;
   getProjectSprints: (projectId: string) => Sprint[];
   onProjectClick: (projectId: string) => void;
-  onMenuClick: (event: React.MouseEvent<HTMLElement>, projectId: string) => void;
+  onView: (projectId: string) => void;
+  onEdit: (projectId: string) => void;
+  onArchive: (projectId: string) => void;
+  onDelete: (projectId: string) => void;
   onCreateProject: () => void;
 }
 
@@ -22,7 +25,10 @@ const ProjectList: React.FC<ProjectListProps> = ({
   getProjectProgress,
   getProjectSprints,
   onProjectClick,
-  onMenuClick,
+  onView,
+  onEdit,
+  onArchive,
+  onDelete,
   onCreateProject,
 }) => {
   if (projects.length === 0) {
@@ -70,7 +76,10 @@ const ProjectList: React.FC<ProjectListProps> = ({
           progress={getProjectProgress(project.id)}
           sprintCount={getProjectSprints(project.id).length}
           onCardClick={() => onProjectClick(project.id)}
-          onMenuClick={(e) => onMenuClick(e, project.id)}
+          onView={() => onView(project.id)}
+          onEdit={() => onEdit(project.id)}
+          onArchive={() => onArchive(project.id)}
+          onDelete={() => onDelete(project.id)}
         />
       ))}
     </Box>

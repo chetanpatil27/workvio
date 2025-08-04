@@ -7,8 +7,9 @@ import TicketCard from './ticket-card';
 
 interface TicketListProps {
   tickets: Ticket[];
-  onMenuClick: (event: React.MouseEvent<HTMLElement>, ticket: Ticket) => void;
   onViewTicket: (ticketId: string) => void;
+  onEditTicket: (ticket: Ticket) => void;
+  onDeleteTicket: (ticketId: string) => void;
   getProjectName: (projectId: string) => string;
   getSprintName: (sprintId?: string) => string;
   getAssigneeName: (assigneeId?: string) => string;
@@ -16,8 +17,9 @@ interface TicketListProps {
 
 export default function TicketList({
   tickets,
-  onMenuClick,
   onViewTicket,
+  onEditTicket,
+  onDeleteTicket,
   getProjectName,
   getSprintName,
   getAssigneeName,
@@ -61,8 +63,9 @@ export default function TicketList({
         <TicketCard
           key={ticket.id}
           ticket={ticket}
-          onMenuClick={onMenuClick}
           onViewTicket={onViewTicket}
+          onEditTicket={onEditTicket}
+          onDeleteTicket={onDeleteTicket}
           getProjectName={getProjectName}
           getSprintName={getSprintName}
           getAssigneeName={getAssigneeName}

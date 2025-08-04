@@ -6,7 +6,6 @@ import {
   TicketHeader,
   TicketSearchFilters,
   TicketList,
-  TicketMenu,
   TicketDialog,
   TicketViewModal,
   TicketFormData,
@@ -26,7 +25,6 @@ export default function TicketsPage() {
     projects,
     sprints,
     staff,
-    selectedTicket,
     searchTerm,
     setSearchTerm,
     filterStatus,
@@ -39,10 +37,6 @@ export default function TicketsPage() {
     setFilterProject,
     filterSprint,
     setFilterSprint,
-    anchorEl,
-    handleMenuClick,
-    handleMenuClose,
-    handleDeleteTicket,
     getProjectName,
     getSprintName,
     getAssigneeName,
@@ -66,20 +60,8 @@ export default function TicketsPage() {
   };
 
   // Handle edit from menu
-  const handleEditTicket = () => {
-    if (selectedTicket) {
-      openEditDialog(selectedTicket);
-      handleMenuClose();
-    }
-  };
-
-  // Handle view from menu
-  const handleViewTicketFromMenu = () => {
-    if (selectedTicket) {
-      setViewTicket(selectedTicket);
-      setViewModalOpen(true);
-      handleMenuClose();
-    }
+  const handleEditTicket = (ticket: Ticket) => {
+    openEditDialog(ticket);
   };
 
   // Handle view ticket from card click
@@ -125,9 +107,11 @@ export default function TicketsPage() {
   };
 
   // Handle delete with confirmation
-  const handleDeleteTicketWithConfirmation = () => {
-    // TODO: Implement delete confirmation
-    handleDeleteTicket();
+  const handleDeleteTicketWithConfirmation = (ticketId: string) => {
+    if (window.confirm('Are you sure you want to delete this ticket?')) {
+      // TODO: Implement delete ticket logic
+      console.log('Delete ticket:', ticketId);
+    }
   };
 
   return (
@@ -160,20 +144,12 @@ export default function TicketsPage() {
       {/* Ticket List */}
       <TicketList
         tickets={tickets}
-        onMenuClick={handleMenuClick}
         onViewTicket={handleViewTicketFromCard}
+        onEditTicket={handleEditTicket}
+        onDeleteTicket={handleDeleteTicketWithConfirmation}
         getProjectName={getProjectName}
         getSprintName={getSprintName}
         getAssigneeName={getAssigneeName}
-      />
-
-      {/* Context Menu */}
-      <TicketMenu
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        onView={handleViewTicketFromMenu}
-        onEdit={handleEditTicket}
-        onDelete={handleDeleteTicketWithConfirmation}
       />
 
       {/* Create/Edit Dialog */}

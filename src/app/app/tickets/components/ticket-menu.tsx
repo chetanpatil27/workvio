@@ -1,28 +1,25 @@
 'use client';
 
 import React from 'react';
-import ContextMenu, { MenuAction } from '@/components/common/context-menu';
 import {
   Visibility as ViewIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
+import ContextMenu, { MenuAction } from '@/components/common/context-menu';
 
 interface TicketMenuProps {
-  anchorEl: null | HTMLElement;
-  onClose: () => void;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-const TicketMenu: React.FC<TicketMenuProps> = ({
-  anchorEl,
-  onClose,
+export default function TicketMenu({
   onView,
   onEdit,
   onDelete,
-}) => {
+}: TicketMenuProps) {
+
   const menuActions: MenuAction[] = [
     {
       id: 'view',
@@ -47,12 +44,7 @@ const TicketMenu: React.FC<TicketMenuProps> = ({
 
   return (
     <ContextMenu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={onClose}
       actions={menuActions}
     />
   );
-};
-
-export default TicketMenu;
+}
