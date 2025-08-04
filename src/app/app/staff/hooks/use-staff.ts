@@ -79,11 +79,11 @@ export const useStaff = () => {
 
   // Staff actions
   const handleViewStaff = useCallback((staffId: string) => {
-    router.push(`/staff/${staffId}`);
+    router.push(`/app/staff/${staffId}`);
   }, [router]);
 
   const handleCreateStaff = useCallback(() => {
-    router.push('/staff/create');
+    router.push('/app/staff/create');
   }, [router]);
 
   const handleDeleteStaff = useCallback(() => {

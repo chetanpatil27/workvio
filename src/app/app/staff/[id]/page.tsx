@@ -83,7 +83,7 @@ export default function StaffDetailsPage() {
                     </Typography>
                     <Button
                         variant="contained"
-                        onClick={() => router.push('/staff')}
+                        onClick={() => router.push('/app/staff')}
                     >
                         Back to Staff List
                     </Button>
@@ -115,7 +115,7 @@ export default function StaffDetailsPage() {
     const handleDeleteConfirm = () => {
         dispatch(removeStaff(staffId));
         setDeleteDialogOpen(false);
-        router.push('/staff');
+        router.push('/app/staff');
     };
 
     const getGenderColor = (gender: string) => {

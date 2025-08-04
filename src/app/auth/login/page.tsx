@@ -48,7 +48,7 @@ export default function LoginPage() {
       const mockToken = 'mock-jwt-token';
 
       dispatch(loginSuccess({ user: mockUser, token: mockToken }));
-      router.push('/dashboard');
+      router.push('/app/dashboard');
     } catch {
       const errorMessage = 'Login failed. Please check your credentials.';
       setError(errorMessage);

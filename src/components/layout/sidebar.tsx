@@ -40,49 +40,49 @@ const navigationItems = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
-    href: '/dashboard',
+    href: '/app/dashboard',
     color: '#1976d2',
   },
   {
     text: 'Projects',
     icon: <ProjectsIcon />,
-    href: '/projects',
+    href: '/app/projects',
     color: '#2e7d32',
   },
   {
     text: 'Sprints',
     icon: <SprintIcon />,
-    href: '/sprints',
+    href: '/app/sprints',
     color: '#ed6c02',
   },
   {
     text: 'Status',
     icon: <StatusIcon />,
-    href: '/status',
+    href: '/app/status',
     color: '#9c27b0',
   },
   {
     text: 'Teams',
     icon: <GroupIcon />,
-    href: '/teams',
+    href: '/app/teams',
     color: '#1565c0',
   },
   {
     text: 'Staff',
     icon: <StaffIcon />,
-    href: '/staff',
+    href: '/app/staff',
     color: '#7b1fa2',
   },
   {
     text: 'Designations',
     icon: <WorkIcon />,
-    href: '/designations',
+    href: '/app/designations',
     color: '#ff5722',
   },
   {
     text: 'Profile',
     icon: <ProfileIcon />,
-    href: '/profile',
+    href: '/app/profile',
     color: '#d32f2f',
   },
 ];
@@ -355,7 +355,7 @@ export default function Sidebar({ mobileOpen, onMobileToggle }: SidebarProps) {
             }
           }}
         >
-          <MenuItem onClick={() => { router.push('/profile'); handleClose(); }}>
+          <MenuItem onClick={() => { router.push('/app/profile'); handleClose(); }}>
             <ListItemIcon>
               <ProfileIcon fontSize="small" sx={{ color: '#1976d2' }} />
             </ListItemIcon>

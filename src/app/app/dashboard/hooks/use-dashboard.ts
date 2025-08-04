@@ -54,27 +54,27 @@ export const useDashboard = () => {
 
   // Navigation handlers
   const handleNavigateToProjects = useCallback(() => {
-    router.push('/projects');
+    router.push('/app/projects');
   }, [router]);
 
   const handleNavigateToTickets = useCallback(() => {
-    router.push('/tickets');
+    router.push('/app/tickets');
   }, [router]);
 
   const handleNavigateToSprints = useCallback(() => {
-    router.push('/sprints');
+    router.push('/app/sprints');
   }, [router]);
 
   const handleViewProject = useCallback((projectId: string) => {
-    router.push(`/projects/${projectId}`);
+    router.push(`/app/projects/${projectId}`);
   }, [router]);
 
   const handleViewTicket = useCallback((ticketId: string) => {
-    router.push(`/tickets/${ticketId}`);
+    router.push(`/app/tickets/${ticketId}`);
   }, [router]);
 
   const handleViewSprint = useCallback((sprintId: string) => {
-    router.push(`/sprints/${sprintId}`);
+    router.push(`/app/sprints/${sprintId}`);
   }, [router]);
 
   // Utility functions

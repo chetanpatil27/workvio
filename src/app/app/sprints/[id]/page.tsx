@@ -117,7 +117,7 @@ export default function SprintDetailPage() {
                 </Typography>
                 <Button
                     startIcon={<ArrowBackIcon />}
-                    onClick={() => router.push('/sprints')}
+                    onClick={() => router.push('/app/sprints')}
                     sx={{ mt: 2 }}
                 >
                     Back to Sprints
@@ -204,7 +204,7 @@ export default function SprintDetailPage() {
             <Box sx={{ mb: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
-                        onClick={() => router.push('/sprints')}
+                        onClick={() => router.push('/app/sprints')}
                         sx={{
                             mr: 2,
                             border: '1px solid',

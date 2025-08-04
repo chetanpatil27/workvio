@@ -79,7 +79,7 @@ export default function ProjectDetailsPage() {
                 </Typography>
                 <Button
                     variant="contained"
-                    onClick={() => router.push('/projects')}
+                    onClick={() => router.push('/app/projects')}
                     sx={{ mt: 2 }}
                 >
                     Back to Projects
@@ -126,7 +126,7 @@ export default function ProjectDetailsPage() {
             <Box sx={{ mb: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
-                        onClick={() => router.push('/projects')}
+                        onClick={() => router.push('/app/projects')}
                         sx={{
                             mr: 1,
                             borderRadius: '6px',
