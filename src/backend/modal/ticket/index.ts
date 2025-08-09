@@ -1,17 +1,17 @@
 import mongoose from 'mongoose';
-import { ISprint, ISprintModel } from './interface';
-import { sprintSchema } from './schema';
+import { ITicket, ITicketModel } from './interface';
+import { ticketSchema } from './schema';
 import { applyInstanceMethods } from './methods';
 import { applyStaticMethods } from './statics';
 import { applyMiddleware } from './middleware';
 import { applyIndexes } from './indexes';
 
 // Apply methods, statics, middleware, and indexes
-applyInstanceMethods(sprintSchema);
-applyStaticMethods(sprintSchema);
-applyMiddleware(sprintSchema);
-applyIndexes(sprintSchema);
+applyInstanceMethods(ticketSchema);
+applyStaticMethods(ticketSchema);
+applyMiddleware(ticketSchema);
+applyIndexes(ticketSchema);
 
 // Create and export the model
-export const Sprint = mongoose.models.Sprint || mongoose.model<ISprint, ISprintModel>('Sprint', sprintSchema);
+export const Ticket = mongoose.models.Ticket || mongoose.model<ITicket, ITicketModel>('Ticket', ticketSchema);
 export * from './interface';
