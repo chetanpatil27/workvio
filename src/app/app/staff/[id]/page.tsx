@@ -584,8 +584,6 @@ export default function StaffDetailsPage() {
                 onClose={staffDialog.closeDialog}
                 onSave={staffDialog.handleSave}
                 onFormDataChange={staffDialog.handleFormDataChange}
-                transition="slide"
-                transitionDuration={300}
             />
         </Box>
     );
