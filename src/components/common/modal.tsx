@@ -60,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({
     useEffect(() => {
         // Only run on client side
         if (typeof window === 'undefined') return;
-        
+
         return () => {
             // Cleanup on unmount
             document.body.style.overflow = '';
@@ -71,19 +71,20 @@ const Modal: React.FC<ModalProps> = ({
     }, []);
 
     const handleClose = (event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
+        console.log("handleClose --disableBackdropClick, disableEscapeKeyDown, reason :", disableBackdropClick, disableEscapeKeyDown, reason);
         if (disableBackdropClick && reason === 'backdropClick') {
             return;
         }
         if (disableEscapeKeyDown && reason === 'escapeKeyDown') {
             return;
         }
-        
+
         // Force cleanup before closing (only on client)
         if (typeof window !== 'undefined') {
             document.body.style.pointerEvents = '';
             document.documentElement.style.pointerEvents = '';
         }
-        
+
         // Call the onClose callback immediately
         onClose();
     };
@@ -122,7 +123,7 @@ const Modal: React.FC<ModalProps> = ({
             disableEnforceFocus={true}
             disableAutoFocus={true}
             disableRestoreFocus={true}
-            hideBackdrop={false}
+            hideBackdrop
             onTransitionExited={() => {
                 // Additional cleanup when transition is complete (only on client)
                 if (typeof window !== 'undefined') {
@@ -207,7 +208,7 @@ const Modal: React.FC<ModalProps> = ({
                             </Typography>
                         )}
                     </Box>
-                    
+
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
                         {titleActions}
                         {showCloseButton && (
