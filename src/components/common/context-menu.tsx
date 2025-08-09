@@ -13,12 +13,24 @@ import {
     Grow,
     IconButton
 } from '@mui/material';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import {
+    MoreVert as MoreVertIcon,
+    Visibility as ViewIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Add as AddIcon,
+    FileCopy as CopyIcon,
+    Archive as ArchiveIcon,
+    Restore as RestoreIcon,
+    Settings as SettingsIcon,
+    PlayArrow as StartIcon,
+    Stop as CompleteIcon
+} from '@mui/icons-material';
 
 export interface MenuAction {
     id: string;
     label: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode; // Made optional
     onClick: () => void;
     color?: 'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
     disabled?: boolean;
@@ -56,13 +68,31 @@ type ContextMenuProps = ExternalStateProps | SelfContainedProps;
 // Use a Map to track open menus (better for SSR)
 const openMenus = new Map<string, () => void>();
 
+// Default icons for common actions
+const getDefaultIcon = (actionId: string): React.ReactNode => {
+    const iconMap: Record<string, React.ReactNode> = {
+        'view': <ViewIcon fontSize="small" />,
+        'edit': <EditIcon fontSize="small" />,
+        'delete': <DeleteIcon fontSize="small" />,
+        'add': <AddIcon fontSize="small" />,
+        'copy': <CopyIcon fontSize="small" />,
+        'archive': <ArchiveIcon fontSize="small" />,
+        'restore': <RestoreIcon fontSize="small" />,
+        'settings': <SettingsIcon fontSize="small" />,
+        'start': <StartIcon fontSize="small" />,
+        'complete': <CompleteIcon fontSize="small" />,
+    };
+
+    return iconMap[actionId] || <MoreVertIcon fontSize="small" />;
+};
+
 const ContextMenu: React.FC<ContextMenuProps> = (props) => {
     // Check if it's self-contained mode
     const isSelfContained = 'trigger' in props;
-    
+
     // Self-contained state
     const [internalAnchorEl, setInternalAnchorEl] = useState<null | HTMLElement>(null);
-    
+
     // Extract props based on mode
     const {
         actions,
@@ -71,22 +101,22 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
             horizontal: 'right',
         },
     } = props;
-    
+
     // Determine actual values based on mode
     const anchorEl = isSelfContained ? internalAnchorEl : props.anchorEl;
     const open = isSelfContained ? Boolean(internalAnchorEl) : (props.open ?? false);
     const onClose = useMemo(() => {
-        return isSelfContained 
+        return isSelfContained
             ? () => setInternalAnchorEl(null)
-            : (props.onClose ?? (() => {}));
+            : (props.onClose ?? (() => { }));
     }, [isSelfContained, props.onClose]);
-    
+
     // Handle trigger click for self-contained mode
     const handleTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
         setInternalAnchorEl(event.currentTarget);
     };
-    
+
     // Default trigger component
     const defaultTrigger = (
         <IconButton
@@ -97,10 +127,10 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
             <MoreVertIcon />
         </IconButton>
     );
-    
+
     // Get the trigger to use
     const triggerToUse = isSelfContained ? (props.trigger || defaultTrigger) : null;
-    
+
     // Generate a unique ID for this menu instance
     const menuId = React.useRef(`menu-${Math.random().toString(36).substr(2, 9)}`).current;
 
@@ -218,105 +248,105 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
                         name: 'flip',
                         enabled: true,
                         options: {
-                        altBoundary: true,
-                        rootBoundary: 'document',
-                        padding: 8,
+                            altBoundary: true,
+                            rootBoundary: 'document',
+                            padding: 8,
+                        },
                     },
-                },
-            ]}
-            style={{ zIndex: 1300 }}
-        >
-            {({ TransitionProps, placement }) => (
-                <Grow
-                    {...TransitionProps}
-                    style={{
-                        transformOrigin: placement.includes('bottom') ? 'center top' : 'center bottom',
-                    }}
-                >
-                    <Paper
-                        elevation={3}
-                        data-menu-id={menuId}
-                        sx={{
-                            borderRadius: '6px',
-                            border: '1px solid',
-                            borderColor: 'divider',
-                            minWidth: 160,
-                            maxWidth: 320,
+                ]}
+                style={{ zIndex: 1300 }}
+            >
+                {({ TransitionProps, placement }) => (
+                    <Grow
+                        {...TransitionProps}
+                        style={{
+                            transformOrigin: placement.includes('bottom') ? 'center top' : 'center bottom',
                         }}
                     >
-                        <ClickAwayListener onClickAway={handleClickAway}>
-                            <MenuList
-                                autoFocusItem={false}
-                                disablePadding={false}
-                                sx={{
-                                    py: 0.5,
-                                }}
-                            >
-                                {actions.map((action, index) => {
-                                    const menuItems = [];
+                        <Paper
+                            elevation={3}
+                            data-menu-id={menuId}
+                            sx={{
+                                borderRadius: '6px',
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                minWidth: 160,
+                                maxWidth: 320,
+                            }}
+                        >
+                            <ClickAwayListener onClickAway={handleClickAway}>
+                                <MenuList
+                                    autoFocusItem={false}
+                                    disablePadding={false}
+                                    sx={{
+                                        py: 0.5,
+                                    }}
+                                >
+                                    {actions.map((action, index) => {
+                                        const menuItems = [];
 
-                                    menuItems.push(
-                                        <MenuItem
-                                            key={action.id}
-                                            onClick={() => handleActionClick(action)}
-                                            disabled={action.disabled}
-                                            sx={{
-                                                color: action.color ? `${action.color}.main` : 'text.primary',
-                                                py: 1.25,
-                                                px: 2,
-                                                fontSize: '0.875rem',
-                                                mx: 0.5,
-                                                borderRadius: '4px',
-                                                '&:hover': {
-                                                    bgcolor: action.color === 'error'
-                                                        ? 'error.light'
-                                                        : 'action.hover',
-                                                    ...(action.color === 'error' && {
-                                                        color: 'error.contrastText',
-                                                    }),
-                                                },
-                                                '&.Mui-disabled': {
-                                                    opacity: 0.5,
-                                                },
-                                            }}
-                                        >
-                                            <ListItemIcon
+                                        menuItems.push(
+                                            <MenuItem
+                                                key={action.id}
+                                                onClick={() => handleActionClick(action)}
+                                                disabled={action.disabled}
                                                 sx={{
-                                                    minWidth: 32,
-                                                    color: 'inherit',
-                                                    '& .MuiSvgIcon-root': {
-                                                        fontSize: '1.1rem',
+                                                    color: action.color ? `${action.color}.main` : 'text.primary',
+                                                    py: 1.25,
+                                                    px: 2,
+                                                    fontSize: '0.875rem',
+                                                    mx: 0.5,
+                                                    borderRadius: '4px',
+                                                    '&:hover': {
+                                                        bgcolor: action.color === 'error'
+                                                            ? 'error.light'
+                                                            : 'action.hover',
+                                                        ...(action.color === 'error' && {
+                                                            color: 'error.contrastText',
+                                                        }),
+                                                    },
+                                                    '&.Mui-disabled': {
+                                                        opacity: 0.5,
                                                     },
                                                 }}
                                             >
-                                                {action.icon}
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={action.label}
-                                                sx={{
-                                                    '& .MuiListItemText-primary': {
-                                                        fontSize: '0.875rem',
-                                                        fontWeight: 500,
-                                                    },
-                                                }}
-                                            />
-                                        </MenuItem>
-                                    );
-
-                                    if (action.divider && index < actions.length - 1) {
-                                        menuItems.push(
-                                            <Divider key={`divider-${action.id}`} sx={{ my: 0.5 }} />
+                                                <ListItemIcon
+                                                    sx={{
+                                                        minWidth: 32,
+                                                        color: 'inherit',
+                                                        '& .MuiSvgIcon-root': {
+                                                            fontSize: '1.1rem',
+                                                        },
+                                                    }}
+                                                >
+                                                    {action.icon || getDefaultIcon(action.id)}
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={action.label}
+                                                    sx={{
+                                                        '& .MuiListItemText-primary': {
+                                                            fontSize: '0.875rem',
+                                                            fontWeight: 500,
+                                                        },
+                                                    }}
+                                                />
+                                            </MenuItem>
                                         );
-                                    }
 
-                                    return menuItems;
-                                }).flat()}
-                            </MenuList>
-                        </ClickAwayListener>
-                    </Paper>
-                </Grow>
-            )}
-        </Popper>
+                                        if (action.divider && index < actions.length - 1) {
+                                            menuItems.push(
+                                                <Divider key={`divider-${action.id}`} sx={{ my: 0.5 }} />
+                                            );
+                                        }
+
+                                        return menuItems;
+                                    }).flat()}
+                                </MenuList>
+                            </ClickAwayListener>
+                        </Paper>
+                    </Grow>
+                )}
+            </Popper>
         </>
     );
 };

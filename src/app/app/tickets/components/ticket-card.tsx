@@ -159,6 +159,7 @@ export default function TicketCard({
           </Box>
         </Box>
 
+        {/* Menu Button - Same as Sprint Cards */}
         <Box onClick={(e) => e.stopPropagation()}>
           <TicketMenu
             onView={handleView}
@@ -167,7 +168,6 @@ export default function TicketCard({
           />
         </Box>
       </Box>
-
       {/* Ticket Description */}
       {ticket.description && (
         <Typography

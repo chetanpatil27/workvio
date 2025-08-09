@@ -2,12 +2,6 @@
 
 import React from 'react';
 import ContextMenu, { MenuAction } from '@/components/common/context-menu';
-import {
-  Visibility as ViewIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Archive as ArchiveIcon,
-} from '@mui/icons-material';
 
 interface ProjectMenuProps {
   onView: () => void;
@@ -26,26 +20,22 @@ const ProjectMenu: React.FC<ProjectMenuProps> = ({
     {
       id: 'view',
       label: 'View Details',
-      icon: <ViewIcon />,
       onClick: onView,
     },
     {
       id: 'edit',
       label: 'Edit Project',
-      icon: <EditIcon />,
       onClick: onEdit,
     },
     {
       id: 'archive',
       label: 'Archive',
-      icon: <ArchiveIcon />,
       onClick: onArchive,
       divider: true, // Add divider before delete action
     },
     {
       id: 'delete',
       label: 'Delete',
-      icon: <DeleteIcon />,
       onClick: onDelete,
       color: 'error',
     },

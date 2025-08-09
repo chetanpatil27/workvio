@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Visibility as ViewIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
+  IconButton,
+} from '@mui/material';
+import {
+  MoreVert as MoreIcon,
 } from '@mui/icons-material';
 import ContextMenu, { MenuAction } from '@/components/common/context-menu';
 
@@ -19,32 +20,61 @@ export default function TicketMenu({
   onEdit,
   onDelete,
 }: TicketMenuProps) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const menuActions: MenuAction[] = [
     {
       id: 'view',
       label: 'View Details',
-      icon: <ViewIcon fontSize="small" />,
-      onClick: onView,
+      onClick: () => {
+        onView();
+        handleClose();
+      },
     },
     {
       id: 'edit',
       label: 'Edit Ticket',
-      icon: <EditIcon fontSize="small" />,
-      onClick: onEdit,
+      onClick: () => {
+        onEdit();
+        handleClose();
+      },
     },
     {
       id: 'delete',
       label: 'Delete Ticket',
-      icon: <DeleteIcon fontSize="small" />,
-      onClick: onDelete,
+      onClick: () => {
+        onDelete();
+        handleClose();
+      },
       color: 'error',
     },
   ];
 
   return (
-    <ContextMenu
-      actions={menuActions}
-    />
+    <>
+      <IconButton
+        onClick={handleClick}
+        size="small"
+        sx={{ ml: 1 }}
+      >
+        <MoreIcon fontSize="small" />
+      </IconButton>
+      <ContextMenu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        actions={menuActions}
+      />
+    </>
   );
 }

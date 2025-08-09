@@ -2,13 +2,6 @@
 
 import React from 'react';
 import ContextMenu, { MenuAction } from '@/components/common/context-menu';
-import {
-  Visibility as ViewIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  PlayArrow as StartIcon,
-  Stop as CompleteIcon,
-} from '@mui/icons-material';
 
 interface SprintMenuProps {
   anchorEl: null | HTMLElement;
@@ -35,13 +28,11 @@ const SprintMenu: React.FC<SprintMenuProps> = ({
     {
       id: 'view',
       label: 'View Details',
-      icon: <ViewIcon />,
       onClick: onView,
     },
     {
       id: 'edit',
       label: 'Edit Sprint',
-      icon: <EditIcon />,
       onClick: onEdit,
       disabled: sprintStatus === 'completed',
     },
@@ -52,7 +43,6 @@ const SprintMenu: React.FC<SprintMenuProps> = ({
     menuActions.push({
       id: 'start',
       label: 'Start Sprint',
-      icon: <StartIcon />,
       onClick: onStart,
       color: 'success',
       divider: true,
@@ -63,7 +53,6 @@ const SprintMenu: React.FC<SprintMenuProps> = ({
     menuActions.push({
       id: 'complete',
       label: 'Complete Sprint',
-      icon: <CompleteIcon />,
       onClick: onComplete,
       color: 'primary',
       divider: true,
@@ -74,7 +63,6 @@ const SprintMenu: React.FC<SprintMenuProps> = ({
   menuActions.push({
     id: 'delete',
     label: 'Delete',
-    icon: <DeleteIcon />,
     onClick: onDelete,
     color: 'error',
     disabled: sprintStatus === 'active',
