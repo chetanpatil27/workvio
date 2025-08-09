@@ -174,150 +174,150 @@ export default function CreateProjectModal({ open, onClose, onSubmit }: CreatePr
                     />
                 </Box>
 
-                    {/* Team and Upload Section */}
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: { xs: '1fr', md: '1fr 300px' },
-                        gap: 4,
-                        mb: 4
-                    }}>
-                        {/* Team Section */}
-                        <Box>
-                            <Typography variant="subtitle1" fontWeight="600" gutterBottom>
-                                Team
-                            </Typography>
+                {/* Team and Upload Section */}
+                <Box sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '1fr 300px' },
+                    gap: 4,
+                    mb: 4
+                }}>
+                    {/* Team Section */}
+                    <Box>
+                        <Typography variant="subtitle1" fontWeight="600" gutterBottom>
+                            Team
+                        </Typography>
 
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                {teamMembers.map((member) => (
-                                    <Box
-                                        key={member.id}
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 2,
-                                            p: 2,
-                                            border: '1px solid',
-                                            borderColor: 'divider',
-                                            borderRadius: 2,
-                                            bgcolor: 'background.paper',
-                                        }}
-                                    >
-                                        <Avatar
-                                            sx={{
-                                                bgcolor: getAvatarColor(member.name),
-                                                width: 40,
-                                                height: 40,
-                                                fontSize: '1rem',
-                                                fontWeight: 'bold',
-                                            }}
-                                        >
-                                            {member.name.charAt(0)}
-                                        </Avatar>
-
-                                        <Box sx={{ flex: 1 }}>
-                                            <Typography variant="subtitle2" fontWeight="600">
-                                                {member.name}
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary">
-                                                {member.email}
-                                            </Typography>
-                                        </Box>
-
-                                        <Select
-                                            label=""
-                                            value={member.role}
-                                            onChange={(value) => updateMemberRole(member.id, String(value))}
-                                            options={roleOptions}
-                                            size="small"
-                                            sx={{ minWidth: 120 }}
-                                        />
-                                    </Box>
-                                ))}
-
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<AddIcon />}
-                                    onClick={addTeamMember}
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            {teamMembers.map((member) => (
+                                <Box
+                                    key={member.id}
                                     sx={{
-                                        borderStyle: 'dashed',
-                                        borderColor: 'primary.main',
-                                        color: 'primary.main',
-                                        '&:hover': {
-                                            borderStyle: 'dashed',
-                                            bgcolor: 'primary.light',
-                                        }
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        p: 2,
+                                        border: '1px solid',
+                                        borderColor: 'divider',
+                                        borderRadius: 2,
+                                        bgcolor: 'background.paper',
                                     }}
                                 >
-                                    Add Team Member
-                                </Button>
-                            </Box>
-                        </Box>
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: getAvatarColor(member.name),
+                                            width: 40,
+                                            height: 40,
+                                            fontSize: '1rem',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        {member.name.charAt(0)}
+                                    </Avatar>
 
-                        {/* Upload Section */}
-                        <Box>
-                            <Typography variant="subtitle1" fontWeight="600" gutterBottom>
-                                Upload logo
-                            </Typography>
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="subtitle2" fontWeight="600">
+                                            {member.name}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {member.email}
+                                        </Typography>
+                                    </Box>
 
-                            <Box
-                                onDrop={handleDrop}
-                                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                                onDragLeave={() => setDragOver(false)}
-                                sx={{
-                                    border: '2px dashed',
-                                    borderColor: dragOver ? 'primary.main' : 'divider',
-                                    borderRadius: 2,
-                                    p: 3,
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    bgcolor: dragOver ? 'primary.light' : 'background.default',
-                                    transition: 'all 0.2s ease',
-                                    position: 'relative',
-                                    minHeight: 120,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                                onClick={() => document.getElementById('logo-upload')?.click()}
-                            >
-                                <input
-                                    id="logo-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleFileSelect}
-                                    style={{ display: 'none' }}
-                                />
-
-                                <UploadIcon sx={{ fontSize: 32, color: 'text.secondary', mb: 1 }} />
-                                <Typography variant="body2" fontWeight="600" gutterBottom>
-                                    Upload project logo
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    Min 500×500, PNG or JPEG
-                                </Typography>
-
-                                {formData.logo && (
-                                    <Chip
-                                        label={formData.logo.name}
-                                        color="primary"
+                                    <Select
+                                        label=""
+                                        value={member.role}
+                                        onChange={(value) => updateMemberRole(member.id, String(value))}
+                                        options={roleOptions}
                                         size="small"
-                                        sx={{ mt: 1 }}
+                                        sx={{ minWidth: 120 }}
                                     />
-                                )}
-                            </Box>
+                                </Box>
+                            ))}
 
                             <Button
                                 variant="outlined"
-                                size="small"
-                                sx={{ mt: 2, width: '100%' }}
+                                startIcon={<AddIcon />}
+                                onClick={addTeamMember}
+                                sx={{
+                                    borderStyle: 'dashed',
+                                    borderColor: 'primary.main',
+                                    color: 'primary.main',
+                                    '&:hover': {
+                                        borderStyle: 'dashed',
+                                        bgcolor: 'primary.light',
+                                    }
+                                }}
                             >
-                                Update
+                                Add Team Member
                             </Button>
                         </Box>
                     </Box>
 
-                    <Divider sx={{ my: 3 }} />
+                    {/* Upload Section */}
+                    <Box>
+                        <Typography variant="subtitle1" fontWeight="600" gutterBottom>
+                            Upload logo
+                        </Typography>
+
+                        <Box
+                            onDrop={handleDrop}
+                            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                            onDragLeave={() => setDragOver(false)}
+                            sx={{
+                                border: '2px dashed',
+                                borderColor: dragOver ? 'primary.main' : 'divider',
+                                borderRadius: 2,
+                                p: 3,
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                bgcolor: dragOver ? 'primary.light' : 'background.default',
+                                transition: 'all 0.2s ease',
+                                position: 'relative',
+                                minHeight: 120,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                            onClick={() => document.getElementById('logo-upload')?.click()}
+                        >
+                            <input
+                                id="logo-upload"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileSelect}
+                                style={{ display: 'none' }}
+                            />
+
+                            <UploadIcon sx={{ fontSize: 32, color: 'text.secondary', mb: 1 }} />
+                            <Typography variant="body2" fontWeight="600" gutterBottom>
+                                Upload project logo
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                                Min 500×500, PNG or JPEG
+                            </Typography>
+
+                            {formData.logo && (
+                                <Chip
+                                    label={formData.logo.name}
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                />
+                            )}
+                        </Box>
+
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{ mt: 2, width: '100%' }}
+                        >
+                            Update
+                        </Button>
+                    </Box>
+                </Box>
+
+                <Divider sx={{ my: 3 }} />
             </Box>
         </Modal>
     );

@@ -123,7 +123,7 @@ const Modal: React.FC<ModalProps> = ({
             disableEnforceFocus={true}
             disableAutoFocus={true}
             disableRestoreFocus={true}
-            hideBackdrop
+            hideBackdrop={false}
             onTransitionExited={() => {
                 // Additional cleanup when transition is complete (only on client)
                 if (typeof window !== 'undefined') {
