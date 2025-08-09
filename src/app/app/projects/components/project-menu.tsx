@@ -41,11 +41,7 @@ const ProjectMenu: React.FC<ProjectMenuProps> = ({
     },
   ];
 
-  return (
-    <ContextMenu
-      actions={menuActions}
-    />
-  );
+  return <ContextMenu actions={menuActions} />;
 };
 
 export default ProjectMenu;

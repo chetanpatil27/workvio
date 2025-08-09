@@ -92,15 +92,6 @@ export default function TeamsPage() {
                 onCreateTeam={openCreateDialog}
             />
 
-            {/* Context Menu */}
-            <TeamMenu
-                anchorEl={anchorEl}
-                onClose={handleMenuClose}
-                onView={() => selectedTeam && handleViewTeam(selectedTeam.id)}
-                onEdit={handleEditTeam}
-                onDelete={handleDeleteClick}
-            />
-
             {/* Delete Confirmation Modal */}
             <ConfirmationModal
                 open={deleteDialogOpen}

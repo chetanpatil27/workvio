@@ -4,19 +4,15 @@ import React from 'react';
 import ContextMenu, { MenuAction } from '@/components/common/context-menu';
 
 interface SprintMenuProps {
-  anchorEl: null | HTMLElement;
-  onClose: () => void;
   onView: () => void;
   onEdit: () => void;
   onStart?: () => void;
   onComplete?: () => void;
   onDelete: () => void;
-  sprintStatus?: 'planning' | 'active' | 'completed';
+  sprintStatus?: 'planning' | 'active' | 'completed' | 'cancelled';
 }
 
 const SprintMenu: React.FC<SprintMenuProps> = ({
-  anchorEl,
-  onClose,
   onView,
   onEdit,
   onStart,
@@ -68,14 +64,7 @@ const SprintMenu: React.FC<SprintMenuProps> = ({
     disabled: sprintStatus === 'active',
   });
 
-  return (
-    <ContextMenu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={onClose}
-      actions={menuActions}
-    />
-  );
+  return <ContextMenu actions={menuActions} />;
 };
 
 export default SprintMenu;

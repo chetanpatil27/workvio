@@ -109,19 +109,16 @@ export default function StaffPage() {
     {
       id: 'view',
       label: 'View Details',
-      icon: <ViewIcon />,
       onClick: handleViewDetails,
     },
     {
       id: 'edit',
       label: 'Edit',
-      icon: <EditIcon />,
       onClick: handleEdit,
     },
     {
       id: 'delete',
       label: 'Delete',
-      icon: <DeleteIcon />,
       onClick: handleDeleteClick,
       color: 'error',
     },
@@ -638,12 +635,7 @@ export default function StaffPage() {
       )}
 
       {/* Context Menu */}
-      <ContextMenu
-        anchorEl={staffMenu.anchorEl}
-        open={staffMenu.isOpen}
-        onClose={staffMenu.handleMenuClose}
-        actions={staffMenuActions}
-      />
+      <ContextMenu actions={staffMenuActions} />
 
       {/* Delete Confirmation Modal */}
       <ConfirmationModal

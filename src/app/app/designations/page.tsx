@@ -131,20 +131,9 @@ export default function DesignationsPage() {
         onCreateDesignation={handleCreateNew}
       />
 
-      {/* Context Menu */}
-      <DesignationMenu
-        anchorEl={anchorEl}
-        isActive={selectedDesignation?.active || false}
-        onClose={handleMenuClose}
-        onView={() => handleViewDesignation()}
-        onEdit={handleEdit}
-        onToggleStatus={handleToggleStatus}
-        onDelete={handleDeleteDesignation}
-      />
-
       {/* Form Modal */}
-      <Modal 
-        open={formDialogOpen} 
+      <Modal
+        open={formDialogOpen}
         onClose={handleFormClose}
         title={isEditMode ? 'Edit Designation' : 'Create New Designation'}
         size="sm"
@@ -154,8 +143,8 @@ export default function DesignationsPage() {
             <Button onClick={handleFormClose} variant="outlined">
               Cancel
             </Button>
-            <Button 
-              onClick={handleFormSubmit} 
+            <Button
+              onClick={handleFormSubmit}
               variant="filled"
               disabled={!formData.name.trim()}
             >
@@ -172,7 +161,7 @@ export default function DesignationsPage() {
             isRequired
             sx={{ mb: 2 }}
           />
-          
+
           <Box sx={{ mb: 2 }}>
             <Textarea
               label="Description"

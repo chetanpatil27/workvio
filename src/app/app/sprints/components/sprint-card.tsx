@@ -8,10 +8,8 @@ import {
   LinearProgress,
   Avatar,
   AvatarGroup,
-  IconButton,
 } from '@mui/material';
 import {
-  MoreVert as MoreIcon,
   CalendarToday as CalendarIcon,
   Group as GroupIcon,
 } from '@mui/icons-material';
@@ -19,13 +17,18 @@ import { Sprint } from '@/store/slices/sprint';
 import { format } from 'date-fns';
 import { statusColors, statusLabels } from '../constants/sprint-status';
 import { CommonCard } from '@/components/common';
+import SprintMenu from './sprint-menu';
 
 interface SprintCardProps {
   sprint: Sprint;
   projectName: string;
   progress: number;
   onCardClick: () => void;
-  onMenuClick: (event: React.MouseEvent<HTMLElement>) => void;
+  onView: () => void;
+  onEdit: () => void;
+  onStart?: () => void;
+  onComplete?: () => void;
+  onDelete: () => void;
 }
 
 const SprintCard: React.FC<SprintCardProps> = ({
@@ -33,7 +36,11 @@ const SprintCard: React.FC<SprintCardProps> = ({
   projectName,
   progress,
   onCardClick,
-  onMenuClick,
+  onView,
+  onEdit,
+  onStart,
+  onComplete,
+  onDelete,
 }) => {
   const calculateDuration = (startDate: string, endDate: string) => {
     return Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
@@ -91,17 +98,14 @@ const SprintCard: React.FC<SprintCardProps> = ({
           </Box>
         </Box>
 
-        <IconButton
-          data-menu-button="true"
-          onClick={(e) => {
-            e.stopPropagation();
-            onMenuClick(e);
-          }}
-          size="small"
-          sx={{ color: 'text.secondary', ml: 1 }}
-        >
-          <MoreIcon />
-        </IconButton>
+        <SprintMenu
+          onView={onView}
+          onEdit={onEdit}
+          onStart={onStart}
+          onComplete={onComplete}
+          onDelete={onDelete}
+          sprintStatus={sprint.status}
+        />
       </Box>
 
       {/* Sprint Dates */}

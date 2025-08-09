@@ -2,16 +2,8 @@
 
 import React from 'react';
 import ContextMenu, { MenuAction } from '@/components/common/context-menu';
-import {
-    Visibility as ViewIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Group as GroupIcon,
-} from '@mui/icons-material';
 
 interface TeamMenuProps {
-    anchorEl: HTMLElement | null;
-    onClose: () => void;
     onView: () => void;
     onEdit: () => void;
     onDelete: () => void;
@@ -19,8 +11,6 @@ interface TeamMenuProps {
 }
 
 const TeamMenu: React.FC<TeamMenuProps> = ({
-    anchorEl,
-    onClose,
     onView,
     onEdit,
     onDelete,
@@ -30,19 +20,16 @@ const TeamMenu: React.FC<TeamMenuProps> = ({
         {
             id: 'view',
             label: 'View Details',
-            icon: <ViewIcon />,
             onClick: onView,
         },
         {
             id: 'edit',
             label: 'Edit Team',
-            icon: <EditIcon />,
             onClick: onEdit,
         },
         {
             id: 'manage-members',
             label: 'Manage Members',
-            icon: <GroupIcon />,
             onClick: onManageMembers || (() => console.log('Manage members')),
             color: 'primary',
             divider: true,
@@ -50,7 +37,6 @@ const TeamMenu: React.FC<TeamMenuProps> = ({
         {
             id: 'delete',
             label: 'Delete Team',
-            icon: <DeleteIcon />,
             onClick: onDelete,
             color: 'error',
         },
@@ -58,9 +44,6 @@ const TeamMenu: React.FC<TeamMenuProps> = ({
 
     return (
         <ContextMenu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={onClose}
             actions={menuActions}
             anchorOrigin={{
                 vertical: 'bottom',

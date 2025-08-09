@@ -2,15 +2,18 @@
 
 import React from 'react';
 import { Box } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { removeSprint } from '@/store/slices/sprint';
 import SprintHeader from './components/sprint-header';
 import SprintSearchFilters from './components/sprint-search-filters';
 import SprintList from './components/sprint-list';
 import SprintDialog from './components/sprint-dialog';
-import SprintMenu from './components/sprint-menu';
 import { useSprint } from './hooks/use-sprint';
 import { useSprintDialog, SprintFormData } from './hooks/use-sprint-dialog';
 
 export default function SprintsPage() {
+  const dispatch = useDispatch();
+
   // Main sprint logic
   const {
     sprints,
@@ -43,11 +46,18 @@ export default function SprintsPage() {
     isFormValid,
   } = useSprintDialog();
 
-  // Handle edit from menu
-  const handleEditSprint = () => {
-    if (selectedSprint) {
-      openEditDialog(selectedSprint);
+  // Handle edit sprint
+  const handleEditSprint = (sprintId: string) => {
+    const sprint = sprints.find(s => s.id === sprintId);
+    if (sprint) {
+      openEditDialog(sprint);
     }
+  };
+
+  // Handle delete sprint
+  const handleDeleteSprintById = (sprintId: string) => {
+    // For now, let's implement a simple version
+    dispatch(removeSprint(sprintId));
   };
 
   // Handle save sprint
@@ -77,17 +87,18 @@ export default function SprintsPage() {
         getProjectName={getProjectName}
         calculateProgress={calculateProgress}
         onSprintClick={handleViewSprint}
-        onMenuClick={handleMenuClick}
-        onCreateSprint={openCreateDialog}
-      />
-
-      {/* Context Menu */}
-      <SprintMenu
-        anchorEl={anchorEl}
-        onClose={handleMenuClose}
-        onView={() => selectedSprint && handleViewSprint(selectedSprint.id)}
+        onView={handleViewSprint}
         onEdit={handleEditSprint}
-        onDelete={handleDeleteSprint}
+        onStart={(sprintId) => {
+          // Handle start sprint logic
+          console.log('Start sprint:', sprintId);
+        }}
+        onComplete={(sprintId) => {
+          // Handle complete sprint logic
+          console.log('Complete sprint:', sprintId);
+        }}
+        onDelete={handleDeleteSprintById}
+        onCreateSprint={openCreateDialog}
       />
 
       {/* Create/Edit Dialog */}

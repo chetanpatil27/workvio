@@ -116,14 +116,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </Box>
         </Box>
 
-        <Box onClick={(e) => e.stopPropagation()}>
-          <ProjectMenu
-            onView={onView}
-            onEdit={onEdit}
-            onArchive={onArchive}
-            onDelete={onDelete}
-          />
-        </Box>
+        <ProjectMenu
+          onView={onView}
+          onEdit={onEdit}
+          onArchive={onArchive}
+          onDelete={onDelete}
+        />
       </Box>
 
       {/* Project Description */}

@@ -12,7 +12,11 @@ interface SprintListProps {
   getProjectName: (projectId: string) => string;
   calculateProgress: (sprint: Sprint) => number;
   onSprintClick: (sprintId: string) => void;
-  onMenuClick: (event: React.MouseEvent<HTMLElement>, sprintId: string) => void;
+  onView: (sprintId: string) => void;
+  onEdit: (sprintId: string) => void;
+  onStart: (sprintId: string) => void;
+  onComplete: (sprintId: string) => void;
+  onDelete: (sprintId: string) => void;
   onCreateSprint: () => void;
 }
 
@@ -21,7 +25,11 @@ const SprintList: React.FC<SprintListProps> = ({
   getProjectName,
   calculateProgress,
   onSprintClick,
-  onMenuClick,
+  onView,
+  onEdit,
+  onStart,
+  onComplete,
+  onDelete,
   onCreateSprint,
 }) => {
   if (sprints.length === 0) {
@@ -69,7 +77,11 @@ const SprintList: React.FC<SprintListProps> = ({
           projectName={getProjectName(sprint.projectId)}
           progress={calculateProgress(sprint)}
           onCardClick={() => onSprintClick(sprint.id)}
-          onMenuClick={(e) => onMenuClick(e, sprint.id)}
+          onView={() => onView(sprint.id)}
+          onEdit={() => onEdit(sprint.id)}
+          onStart={() => onStart(sprint.id)}
+          onComplete={() => onComplete(sprint.id)}
+          onDelete={() => onDelete(sprint.id)}
         />
       ))}
     </Box>

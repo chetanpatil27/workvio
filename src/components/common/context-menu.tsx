@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     Popper,
     Paper,
@@ -30,40 +30,21 @@ import {
 export interface MenuAction {
     id: string;
     label: string;
-    icon?: React.ReactNode; // Made optional
+    icon?: React.ReactNode; // Optional - uses default based on id
     onClick: () => void;
     color?: 'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
     disabled?: boolean;
     divider?: boolean; // Add divider after this item
 }
 
-// External state props (original mode)
-interface ExternalStateProps {
-    anchorEl: null | HTMLElement;
-    open: boolean;
-    onClose: () => void;
+interface ContextMenuProps {
+    trigger?: React.ReactElement; // Custom trigger button, defaults to three-dot menu
     actions: MenuAction[];
     anchorOrigin?: {
         vertical: 'top' | 'center' | 'bottom';
         horizontal: 'left' | 'center' | 'right';
     };
-    trigger?: never;
 }
-
-// Self-contained props (new mode)
-interface SelfContainedProps {
-    trigger?: React.ReactElement;
-    actions: MenuAction[];
-    anchorOrigin?: {
-        vertical: 'top' | 'center' | 'bottom';
-        horizontal: 'left' | 'center' | 'right';
-    };
-    anchorEl?: never;
-    open?: never;
-    onClose?: never;
-}
-
-type ContextMenuProps = ExternalStateProps | SelfContainedProps;
 
 // Use a Map to track open menus (better for SSR)
 const openMenus = new Map<string, () => void>();
@@ -86,50 +67,42 @@ const getDefaultIcon = (actionId: string): React.ReactNode => {
     return iconMap[actionId] || <MoreVertIcon fontSize="small" />;
 };
 
-const ContextMenu: React.FC<ContextMenuProps> = (props) => {
-    // Check if it's self-contained mode
-    const isSelfContained = 'trigger' in props;
+const ContextMenu: React.FC<ContextMenuProps> = ({
+    trigger,
+    actions,
+    anchorOrigin = {
+        vertical: 'top',
+        horizontal: 'right',
+    },
+}) => {
+    // Internal state management
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
 
-    // Self-contained state
-    const [internalAnchorEl, setInternalAnchorEl] = useState<null | HTMLElement>(null);
-
-    // Extract props based on mode
-    const {
-        actions,
-        anchorOrigin = {
-            vertical: 'top',
-            horizontal: 'right',
-        },
-    } = props;
-
-    // Determine actual values based on mode
-    const anchorEl = isSelfContained ? internalAnchorEl : props.anchorEl;
-    const open = isSelfContained ? Boolean(internalAnchorEl) : (props.open ?? false);
-    const onClose = useMemo(() => {
-        return isSelfContained
-            ? () => setInternalAnchorEl(null)
-            : (props.onClose ?? (() => { }));
-    }, [isSelfContained, props.onClose]);
-
-    // Handle trigger click for self-contained mode
+    // Handle trigger click
     const handleTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
-        setInternalAnchorEl(event.currentTarget);
+        setAnchorEl(event.currentTarget);
     };
 
-    // Default trigger component
+    // Handle close
+    const handleClose = useCallback(() => {
+        setAnchorEl(null);
+    }, []);
+
+    // Default trigger component (three-dot menu button)
     const defaultTrigger = (
         <IconButton
             data-menu-button="true"
             size="small"
-            sx={{ color: 'text.secondary' }}
+            sx={{ ml: 1 }}
         >
-            <MoreVertIcon />
+            <MoreVertIcon fontSize="small" />
         </IconButton>
     );
 
     // Get the trigger to use
-    const triggerToUse = isSelfContained ? (props.trigger || defaultTrigger) : null;
+    const triggerToUse = trigger || defaultTrigger;
 
     // Generate a unique ID for this menu instance
     const menuId = React.useRef(`menu-${Math.random().toString(36).substr(2, 9)}`).current;
@@ -144,7 +117,7 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
                 }
             });
             // Register this menu
-            openMenus.set(menuId, onClose);
+            openMenus.set(menuId, handleClose);
         } else {
             // Unregister this menu when it closes
             openMenus.delete(menuId);
@@ -154,7 +127,7 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
         return () => {
             openMenus.delete(menuId);
         };
-    }, [open, onClose, menuId]);
+    }, [open, handleClose, menuId]);
 
     // Handle scroll events to close menu when scrolling outside
     useEffect(() => {
@@ -170,7 +143,7 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
             }
 
             // Close menu if scrolling outside
-            onClose();
+            handleClose();
         };
 
         // Add scroll listener to document and all scrollable containers
@@ -181,11 +154,11 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
             document.removeEventListener('scroll', handleScroll, true);
             window.removeEventListener('scroll', handleScroll, true);
         };
-    }, [open, onClose, menuId]);
+    }, [open, handleClose, menuId]);
 
     const handleActionClick = (action: MenuAction) => {
         action.onClick();
-        onClose();
+        handleClose();
     };
 
     // Handle click away - but ignore clicks on menu buttons
@@ -199,7 +172,7 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
         if (!isMenuButton) {
             // Small delay to prevent race conditions with other menu opens
             setTimeout(() => {
-                onClose();
+                handleClose();
             }, 10);
         }
     };
@@ -223,7 +196,7 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
 
     return (
         <>
-            {isSelfContained && triggerToUse && React.cloneElement(triggerToUse, {
+            {triggerToUse && React.cloneElement(triggerToUse, {
                 onClick: handleTriggerClick,
             } as React.HTMLAttributes<HTMLElement>)}
             <Popper

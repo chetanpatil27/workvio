@@ -76,16 +76,6 @@ export default function StatusPage() {
                 onCreateStatus={handleCreateStatusClick}
             />
 
-            {/* Context Menu */}
-            <StatusMenu
-                anchorEl={anchorEl}
-                onClose={handleMenuClose}
-                onEdit={handleEditStatusClick}
-                onDelete={handleDeleteStatus}
-                onToggleActive={handleToggleActive}
-                selectedStatus={selectedStatus}
-            />
-
             {/* Create Status Modal */}
             <CreateStatusModal
                 open={createModalOpen}
