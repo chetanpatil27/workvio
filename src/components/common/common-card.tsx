@@ -118,6 +118,7 @@ const CommonCard: React.FC<CommonCardProps> = ({
                 ...getVariantStyles(cardVariant as 'outlined' | 'elevated' | 'flat'),
                 ...getHoverStyles(hoverIntensity as 'subtle' | 'normal' | 'strong'),
                 ...sx,
+                padding: 3
             } as SxProps<Theme>}
             onClick={onClick}
             {...props}

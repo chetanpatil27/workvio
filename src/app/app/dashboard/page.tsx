@@ -20,7 +20,7 @@ export default function Dashboard() {
   } = useDashboard();
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 } }}>
+    <Box>
       {/* Dashboard Header with Stats */}
       <DashboardHeader
         userName={user?.name || 'User'}
@@ -39,7 +39,7 @@ export default function Dashboard() {
           onViewProject={handleViewProject}
           onViewAllProjects={handleNavigateToProjects}
         />
-        
+
         <RecentTickets
           tickets={recentData.recentTickets}
           onViewTicket={handleViewTicket}

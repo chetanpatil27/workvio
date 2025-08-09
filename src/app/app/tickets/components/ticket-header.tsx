@@ -4,11 +4,11 @@ import React from 'react';
 import {
   Box,
   Typography,
-  Button,
   Chip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import { Button } from '@/components/form-controls';
 
 interface TicketHeaderProps {
   totalTickets: number;
@@ -45,20 +45,8 @@ export default function TicketHeader({ totalTickets, onCreateTicket, ticketStats
           </Box>
         </Box>
         <Button
-          variant="contained"
           startIcon={<AddIcon />}
           onClick={onCreateTicket}
-          sx={{
-            px: 3,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: 'none',
-            fontWeight: 600,
-            boxShadow: 2,
-            '&:hover': {
-              boxShadow: 4,
-            },
-          }}
         >
           Create Ticket
         </Button>

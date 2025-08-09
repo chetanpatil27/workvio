@@ -32,7 +32,7 @@ const StaffCard: React.FC<StaffCardProps> = ({
 }) => {
     return (
         <CommonCard onClick={onCardClick} sx={{ cursor: "pointer" }}>
-            <CardContent sx={{ p: 3 }}>
+            <CardContent sx={{ p: 0 }}>
                 {/* Staff Header with Side Color Bar */}
                 <Box
                     sx={{

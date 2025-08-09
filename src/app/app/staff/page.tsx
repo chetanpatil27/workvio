@@ -78,7 +78,7 @@ export default function StaffPage() {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 } }}>
+    <Box>
       {/* Header with stats */}
       <StaffHeader
         stats={stats}

@@ -40,19 +40,9 @@ const TeamHeader: React.FC<TeamHeaderProps> = ({ stats, onCreateTeam }) => {
                     </Typography>
                 </Box>
                 <Button
-                    variant="filled"
                     onClick={onCreateTeam}
                     startIcon={<Group />}
-                    sx={{
-                        bgcolor: 'primary.main',
-                        color: 'white',
-                        px: 3,
-                        py: 1.5,
-                        borderRadius: 2,
-                        '&:hover': {
-                            bgcolor: 'primary.dark',
-                        },
-                    }}
+                    
                 >
                     Create Team
                 </Button>

@@ -14,6 +14,7 @@ interface ButtonProps extends Omit<MuiButtonProps, 'size' | 'variant' | 'color'>
   size?: 'sm' | 'md' | 'lg';
   color?: 'primary' | 'success' | 'danger' | 'warning' | 'info' | 'link';
   variant?: 'filled' | 'outlined';
+  borderRadius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 export default function Button({
@@ -24,6 +25,7 @@ export default function Button({
   variant = 'filled',
   size = 'sm',
   color = 'primary',
+  borderRadius = 'sm',
   ...props
 }: ButtonProps) {
 
@@ -87,7 +89,20 @@ export default function Button({
     return colors[color as keyof typeof colors] || colors.primary;
   };
 
+  const getBorderRadius = (radius: string) => {
+    const radiusMap = {
+      xs: '0.125rem',    // 2px
+      sm: '0.25rem',     // 4px
+      md: '0.375rem',    // 6px
+      lg: '0.5rem',      // 8px
+      xl: '0.75rem',     // 12px
+      full: '9999px',    // Fully rounded
+    };
+    return radiusMap[radius as keyof typeof radiusMap] || radiusMap.md;
+  };
+
   const colorStyles = getColorStyles(color);
+  const buttonBorderRadius = getBorderRadius(borderRadius);
 
   // Convert our custom props to MUI props
   const muiVariant = variant === 'filled' ? 'contained' : variant === 'outlined' ? 'outlined' : 'text';
@@ -106,10 +121,10 @@ export default function Button({
         px: size === 'sm' ? 2 : size === 'lg' ? 3 : 2.5,
         py: size === 'sm' ? 1 : size === 'lg' ? 1.5 : 1.2,
         position: 'relative',
-        borderRadius: formControlTheme.borderRadius,
+        borderRadius: buttonBorderRadius,
         textTransform: 'none',
         transition: 'all 0.2s ease',
-
+        textWrap: 'nowrap',
         // Filled variant styles
         ...(variant === 'filled' && {
           backgroundColor: colorStyles.main,

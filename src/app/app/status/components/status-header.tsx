@@ -97,22 +97,8 @@ const StatusHeader: React.FC<StatusHeaderProps> = ({
                 </Box>
 
                 <Button
-                    variant="filled"
                     startIcon={<AddIcon />}
                     onClick={onCreateStatus}
-                    sx={{
-                        bgcolor: 'primary.main',
-                        color: 'primary.contrastText',
-                        fontWeight: 600,
-                        px: 3,
-                        py: 1.25,
-                        borderRadius: '8px',
-                        textTransform: 'none',
-                        fontSize: '0.875rem',
-                        '&:hover': {
-                            bgcolor: 'primary.dark',
-                        },
-                    }}
                 >
                     Add Status
                 </Button>

@@ -24,11 +24,11 @@ interface ProjectHeaderProps {
   onCreateProject: () => void;
 }
 
-const ProjectHeader: React.FC<ProjectHeaderProps> = ({ 
-  stats, 
-  selectedTab, 
-  onTabChange, 
-  onCreateProject 
+const ProjectHeader: React.FC<ProjectHeaderProps> = ({
+  stats,
+  selectedTab,
+  onTabChange,
+  onCreateProject
 }) => {
   return (
     <Box sx={{ mb: 4 }}>
@@ -91,11 +91,8 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         </Box>
 
         <Button
-          variant="filled"
           startIcon={<AddIcon />}
           onClick={onCreateProject}
-          size="lg"
-          color="success"
         >
           New Project
         </Button>

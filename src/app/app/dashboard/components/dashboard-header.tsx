@@ -64,11 +64,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </Typography>
         </Box>
         <Button
-          variant="filled"
           startIcon={<AddIcon />}
           onClick={onCreateProject}
-          size="lg"
-          color="success"
         >
           New Project
         </Button>

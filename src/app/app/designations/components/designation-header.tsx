@@ -77,11 +77,8 @@ const DesignationHeader: React.FC<DesignationHeaderProps> = ({
         </Box>
 
         <Button
-          variant="filled"
           startIcon={<AddIcon />}
           onClick={onCreateDesignation}
-          size="lg"
-          color="success"
         >
           New Designation
         </Button>

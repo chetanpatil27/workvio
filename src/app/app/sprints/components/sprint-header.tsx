@@ -84,11 +84,8 @@ const SprintHeader: React.FC<SprintHeaderProps> = ({ stats, onCreateSprint }) =>
         </Box>
 
         <Button
-          variant="filled"
           startIcon={<AddIcon />}
           onClick={onCreateSprint}
-          size="lg"
-          color="success"
         >
           New Sprint
         </Button>

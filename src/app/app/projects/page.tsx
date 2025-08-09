@@ -3,16 +3,24 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { removeProject } from '@/store/slices/project';
+import { removeProject, Project } from '@/store/slices/project';
 import ProjectHeader from './components/project-header';
 import ProjectSearchFilters from './components/project-search-filters';
 import ProjectList from './components/project-list';
+import { ProjectDialog } from './components';
 import CreateProjectModal from '@/components/project/create-project-modal';
+import { ConfirmationModal } from '@/components/common';
 import { useProject } from './hooks/use-project';
+import { useProjectDialog } from './hooks/use-project-dialog';
 
 export default function ProjectsPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const dispatch = useDispatch();
+
+  // Project dialog hook
+  const projectDialog = useProjectDialog();
 
   // Main project logic
   const {
@@ -35,10 +43,12 @@ export default function ProjectsPage() {
     setCreateModalOpen(true);
   };
 
-  // Handle edit project (placeholder for now)
+  // Handle edit project
   const handleEditProject = (projectId: string) => {
-    // TODO: Implement edit functionality
-    console.log('Edit project:', projectId);
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      projectDialog.openEditDialog(project);
+    }
   };
 
   // Handle archive project (placeholder for now)
@@ -49,7 +59,20 @@ export default function ProjectsPage() {
 
   // Handle delete project
   const handleDeleteProject = (projectId: string) => {
-    dispatch(removeProject(projectId));
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      setProjectToDelete(project);
+      setDeleteDialogOpen(true);
+    }
+  };
+
+  // Handle delete confirmation
+  const handleDeleteConfirm = () => {
+    if (projectToDelete) {
+      dispatch(removeProject(projectToDelete.id));
+      setDeleteDialogOpen(false);
+      setProjectToDelete(null);
+    }
   };
 
   return (
@@ -88,6 +111,39 @@ export default function ProjectsPage() {
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onSubmit={() => setCreateModalOpen(false)}
+      />
+
+      {/* Edit Project Dialog */}
+      <ProjectDialog
+        open={projectDialog.isOpen}
+        isEditing={projectDialog.isEditing}
+        formData={projectDialog.formData}
+        errors={projectDialog.errors}
+        isSubmitting={projectDialog.isSubmitting}
+        onClose={projectDialog.closeDialog}
+        onSave={projectDialog.handleSave}
+        onFormDataChange={projectDialog.handleFormDataChange}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Project"
+        subtitle="This action cannot be undone"
+        message={
+          <>
+            Are you sure you want to delete{" "}
+            <strong>{projectToDelete?.name}</strong>? This action cannot be
+            undone.
+          </>
+        }
+        confirmText="Delete"
+        confirmColor="error"
+        size="sm"
+        transition="zoom"
+        transitionDuration={250}
       />
     </Box>
   );
