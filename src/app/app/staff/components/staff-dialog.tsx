@@ -90,7 +90,7 @@ const StaffDialog: React.FC<StaffDialogProps> = ({
                     helperText={errors.name}
                     required
                 />
-                
+
                 <Input
                     label="Email Address"
                     placeholder="Enter email address"
@@ -101,7 +101,7 @@ const StaffDialog: React.FC<StaffDialogProps> = ({
                     type="email"
                     required
                 />
-                
+
                 <Input
                     label="Mobile Number"
                     placeholder="Enter mobile number"
@@ -111,7 +111,7 @@ const StaffDialog: React.FC<StaffDialogProps> = ({
                     helperText={errors.mobile}
                     required
                 />
-                
+
                 <Select
                     label="Gender"
                     placeholder="Select gender"

@@ -1,14 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Tabs, Tab } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import CountCard from '@/components/common/count-card';
 import Button from '@/components/form-controls/button';
 import {
   Add as AddIcon,
+  FilterList as FilterIcon,
+  Sort as SortIcon,
+  Group as GroupIcon,
   Person as PersonIcon,
-  Male as MaleIcon,
-  Female as FemaleIcon,
   Business as BusinessIcon,
 } from '@mui/icons-material';
 
@@ -19,100 +20,122 @@ interface StaffHeaderProps {
     female: number;
     departments: number;
   };
-  selectedTab: number;
-  onTabChange: (value: number) => void;
   onCreateStaff: () => void;
 }
 
-const StaffHeader: React.FC<StaffHeaderProps> = ({ 
-  stats, 
-  selectedTab, 
-  onTabChange, 
-  onCreateStaff 
-}) => {
+const StaffHeader: React.FC<StaffHeaderProps> = ({ stats, onCreateStaff }) => {
   return (
     <Box sx={{ mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-        <Box>
+      {/* Enhanced Header with Taskora-style layout */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          justifyContent: "space-between",
+          alignItems: { xs: "flex-start", md: "center" },
+          mb: 3,
+          gap: 2,
+        }}
+      >
+        <Box sx={{ flex: 1 }}>
           <Typography
             variant="h4"
+            fontWeight="700"
+            gutterBottom
             sx={{
-              fontWeight: 700,
-              mb: 1,
-              color: 'text.primary',
-              fontSize: '1.75rem'
+              color: "text.primary",
+              fontSize: { xs: "1.75rem", md: "2.125rem" },
+              mb: 0.5,
             }}
           >
             Staff Management
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-            Manage team members and employee information
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{
+              fontSize: "0.95rem",
+              fontWeight: 400,
+              mb: { xs: 2, md: 0 },
+            }}
+          >
+            Manage your team members and track their performance
           </Typography>
-
-          {/* Stats Cards */}
-          <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(4, 1fr)' },
-            gap: 2.5,
-            mb: 3
-          }}>
-            <CountCard
-              value={stats.total}
-              label="Total Staff"
-              icon={<PersonIcon />}
-              iconBgColor="rgba(25, 118, 210, 0.1)"
-              iconColor="primary.main"
-            />
-
-            <CountCard
-              value={stats.male}
-              label="Male"
-              icon={<MaleIcon />}
-              iconBgColor="rgba(33, 150, 243, 0.1)"
-              iconColor="info.main"
-            />
-
-            <CountCard
-              value={stats.female}
-              label="Female"
-              icon={<FemaleIcon />}
-              iconBgColor="rgba(233, 30, 99, 0.1)"
-              iconColor="secondary.main"
-            />
-
-            <CountCard
-              value={stats.departments}
-              label="Departments"
-              icon={<BusinessIcon />}
-              iconBgColor="rgba(76, 175, 80, 0.1)"
-              iconColor="success.main"
-            />
-          </Box>
         </Box>
 
-        <Button
-          variant="filled"
-          startIcon={<AddIcon />}
-          onClick={onCreateStaff}
-          size="lg"
-          color="success"
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1.5,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
         >
-          Add Staff
-        </Button>
+          {/* Filter Button */}
+          <Button variant="outlined" startIcon={<FilterIcon />}>
+            Filter
+          </Button>
+
+          {/* Sort Button */}
+          <Button variant="outlined" startIcon={<SortIcon />}>
+            Sort
+          </Button>
+
+          {/* Add Staff Button */}
+          <Button
+            variant="filled"
+            startIcon={<AddIcon />}
+            onClick={onCreateStaff}
+          >
+            Add Staff
+          </Button>
+        </Box>
       </Box>
 
-      {/* Staff Tabs */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={selectedTab}
-          onChange={(_, newValue) => onTabChange(newValue)}
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          <Tab label="All Staff" />
-          <Tab label="Male" />
-          <Tab label="Female" />
-        </Tabs>
+      {/* Stats Cards */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+            lg: "repeat(4, 1fr)",
+          },
+          gap: 2.5,
+          mb: 3,
+        }}
+      >
+        <CountCard
+          value={stats.total}
+          label="Total Staff"
+          icon={<GroupIcon />}
+          iconBgColor="rgba(25, 118, 210, 0.1)"
+          iconColor="#1976d2"
+        />
+
+        <CountCard
+          value={stats.male}
+          label="Male"
+          icon={<PersonIcon />}
+          iconBgColor="rgba(46, 125, 50, 0.1)"
+          iconColor="#2e7d32"
+        />
+
+        <CountCard
+          value={stats.female}
+          label="Female"
+          icon={<PersonIcon />}
+          iconBgColor="rgba(194, 24, 91, 0.1)"
+          iconColor="#c2185b"
+        />
+
+        <CountCard
+          value={stats.departments}
+          label="Departments"
+          icon={<BusinessIcon />}
+          iconBgColor="rgba(245, 124, 0, 0.1)"
+          iconColor="#f57c00"
+        />
       </Box>
     </Box>
   );

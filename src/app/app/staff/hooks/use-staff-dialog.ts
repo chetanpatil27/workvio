@@ -7,19 +7,19 @@ import { StaffFormData } from '../components/staff-dialog';
 
 export const useStaffDialog = () => {
     const dispatch = useDispatch();
-    
+
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
     const [formData, setFormData] = useState<StaffFormData>({
         name: '',
         email: '',
         mobile: '',
         gender: '',
     });
-    
+
     const [errors, setErrors] = useState<Partial<StaffFormData>>({});
 
     const validateForm = (): boolean => {
@@ -100,7 +100,7 @@ export const useStaffDialog = () => {
 
     const handleFormDataChange = (updates: Partial<StaffFormData>) => {
         setFormData(prev => ({ ...prev, ...updates }));
-        
+
         // Clear errors for changed fields
         const updatedErrors = { ...errors };
         Object.keys(updates).forEach(key => {
