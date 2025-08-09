@@ -156,7 +156,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         };
     }, [open, handleClose, menuId]);
 
-    const handleActionClick = (action: MenuAction) => {
+    const handleActionClick = (action: MenuAction, event?: React.MouseEvent) => {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
         action.onClick();
         handleClose();
     };
@@ -261,7 +265,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                                         menuItems.push(
                                             <MenuItem
                                                 key={action.id}
-                                                onClick={() => handleActionClick(action)}
+                                                onClick={(event) => handleActionClick(action, event)}
                                                 disabled={action.disabled}
                                                 sx={{
                                                     color: action.color ? `${action.color}.main` : 'text.primary',
