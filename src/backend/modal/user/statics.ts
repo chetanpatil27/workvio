@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IUser, IUserModel } from './interface';
+import { IUser } from './interface';
 
 // Apply static methods to the schema
 export function applyStaticMethods(schema: Schema<IUser>): void {

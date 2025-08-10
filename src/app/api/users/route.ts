@@ -1,104 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDB } from '@/backend/db';
-import User from '@/backend/modal/user';
+import { UserService } from '@/backend/services/user';
 
-// GET /api/users - Get all active users
-export async function GET() {
+// GET /api/users - Get all users with advanced filtering
+export async function GET(request: NextRequest) {
     try {
-        await connectToDB();
+        const { searchParams } = new URL(request.url);
+        const search = searchParams.get('search') || undefined;
+        const role = searchParams.get('role')?.split(',') || undefined;
+        const designation = searchParams.get('designation') || undefined;
+        const isActive = searchParams.get('isActive') ? searchParams.get('isActive') === 'true' : undefined;
 
-        const users = await User.findActiveUsers()
-            .select('-password')
-            .sort({ createdAt: -1 });
-
-        return NextResponse.json({
-            success: true,
-            data: users
+        const users = await UserService.searchUsers({
+            search,
+            role,
+            designation,
+            isActive
         });
+
+        return NextResponse.json(users);
     } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('GET /api/users error:', error);
         return NextResponse.json(
-            {
-                success: false,
-                error: 'Failed to fetch users'
-            },
+            { error: 'Failed to fetch users' },
             { status: 500 }
         );
     }
 }
 
-// POST /api/users - Create a new user
+// POST /api/users - Create new user
 export async function POST(request: NextRequest) {
     try {
-        await connectToDB();
-
         const body = await request.json();
-        const { email, name, password, role, avatar } = body;
 
         // Validate required fields
-        if (!email || !name || !password) {
+        if (!body.email || !body.name || !body.password) {
             return NextResponse.json(
-                {
-                    success: false,
-                    error: 'Email, name, and password are required'
-                },
+                { error: 'Email, name, and password are required' },
                 { status: 400 }
             );
         }
 
-        // Check if user already exists
-        const existingUser = await User.findByEmail(email);
-        if (existingUser) {
+        const user = await UserService.createUser(body);
+        return NextResponse.json(user, { status: 201 });
+    } catch (error: unknown) {
+        console.error('POST /api/users error:', error);
+
+        // Handle Prisma unique constraint violation
+        if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
             return NextResponse.json(
-                {
-                    success: false,
-                    error: 'User with this email already exists'
-                },
+                { error: 'Email already exists' },
                 { status: 409 }
             );
         }
 
-        // Create new user
-        const user = new User({
-            email,
-            name,
-            password,
-            role: role || 'developer',
-            avatar
-        });
-
-        await user.save();
-
-        // Return user without password
-        const userResponse = user.toJSON();
-
-        return NextResponse.json({
-            success: true,
-            data: userResponse,
-            message: 'User created successfully'
-        }, { status: 201 });
-
-    } catch (error: any) {
-        console.error('Error creating user:', error);
-
-        // Handle validation errors
-        if (error.name === 'ValidationError') {
-            const validationErrors = Object.values(error.errors).map((err: any) => err.message);
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: 'Validation failed',
-                    details: validationErrors
-                },
-                { status: 400 }
-            );
-        }
-
         return NextResponse.json(
-            {
-                success: false,
-                error: 'Failed to create user'
-            },
+            { error: 'Failed to create user' },
             { status: 500 }
         );
     }

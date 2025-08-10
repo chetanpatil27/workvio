@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User model matching your current Mongoose schema
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String   @unique
+  name          String
+  password      String
+  avatar        String?
+  role          Role     @default(DEVELOPER)
+  isActive      Boolean  @default(true)
+  
+  // Staff-related fields
+  designation   Designation? @relation(fields: [designationId], references: [id])
+  designationId String?      @db.ObjectId
+  employeeId    String?
+  joiningDate   DateTime?
+  dateOfBirth   DateTime?    // ← New field added to schema
+  phone         String?
+  address       String?
+  
+  // Relations for your Workvio structure (Project -> Sprint -> Ticket)
+  projectMembers ProjectMember[]
+  teamMembers    TeamMember[]
+  assignedTickets Ticket[]     @relation("TicketAssignee")
+  createdTickets  Ticket[]     @relation("TicketCreator")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Designation model
+model Designation {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  level String
+  
+  users User[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Project model (following your entity structure)
+model Project {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  
+  // Relations
+  sprints     Sprint[]
+  members     ProjectMember[]
+  tickets     Ticket[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Sprint model (Project -> Sprint -> Ticket)
+model Sprint {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  goal        String?
+  
+  // Project relation
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String   @db.ObjectId
+  
+  // Sprint dates
+  startDate   DateTime
+  endDate     DateTime
+  
+  // Relations
+  tickets     Ticket[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Ticket model (following your status flow: todo → inprogress → qa → completed)
+model Ticket {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  type        TicketType  @default(TASK)
+  status      TicketStatus @default(TODO)
+  priority    Priority     @default(MEDIUM)
+  
+  // Relations
+  project     Project @relation(fields: [projectId], references: [id])
+  projectId   String  @db.ObjectId
+  
+  sprint      Sprint  @relation(fields: [sprintId], references: [id])
+  sprintId    String  @db.ObjectId
+  
+  assignee    User?   @relation("TicketAssignee", fields: [assigneeId], references: [id])
+  assigneeId  String? @db.ObjectId
+  
+  creator     User    @relation("TicketCreator", fields: [creatorId], references: [id])
+  creatorId   String  @db.ObjectId
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Team model
+model Team {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  
+  members TeamMember[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Junction tables for many-to-many relationships
+model ProjectMember {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @db.ObjectId
+  
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String  @db.ObjectId
+  
+  role      String? // Project role (optional)
+  joinedAt  DateTime @default(now())
+  
+  @@unique([userId, projectId])
+}
+
+model TeamMember {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @db.ObjectId
+  
+  team     Team   @relation(fields: [teamId], references: [id])
+  teamId   String @db.ObjectId
+  
+  role     String? // Team role (optional)
+  joinedAt DateTime @default(now())
+  
+  @@unique([userId, teamId])
+}
+
+// Enums matching your current system
+enum Role {
+  ADMIN
+  MANAGER
+  DEVELOPER
+  TESTER
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum TicketType {
+  TASK
+  BUG
+  STORY
+  EPIC
+}
+
+enum TicketStatus {
+  TODO
+  INPROGRESS
+  QA
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
