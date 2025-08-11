@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '@/backend/services/user';
+import { connectToDB } from '@/backend/db';
 
 // GET /api/users - Get all users with advanced filtering
 export async function GET(request: NextRequest) {
+    connectToDB()
     try {
         const { searchParams } = new URL(request.url);
         const search = searchParams.get('search') || undefined;
@@ -10,7 +12,7 @@ export async function GET(request: NextRequest) {
         const designation = searchParams.get('designation') || undefined;
         const isActive = searchParams.get('isActive') ? searchParams.get('isActive') === 'true' : undefined;
 
-        const users = await UserService.searchUsers({
+        const users = await UserService.getUsers({
             search,
             role,
             designation,

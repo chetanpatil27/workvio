@@ -1,5 +1,4 @@
 import { prisma } from '@/backend/prisma';
-import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 export interface ICreateUserInput {
@@ -7,18 +6,61 @@ export interface ICreateUserInput {
     name: string;
     password: string;
     role?: 'admin' | 'manager' | 'developer' | 'tester';
-    designationId?: string;
+    designation?: string;
     employeeId?: string;
     phone?: string;
     address?: string;
     joiningDate?: Date;
 }
 
-export interface IUserSearchFilters {
+export interface IUserFilters {
+    // Search
     search?: string;
-    role?: string[];
+    
+    // Basic filters
+    id?: string;
+    email?: string;
+    role?: string | string[];
     designation?: string;
     isActive?: boolean;
+    
+    // Date filters
+    joiningDateFrom?: Date;
+    joiningDateTo?: Date;
+    
+    // Pagination
+    page?: number;
+    limit?: number;
+    
+    // Sorting
+    sortBy?: 'name' | 'email' | 'createdAt' | 'joiningDate';
+    sortOrder?: 'asc' | 'desc';
+}
+
+export interface IPaginatedUsers {
+    users: Array<{
+        id: string;
+        email: string;
+        name: string;
+        avatar: string | null;
+        role: string;
+        isActive: boolean;
+        designation: string | null;
+        employeeId: string | null;
+        phone: string | null;
+        address: string | null;
+        joiningDate: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    pagination: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
 }
 
 export interface IUpdateProfileInput {
@@ -28,6 +70,19 @@ export interface IUpdateProfileInput {
     avatar?: string;
 }
 
+/**
+ * UserService - Unified user management with filtering and pagination
+ * 
+ * Main Methods:
+ * - getUsers(): Primary method with flexible filtering, searching, and pagination
+ * - createUser(): Create new user
+ * - authenticateUser(): Login authentication
+ * - updateProfile(), updateDesignation(), changePassword(): User updates
+ * - activateUser(), deactivateUser(): User status management
+ * 
+ * Legacy convenience methods (use getUsers() for new code):
+ * - findByEmail(), findById(), findActiveUsers(), findByRole()
+ */
 export class UserService {
     // Authentication methods (replacing your methods.ts)
     static async comparePassword(candidatePassword: string, hashedPassword: string): Promise<boolean> {
@@ -54,7 +109,7 @@ export class UserService {
                 name: data.name.trim(),
                 password: hashedPassword,
                 role: data.role || 'developer',
-                designationId: data.designationId,
+                designation: data.designation,
                 employeeId: data.employeeId,
                 phone: data.phone,
                 address: data.address,
@@ -79,111 +134,193 @@ export class UserService {
         });
     }
 
+    /**
+     * Unified user retrieval with filtering, searching, and pagination
+     * 
+     * @example
+     * // Get all active users with pagination
+     * const result = await UserService.getUsers({ isActive: true, page: 1, limit: 10 });
+     * 
+     * // Search users by name/email
+     * const result = await UserService.getUsers({ search: "john", page: 1, limit: 10 });
+     * 
+     * // Filter by role and designation
+     * const result = await UserService.getUsers({ 
+     *   role: ["developer", "tester"], 
+     *   designation: "Senior Developer",
+     *   isActive: true,
+     *   page: 1, 
+     *   limit: 20 
+     * });
+     * 
+     * // Get single user by email
+     * const result = await UserService.getUsers({ email: "user@example.com" });
+     * const user = result.users[0];
+     * 
+     * // Date range filter
+     * const result = await UserService.getUsers({
+     *   joiningDateFrom: new Date('2024-01-01'),
+     *   joiningDateTo: new Date('2024-12-31'),
+     *   sortBy: 'joiningDate',
+     *   sortOrder: 'desc'
+     * });
+     */
+    static async getUsers(filters: IUserFilters = {}): Promise<IPaginatedUsers> {
+        const {
+            // Search
+            search,
+            
+            // Basic filters
+            id,
+            email,
+            role,
+            designation,
+            isActive,
+            
+            // Date filters
+            joiningDateFrom,
+            joiningDateTo,
+            
+            // Pagination
+            page = 1,
+            limit = 10,
+            
+            // Sorting
+            sortBy = 'createdAt',
+            sortOrder = 'desc'
+        } = filters;
+
+        // Build where clause
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const whereClause: Record<string, any> = {};
+
+        // ID filter (for single user lookup)
+        if (id) {
+            whereClause.id = id;
+        }
+
+        // Email filter (for single user lookup)
+        if (email) {
+            whereClause.email = email.toLowerCase().trim();
+        }
+
+        // Search across multiple fields
+        if (search) {
+            whereClause.OR = [
+                { name: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
+                { employeeId: { contains: search, mode: 'insensitive' } }
+            ];
+        }
+
+        // Role filter
+        if (role) {
+            const roles = Array.isArray(role) ? role : [role];
+            whereClause.role = { in: roles };
+        }
+
+        // Designation filter
+        if (designation) {
+            whereClause.designation = designation;
+        }
+
+        // Active status filter
+        if (isActive !== undefined) {
+            whereClause.isActive = isActive;
+        }
+
+        // Date range filters
+        if (joiningDateFrom || joiningDateTo) {
+            whereClause.joiningDate = {};
+            if (joiningDateFrom) {
+                whereClause.joiningDate.gte = joiningDateFrom;
+            }
+            if (joiningDateTo) {
+                whereClause.joiningDate.lte = joiningDateTo;
+            }
+        }
+
+        // Calculate pagination
+        const skip = (page - 1) * limit;
+
+        // Build order by clause
+        const orderBy: Record<string, 'asc' | 'desc'> = {};
+        orderBy[sortBy] = sortOrder;
+
+        // Execute queries
+        const [users, total] = await Promise.all([
+            prisma.user.findMany({
+                where: whereClause,
+                select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    avatar: true,
+                    role: true,
+                    isActive: true,
+                    designation: true,
+                    employeeId: true,
+                    phone: true,
+                    address: true,
+                    joiningDate: true,
+                    createdAt: true,
+                    updatedAt: true
+                },
+                orderBy,
+                skip,
+                take: limit
+            }),
+            prisma.user.count({ where: whereClause })
+        ]);
+
+        // Calculate pagination metadata
+        const totalPages = Math.ceil(total / limit);
+        const hasNext = page < totalPages;
+        const hasPrev = page > 1;
+
+        return {
+            users,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages,
+                hasNext,
+                hasPrev
+            }
+        };
+    }
+
+    // Convenience methods using the main getUsers method
     static async findByEmail(email: string) {
-        return await prisma.user.findUnique({
-            where: { email: email.toLowerCase().trim() },
-            include: { designation: true }
-        });
+        const result = await this.getUsers({ email, limit: 1 });
+        return result.users[0] || null;
     }
 
     static async findById(id: string) {
-        return await prisma.user.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                avatar: true,
-                role: true,
-                isActive: true,
-                designation: true,
-                employeeId: true,
-                phone: true,
-                address: true,
-                joiningDate: true,
-                createdAt: true,
-                updatedAt: true
-            }
-        });
+        const result = await this.getUsers({ id, limit: 1 });
+        return result.users[0] || null;
     }
 
-    static async findActiveUsers() {
-        return await prisma.user.findMany({
-            where: { isActive: true },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                avatar: true,
-                role: true,
-                designation: true,
-                employeeId: true
-            },
-            orderBy: { name: 'asc' }
+    static async findActiveUsers(limit = 50) {
+        const result = await this.getUsers({ 
+            isActive: true, 
+            limit,
+            sortBy: 'name',
+            sortOrder: 'asc'
         });
+        return result.users;
     }
 
-    static async findByRole(role: string | string[]) {
-        const roles = Array.isArray(role) ? role : [role];
-
-        return await prisma.user.findMany({
-            where: {
-                role: { in: roles },
-                isActive: true
-            },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                avatar: true,
-                role: true,
-                designation: true
-            },
-            orderBy: { name: 'asc' }
+    static async findByRole(role: string | string[], limit = 50) {
+        const result = await this.getUsers({ 
+            role, 
+            isActive: true, 
+            limit,
+            sortBy: 'name',
+            sortOrder: 'asc'
         });
-    }
-
-    static async findByDesignation(designationId: string) {
-        return await prisma.user.findMany({
-            where: {
-                designationId,
-                isActive: true
-            },
-            include: { designation: true },
-            orderBy: { name: 'asc' }
-        });
-    }
-
-    // Advanced search (replacing your searchUsers static)
-    static async searchUsers(filters: IUserSearchFilters) {
-        return await prisma.user.findMany({
-            where: {
-                ...(filters.search && {
-                    OR: [
-                        { name: { contains: filters.search, mode: 'insensitive' } },
-                        { email: { contains: filters.search, mode: 'insensitive' } },
-                        { employeeId: { contains: filters.search, mode: 'insensitive' } }
-                    ]
-                }),
-                ...(filters.role && { role: { in: filters.role } }),
-                ...(filters.designation && { designationId: filters.designation }),
-                ...(filters.isActive !== undefined && { isActive: filters.isActive })
-            },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                avatar: true,
-                role: true,
-                isActive: true,
-                designation: true,
-                employeeId: true,
-                phone: true,
-                joiningDate: true,
-                createdAt: true
-            },
-            orderBy: { createdAt: 'desc' }
-        });
+        return result.users;
     }
 
     // User management actions (replacing your instance methods)
@@ -197,7 +334,8 @@ export class UserService {
     }
 
     static async deactivateUser(userId: string) {
-        return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await prisma.$transaction(async (tx: any) => {
             // Deactivate user
             const user = await tx.user.update({
                 where: { id: userId },
@@ -235,11 +373,10 @@ export class UserService {
         });
     }
 
-    static async updateDesignation(userId: string, designationId: string) {
+    static async updateDesignation(userId: string, designation: string) {
         return await prisma.user.update({
             where: { id: userId },
-            data: { designationId },
-            include: { designation: true }
+            data: { designation }
         });
     }
 
@@ -285,44 +422,38 @@ export class UserService {
     // Project-related queries (following your entity structure)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static async findUsersByProject(_projectId: string) {
-        return await prisma.user.findMany({
-            where: {
-                // Note: Uncomment when you have projectMembers relation
-                // projectMembers: {
-                //   some: { projectId }
-                // },
-                isActive: true
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-                role: true,
-                designation: true
-            }
+        const result = await this.getUsers({
+            isActive: true,
+            limit: 100,
+            sortBy: 'name',
+            sortOrder: 'asc'
         });
+        // Note: Add project filtering when you have projectMembers relation
+        return result.users;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static async findUsersByTeam(_teamId: string) {
-        return await prisma.user.findMany({
-            where: {
-                // Note: Uncomment when you have teamMembers relation
-                // teamMembers: {
-                //   some: { teamId }
-                // },
-                isActive: true
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-                role: true,
-                designation: true
-            }
+        const result = await this.getUsers({
+            isActive: true,
+            limit: 100,
+            sortBy: 'name',
+            sortOrder: 'asc'
         });
+        // Note: Add team filtering when you have teamMembers relation
+        return result.users;
+    }
+
+    // Get available staff (not assigned to teams)
+    static async findAvailableStaff() {
+        const result = await this.getUsers({
+            isActive: true,
+            limit: 100,
+            sortBy: 'name',
+            sortOrder: 'asc'
+        });
+        // Note: Add team filtering when you have team relations
+        return result.users;
     }
 
     // Authentication helpers
@@ -364,25 +495,5 @@ export class UserService {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...sanitizedUser } = user;
         return sanitizedUser;
-    }
-
-    // Get available staff (not assigned to teams)
-    static async findAvailableStaff() {
-        return await prisma.user.findMany({
-            where: {
-                isActive: true,
-                // Note: Add team filtering when you have team relations
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-                role: true,
-                designation: true,
-                employeeId: true
-            },
-            orderBy: { name: 'asc' }
-        });
     }
 }
