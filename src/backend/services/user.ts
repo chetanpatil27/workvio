@@ -5,7 +5,7 @@ export interface ICreateUserInput {
     email: string;
     name: string;
     password: string;
-    role?: 'admin' | 'manager' | 'developer' | 'tester';
+    role?: 'ADMIN' | 'MANAGER' | 'DEVELOPER' | 'TESTER';
     designation?: string;
     employeeId?: string;
     phone?: string;
@@ -16,29 +16,29 @@ export interface ICreateUserInput {
 export interface IUserFilters {
     // Search
     search?: string;
-    
+
     // Basic filters
     id?: string;
     email?: string;
     role?: string | string[];
     designation?: string;
     isActive?: boolean;
-    
+
     // Date filters
     joiningDateFrom?: Date;
     joiningDateTo?: Date;
-    
+
     // Pagination
     page?: number;
     limit?: number;
-    
+
     // Sorting
     sortBy?: 'name' | 'email' | 'createdAt' | 'joiningDate';
     sortOrder?: 'asc' | 'desc';
 }
 
 export interface IPaginatedUsers {
-    users: Array<{
+    data: Array<{
         id: string;
         email: string;
         name: string;
@@ -108,7 +108,8 @@ export class UserService {
                 email: data.email.toLowerCase().trim(),
                 name: data.name.trim(),
                 password: hashedPassword,
-                role: data.role || 'developer',
+                role: data.role,
+                // role: data.role || 'DEVELOPER',
                 designation: data.designation,
                 employeeId: data.employeeId,
                 phone: data.phone,
@@ -169,22 +170,22 @@ export class UserService {
         const {
             // Search
             search,
-            
+
             // Basic filters
             id,
             email,
             role,
             designation,
             isActive,
-            
+
             // Date filters
             joiningDateFrom,
             joiningDateTo,
-            
+
             // Pagination
             page = 1,
             limit = 10,
-            
+
             // Sorting
             sortBy = 'createdAt',
             sortOrder = 'desc'
@@ -279,7 +280,7 @@ export class UserService {
         const hasPrev = page > 1;
 
         return {
-            users,
+            data: users,
             pagination: {
                 total,
                 page,
@@ -303,8 +304,8 @@ export class UserService {
     }
 
     static async findActiveUsers(limit = 50) {
-        const result = await this.getUsers({ 
-            isActive: true, 
+        const result = await this.getUsers({
+            isActive: true,
             limit,
             sortBy: 'name',
             sortOrder: 'asc'
@@ -313,9 +314,9 @@ export class UserService {
     }
 
     static async findByRole(role: string | string[], limit = 50) {
-        const result = await this.getUsers({ 
-            role, 
-            isActive: true, 
+        const result = await this.getUsers({
+            role,
+            isActive: true,
             limit,
             sortBy: 'name',
             sortOrder: 'asc'
