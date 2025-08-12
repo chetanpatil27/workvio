@@ -17,11 +17,20 @@ export async function POST(request: NextRequest) {
         try {
             const user = await UserService.authenticateUser(email, password);
 
-            // In a real app, you would generate and return a JWT token here
-            return NextResponse.json({
-                user,
-                message: 'Login successful'
+            // Set token as a secure, HTTP-only cookie
+            const response = NextResponse.json({
+                user: user.user,
+                token: user.token,
+                message: 'Login successfull'
             });
+            response.cookies.set('token', user.token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 60 * 60 * 24 * 7 // 7 days
+            });
+            return response;
         } catch (authError) {
             console.error('Authentication error:', authError);
             return NextResponse.json(

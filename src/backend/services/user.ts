@@ -1,3 +1,4 @@
+import * as jwt from 'jsonwebtoken';
 import { prisma } from '@/backend/prisma';
 import * as bcrypt from 'bcryptjs';
 
@@ -5,7 +6,7 @@ export interface ICreateUserInput {
     email: string;
     name: string;
     password: string;
-    role?: 'ADMIN' | 'MANAGER' | 'DEVELOPER' | 'TESTER';
+    role?: 'admin' | 'manager' | 'developer' | 'tester';
     designation?: string;
     employeeId?: string;
     phone?: string;
@@ -84,6 +85,16 @@ export interface IUpdateProfileInput {
  * - findByEmail(), findById(), findActiveUsers(), findByRole()
  */
 export class UserService {
+    /**
+     * Generate JWT token for authentication
+     * @param userId - User's unique ID
+     * @returns JWT token string
+     */
+    static generateToken(userId: string): string {
+        const secret = process.env.JWT_SECRET || 'changeme-secret';
+        // Token expires in 7 days
+        return jwt.sign({ userId }, secret, { expiresIn: '7d' });
+    }
     // Authentication methods (replacing your methods.ts)
     static async comparePassword(candidatePassword: string, hashedPassword: string): Promise<boolean> {
         try {
@@ -102,19 +113,12 @@ export class UserService {
     // User management operations (replacing your statics.ts)
     static async createUser(data: ICreateUserInput) {
         const hashedPassword = await this.hashPassword(data.password);
-
+        console.log("createUser data", data);
         return await prisma.user.create({
             data: {
                 email: data.email.toLowerCase().trim(),
                 name: data.name.trim(),
                 password: hashedPassword,
-                role: data.role,
-                // role: data.role || 'DEVELOPER',
-                designation: data.designation,
-                employeeId: data.employeeId,
-                phone: data.phone,
-                address: data.address,
-                joiningDate: data.joiningDate,
                 isActive: true
             },
             select: {
@@ -295,12 +299,12 @@ export class UserService {
     // Convenience methods using the main getUsers method
     static async findByEmail(email: string) {
         const result = await this.getUsers({ email, limit: 1 });
-        return result.users[0] || null;
+        return result.data[0] || null;
     }
 
     static async findById(id: string) {
         const result = await this.getUsers({ id, limit: 1 });
-        return result.users[0] || null;
+        return result.data[0] || null;
     }
 
     static async findActiveUsers(limit = 50) {
@@ -310,7 +314,7 @@ export class UserService {
             sortBy: 'name',
             sortOrder: 'asc'
         });
-        return result.users;
+        return result.data;
     }
 
     static async findByRole(role: string | string[], limit = 50) {
@@ -321,7 +325,7 @@ export class UserService {
             sortBy: 'name',
             sortOrder: 'asc'
         });
-        return result.users;
+        return result.data;
     }
 
     // User management actions (replacing your instance methods)
@@ -481,13 +485,14 @@ export class UserService {
 
         const isPasswordValid = await this.comparePassword(password, user.password);
         if (!isPasswordValid) {
-            throw new Error('Invalid password');
+            throw new Error('Invalid credentials');
         }
+        const token = this.generateToken(user.id);
 
         // Return user without password
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        return { user: userWithoutPassword, token };
     }
 
     // Utility method for safe user data (replacing your toJSON override)
