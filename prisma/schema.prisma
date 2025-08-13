@@ -2,6 +2,9 @@
 model Organisation {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
+  orgId     String   @unique
+  dbName    String?
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   // Add more fields as needed (e.g., address, contact info)
@@ -26,7 +29,7 @@ model User {
   password      String
   avatar        String?
   role          Role?    
-  isActive      Boolean  @default(true)
+  active        Boolean  @default(true)
   
   // Staff-related fields
   designation   String?

@@ -23,7 +23,7 @@ export interface IUserFilters {
     email?: string;
     role?: string | string[];
     designation?: string;
-    isActive?: boolean;
+    active?: boolean;
 
     // Date filters
     joiningDateFrom?: Date;
@@ -45,7 +45,7 @@ export interface IPaginatedUsers {
         name: string;
         avatar: string | null;
         role: string;
-        isActive: boolean;
+        active: boolean;
         designation: string | null;
         employeeId: string | null;
         phone: string | null;
@@ -119,7 +119,7 @@ export class UserService {
                 email: data.email.toLowerCase().trim(),
                 name: data.name.trim(),
                 password: hashedPassword,
-                isActive: true
+                active: true
             },
             select: {
                 id: true,
@@ -127,7 +127,7 @@ export class UserService {
                 name: true,
                 avatar: true,
                 role: true,
-                isActive: true,
+                active: true,
                 designation: true,
                 employeeId: true,
                 phone: true,
@@ -144,7 +144,7 @@ export class UserService {
      * 
      * @example
      * // Get all active users with pagination
-     * const result = await UserService.getUsers({ isActive: true, page: 1, limit: 10 });
+     * const result = await UserService.getUsers({ active: true, page: 1, limit: 10 });
      * 
      * // Search users by name/email
      * const result = await UserService.getUsers({ search: "john", page: 1, limit: 10 });
@@ -153,7 +153,7 @@ export class UserService {
      * const result = await UserService.getUsers({ 
      *   role: ["developer", "tester"], 
      *   designation: "Senior Developer",
-     *   isActive: true,
+     *   active: true,
      *   page: 1, 
      *   limit: 20 
      * });
@@ -180,7 +180,7 @@ export class UserService {
             email,
             role,
             designation,
-            isActive,
+            active,
 
             // Date filters
             joiningDateFrom,
@@ -230,8 +230,8 @@ export class UserService {
         }
 
         // Active status filter
-        if (isActive !== undefined) {
-            whereClause.isActive = isActive;
+        if (active !== undefined) {
+            whereClause.active = active;
         }
 
         // Date range filters
@@ -262,7 +262,7 @@ export class UserService {
                     name: true,
                     avatar: true,
                     role: true,
-                    isActive: true,
+                    active: true,
                     designation: true,
                     employeeId: true,
                     phone: true,
@@ -309,7 +309,7 @@ export class UserService {
 
     static async findActiveUsers(limit = 50) {
         const result = await this.getUsers({
-            isActive: true,
+            active: true,
             limit,
             sortBy: 'name',
             sortOrder: 'asc'
@@ -320,7 +320,7 @@ export class UserService {
     static async findByRole(role: string | string[], limit = 50) {
         const result = await this.getUsers({
             role,
-            isActive: true,
+            active: true,
             limit,
             sortBy: 'name',
             sortOrder: 'asc'
@@ -344,7 +344,7 @@ export class UserService {
             // Deactivate user
             const user = await tx.user.update({
                 where: { id: userId },
-                data: { isActive: false }
+                data: { active: false }
             });
 
             // Remove from project assignments (following your Project -> Sprint -> Ticket structure)
@@ -366,13 +366,13 @@ export class UserService {
     static async activateUser(userId: string) {
         return await prisma.user.update({
             where: { id: userId },
-            data: { isActive: true },
+            data: { active: true },
             select: {
                 id: true,
                 email: true,
                 name: true,
                 role: true,
-                isActive: true,
+                active: true,
                 designation: true
             }
         });
@@ -411,7 +411,7 @@ export class UserService {
                 orderBy: { role: 'asc' }
             }),
             prisma.user.groupBy({
-                by: ['isActive'],
+                by: ['active'],
                 _count: { id: true }
             }),
             prisma.user.count()
@@ -428,7 +428,7 @@ export class UserService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static async findUsersByProject(_projectId: string) {
         const result = await this.getUsers({
-            isActive: true,
+            active: true,
             limit: 100,
             sortBy: 'name',
             sortOrder: 'asc'
@@ -440,7 +440,7 @@ export class UserService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     static async findUsersByTeam(_teamId: string) {
         const result = await this.getUsers({
-            isActive: true,
+            active: true,
             limit: 100,
             sortBy: 'name',
             sortOrder: 'asc'
@@ -452,7 +452,7 @@ export class UserService {
     // Get available staff (not assigned to teams)
     static async findAvailableStaff() {
         const result = await this.getUsers({
-            isActive: true,
+            active: true,
             limit: 100,
             sortBy: 'name',
             sortOrder: 'asc'
@@ -466,7 +466,7 @@ export class UserService {
         const user = await prisma.user.findUnique({
             where: {
                 email: email.toLowerCase().trim(),
-                isActive: true
+                active: true
             },
             select: {
                 id: true,

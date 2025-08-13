@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const { email, password } = body;
-
+        console.log("----------email, password", email, password)
         if (!email || !password) {
             return NextResponse.json(
                 { error: 'Email and password are required' },
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-            const user = await UserService.authenticateUser(email, password);
+            const user = await UserService.authenticateUser(email, password, body.orgId);
 
             // Set token as a secure, HTTP-only cookie
             const response = NextResponse.json({

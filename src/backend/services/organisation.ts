@@ -12,18 +12,35 @@ export interface CreateOrganisationInput {
     };
 }
 
+function generateOrgId(name: string, number: number): string {
+    // Get initials (e.g., "Acme Corp" -> "AC")
+    const initials = name
+        .split(' ')
+        .map(word => word[0].toUpperCase())
+        .join('');
+    return `${initials}${number}`;
+}
+
 export class OrganisationService {
-    /**
-     * Create a new organisation and its admin user
-     * - Creates organisation in the main DB (shared via Prisma)
-     * - Optionally, you can trigger tenant DB creation logic here if needed
-     */
     static async createOrganisation(input: CreateOrganisationInput) {
+        // Find the current count for this initials to ensure uniqueness
+        const initials = input.name
+            .split(' ')
+            .map(word => word[0].toUpperCase())
+            .join('');
+        const existingCount = await prisma.organisation.count({
+            where: {
+                orgId: { startsWith: initials }
+            }
+        });
+        const orgId = generateOrgId(input.name, existingCount + 101); // Start from 101
+
         // 1. Create organisation in main DB
         const organisation = await prisma.organisation.create({
             data: {
                 name: input.name,
-                // Add more fields as needed
+                orgId, // new unique field
+                active: true,
             },
         });
 
@@ -31,20 +48,36 @@ export class OrganisationService {
         const adminUserDoc = {
             email: input.adminUser.email,
             name: input.adminUser.name,
-            password: input.adminUser.password, // Should be hashed before insert in production
+            password: input.adminUser.password,
             role: 'admin',
+            active: true,
             createdAt: new Date(),
             updatedAt: new Date(),
         };
-        await createTenantDatabase(organisation.id, adminUserDoc);
-
-        // 3. Return organisation info (admin user is in tenant DB)
-        return { organisation };
+        console.log("----------At before db create")
+        // Assume createTenantDatabase returns the db name
+        const dbName = await createTenantDatabase(orgId, adminUserDoc);
+        console.log("---------at db create", dbName);
+        // 3. Update organisation with dbName
+        const updatedOrganisation = await prisma.organisation.update({
+            where: { id: organisation.id },
+            data: { dbName }
+        });
+        console.log("updatedOrganisation", updatedOrganisation)
+        // 4. Return organisation info
+        return {
+            organisation: {
+                id: updatedOrganisation.id,
+                name: updatedOrganisation.name,
+                orgId: updatedOrganisation.orgId,
+                dbName: updatedOrganisation.dbName,
+                active: updatedOrganisation.active,
+                createdAt: updatedOrganisation.createdAt,
+                updatedAt: updatedOrganisation.updatedAt,
+            }
+        };
     }
 
-    /**
-     * Get organisations with filtering, searching, and pagination
-     */
     static async getAllOrganisations({
         search = '',
         page = 1,
@@ -90,5 +123,10 @@ export class OrganisationService {
                 hasPrev: page > 1,
             },
         };
+    }
+    static async verify(orgId: string): Promise<boolean> {
+        const org = await prisma.organisation.findUnique({ where: { orgId: orgId } });
+        console.log("org", org)
+        return org;
     }
 }
