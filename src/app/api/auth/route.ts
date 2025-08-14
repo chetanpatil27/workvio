@@ -5,19 +5,17 @@ import { UserService } from '@/backend/services/user';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { email, password } = body;
-        console.log("----------email, password", email, password)
-        if (!email || !password) {
+        const { email, password, orgId } = body;
+
+        if (!email || !password || !orgId) {
             return NextResponse.json(
-                { error: 'Email and password are required' },
+                { error: 'Email, password and orgId are required' },
                 { status: 400 }
             );
         }
 
         try {
-            const user = await UserService.authenticateUser({ orgId: body.orgId }, email, password);
-
-            // Set token as a secure, HTTP-only cookie
+            const user = await UserService.authenticateUser({ orgId }, email, password);
             const response = NextResponse.json({
                 user: user.user,
                 token: user.token,

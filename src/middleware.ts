@@ -17,7 +17,10 @@ export async function middleware(request: NextRequest) {
         response.headers.set('x-org-id', payload.orgId);
         return response;
     }
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+    });
 }
 
 export const config = {

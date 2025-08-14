@@ -223,8 +223,28 @@ export class UserService {
             }
         };
     }
-
-
+    static async findById(tenantCtx: ITenantCtx, userId: string) {
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
+        return await tenantPrisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                avatar: true,
+                role: true,
+                phone: true,
+                address: true,
+                updatedAt: true,
+                active: true,
+                dateOfBirth: true,
+                createdAt: true,
+                designation: true,
+                employeeId: true,
+                joiningDate: true
+            }
+        });
+    }
 
     // User management actions (replacing your instance methods)
     static async changePassword(userId: string, newPassword: string): Promise<void> {
@@ -283,8 +303,9 @@ export class UserService {
         });
     }
 
-    static async updateProfile(userId: string, data: IUpdateProfileInput) {
-        return await prisma.user.update({
+    static async updateProfile(tenantCtx: ITenantCtx, userId: string, data: IUpdateProfileInput) {
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
+        return await tenantPrisma.user.update({
             where: { id: userId },
             data,
             select: {
@@ -295,7 +316,13 @@ export class UserService {
                 role: true,
                 phone: true,
                 address: true,
-                updatedAt: true
+                updatedAt: true,
+                active: true,
+                dateOfBirth: true,
+                createdAt: true,
+                designation: true,
+                employeeId: true,
+                joiningDate: true
             }
         });
     }
