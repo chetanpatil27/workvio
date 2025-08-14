@@ -1,22 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '@/backend/services/user';
-import { connectToDB } from '@/backend/db';
+import { getContextFromRequest } from '@/backend/utils/getContextFromRequest';
 
 // GET /api/users - Get all users with advanced filtering
 export async function GET(request: NextRequest) {
-    connectToDB()
     try {
         const { searchParams } = new URL(request.url);
         const search = searchParams.get('search') || undefined;
         const role = searchParams.get('role')?.split(',') || undefined;
         const designation = searchParams.get('designation') || undefined;
-        const isActive = searchParams.get('isActive') ? searchParams.get('isActive') === 'true' : undefined;
-
-        const users = await UserService.getUsers({
+        const active = searchParams.get('active') ? searchParams.get('active') === 'true' : undefined;
+        const tenantCtx = getContextFromRequest(request);
+        const users = await UserService.getUsers(tenantCtx, {
             search,
             role,
             designation,
-            isActive
+            active
         });
 
         return NextResponse.json(users);
@@ -42,7 +41,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const user = await UserService.createUser(body);
+        const tenantCtx = getContextFromRequest(request);
+        const user = await UserService.createUser(tenantCtx, body);
         return NextResponse.json(user, { status: 201 });
     } catch (error: unknown) {
         console.error('POST /api/users error:', error);

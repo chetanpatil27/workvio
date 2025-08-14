@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-            const user = await UserService.authenticateUser(email, password, body.orgId);
+            const user = await UserService.authenticateUser({ orgId: body.orgId }, email, password);
 
             // Set token as a secure, HTTP-only cookie
             const response = NextResponse.json({
