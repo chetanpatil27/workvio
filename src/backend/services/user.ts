@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken';
-import { prisma } from '@/backend/prisma';
 import * as bcrypt from 'bcryptjs';
 import { getTenantPrisma } from '../helper';
 import { ITenantCtx } from '../interface';
@@ -247,18 +246,19 @@ export class UserService {
     }
 
     // User management actions (replacing your instance methods)
-    static async changePassword(userId: string, newPassword: string): Promise<void> {
+    static async changePassword(tenantCtx: ITenantCtx, userId: string, newPassword: string): Promise<void> {
         const hashedPassword = await this.hashPassword(newPassword);
-
-        await prisma.user.update({
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
+        await tenantPrisma.user.update({
             where: { id: userId },
             data: { password: hashedPassword }
         });
     }
 
-    static async deactivateUser(userId: string) {
+    static async deactivateUser(tenantCtx: ITenantCtx, userId: string) {
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await prisma.$transaction(async (tx: any) => {
+        return await tenantPrisma.$transaction(async (tx: any) => {
             // Deactivate user
             const user = await tx.user.update({
                 where: { id: userId },
@@ -281,8 +281,9 @@ export class UserService {
         });
     }
 
-    static async activateUser(userId: string) {
-        return await prisma.user.update({
+    static async activateUser(tenantCtx: ITenantCtx, userId: string) {
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
+        return await tenantPrisma.user.update({
             where: { id: userId },
             data: { active: true },
             select: {
@@ -296,8 +297,9 @@ export class UserService {
         });
     }
 
-    static async updateDesignation(userId: string, designation: string) {
-        return await prisma.user.update({
+    static async updateDesignation(tenantCtx: ITenantCtx, userId: string, designation: string) {
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
+        return await tenantPrisma.user.update({
             where: { id: userId },
             data: { designation }
         });
@@ -328,18 +330,19 @@ export class UserService {
     }
 
     // Statistics (replacing your getUserStats static)
-    static async getUserStats() {
+    static async getUserStats(tenantCtx: ITenantCtx) {
+        const tenantPrisma = await getTenantPrisma(tenantCtx);
         const [roleStats, statusStats, totalUsers] = await Promise.all([
-            prisma.user.groupBy({
+            tenantPrisma.user.groupBy({
                 by: ['role'],
                 _count: { id: true },
                 orderBy: { role: 'asc' }
             }),
-            prisma.user.groupBy({
+            tenantPrisma.user.groupBy({
                 by: ['active'],
                 _count: { id: true }
             }),
-            prisma.user.count()
+            tenantPrisma.user.count()
         ]);
 
         return {

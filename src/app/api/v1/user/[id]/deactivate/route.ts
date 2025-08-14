@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '@/backend/services/user';
+import { getContextFromRequest } from '@/backend/utils/getContextFromRequest';
 
 // PATCH /api/users/[id]/deactivate - Deactivate user
 export async function PATCH(
@@ -7,7 +8,9 @@ export async function PATCH(
     { params }: { params: { id: string } }
 ) {
     try {
-        const user = await UserService.deactivateUser(params.id);
+        // Get tenant context from request
+        const tenantCtx = getContextFromRequest(request);
+        const user = await UserService.deactivateUser(tenantCtx, params.id);
         return NextResponse.json(user);
     } catch (error: unknown) {
         console.error('PATCH /api/users/[id]/deactivate error:', error);
