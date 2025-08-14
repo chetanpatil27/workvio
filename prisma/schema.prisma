@@ -51,12 +51,13 @@ model User {
 
 // Designation model
 model Designation {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  level String
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  department  String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // Project model (following your entity structure)
